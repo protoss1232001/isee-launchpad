@@ -192,6 +192,25 @@ label.plan input,label.plan textarea{display:block;width:100%;margin-top:4px;fon
 .fineprint{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);max-width:66ch}
 .tipcard{border-color:var(--teal)}
 
+/* ---- model essays ---- */
+.modelessay .mpara{border-left:3px solid var(--teal);padding:2px 0 2px 14px;margin:14px 0}
+.modelessay .mpara p{margin:0 0 8px;max-width:66ch;line-height:1.65}
+.mnotes{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mnotes li{font-size:.85rem;color:var(--muted);background:var(--paper);border-radius:8px;padding:7px 11px;position:relative;padding-left:30px}
+.mnotes li::before{content:"↳";position:absolute;left:11px;color:var(--teal);font-weight:700}
+/* ---- parent review ---- */
+.reviewhead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;padding-top:16px}
+.askq{padding-left:1.2em;display:grid;gap:8px}
+.askq li{font-weight:600}
+@media print{
+  .top,.rail,.tabs,.noprint,.actions,.chips{display:none!important}
+  body{background:#fff}
+  .card{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .wrap{max-width:none;padding:0}
+  .essayread{background:#fff}
+  a[href]::after{content:""}
+}
+
 </style>
 </head>
 <body>
@@ -1740,6 +1759,92 @@ gen(){const forms=[
  {q:'Which is the best plan for the first five minutes?',a:'Choose your position and jot down three reasons or moments',w:['Write the opening paragraph slowly and carefully','Think quietly until the perfect idea arrives','Write a full outline in complete sentences'],e:'A quick list of three specifics gives the essay its shape and leaves 20 minutes for writing.'}];
  const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
 
+// ===== MODEL ESSAYS =====
+// Written at the level a strong fifth grader can actually reach: plain words,
+// one real moment per reason, no borrowed vocabulary. Each paragraph carries
+// notes explaining WHY it works, so the model teaches rather than intimidates.
+const MODELS=[
+{kind:'person',prompt:'Who is someone you look up to the most in this world? Explain why.',
+ why:'It picks an unexpected person, and every paragraph proves the point with something that actually happened instead of describing him with adjectives.',
+ paras:[
+ {t:'The person I look up to most is Mr. Okafor, who cleans our school. I look up to him because he notices things that nobody asks him to notice.',
+  n:['The opening answers the question in the first sentence. No warm-up, no "there are many people in this world."','The second sentence gives the reason the whole essay will prove. Now the reader knows where this is going.']},
+ {t:'In September a boy named Dev sat by himself at lunch every day for two weeks. Teachers walked past him. I walked past him. Mr. Okafor started wiping the table next to Dev at the same time every day, and he would say something about the weather or about the soup, and after a while Dev started answering. By October Dev was sitting with us. Mr. Okafor never told anyone he did that.',
+  n:['This is one specific moment with a date, a name and a place. That is what makes it believable.','"I walked past him" is honest. Admitting your own part makes a reader trust you.','The last sentence lands the point without announcing it. He does not write "this shows he is kind."']},
+ {t:'He also fixes things before anyone reports them. Our classroom door used to stick so hard that the smallest kids needed help, and one morning it just opened easily. Nobody had told him. He had watched us struggle with it and decided that was enough of a reason.',
+  n:['A second reason, and again a real example rather than a general statement.','"Nobody had told him" repeats the essay\'s idea — noticing without being asked — which ties the paragraphs together.']},
+ {t:'I used to think that people you look up to are the ones who win things. Mr. Okafor has not won anything that I know of. He just pays attention, every single day, to people who are easy to walk past. That is harder than winning, and I want to be better at it.',
+  n:['The closing says what the examples add up to. It does not introduce a new story.','It ends with what the writer takes from it, which gives the essay a reason to exist.']}]},
+
+{kind:'narrative',prompt:'Describe a time you worked hard at something difficult. What happened?',
+ why:'It tells one story from start to finish and is honest about the ugly middle, which is what makes the ending feel earned.',
+ paras:[
+ {t:'Last year I could not run the mile. Not slowly, not badly, not at all. I walked most of it and finished last, and in October our gym teacher said we would run it again in April.',
+  n:['It starts inside the problem instead of explaining that the writer is about to describe a problem.','The short repeated phrases ("Not slowly, not badly, not at all") give the writing a voice.','The last sentence sets a deadline, which gives the story a shape.']},
+ {t:'I started running on Tuesdays and Thursdays with my dad on the path behind the library. The first week I had to stop four times. My legs were not even the problem. The problem was that my throat burned and I was sure something was wrong with me, and my dad kept saying that was just what it feels like at the beginning.',
+  n:['Specific days and a specific place. "Tuesdays and Thursdays behind the library" is far stronger than "I practiced a lot."','Admitting that she stopped four times makes the improvement later mean something.']},
+ {t:'It stayed hard for a long time. In January I was still slower than I wanted, and I skipped two weeks because it was cold and because I did not want to find out that I had not improved. Then I went back, because my dad went out to the path anyway and waited.',
+  n:['This is the paragraph most students leave out. Quitting for two weeks is the honest part of the story.','The reason she returns is small and human. She does not suddenly become determined.']},
+ {t:'In April I ran the whole thing without walking. My time was eleven minutes and two seconds, which was not close to the fastest in my class. I did not care about that at all. I cared that I had found out what my throat burning actually meant, which was nothing, and that I had been wrong about myself in a way I could fix.',
+  n:['A real number makes the ending concrete.','Naming what she did NOT care about is more convincing than claiming she was proud.','The final line answers "what happened" at a deeper level than the finish time.']}]},
+
+{kind:'place',prompt:'If you could move anywhere in the world, where would it be and why?',
+ why:'It chooses a specific place for reasons only this writer could give, using details from her own senses rather than facts from a website.',
+ paras:[
+ {t:'If I could move anywhere, I would move to my grandmother\'s town in Kerala, in the south of India. I would move there because it is the only place where I have never once been bored.',
+  n:['Names the exact place, not "somewhere warm" or "another country."','The reason is unusual and specific. Boredom is something a fifth grader can write about honestly.']},
+ {t:'Her house has a flat roof, and in the evening the whole family goes up there because it is cooler than inside. You can see other roofs with other families on them. Somebody is always calling something across to somebody else. Once a monkey walked along the wall and took a mango out of a bowl, and my grandmother yelled at it in Malayalam and it left, and everyone laughed for about ten minutes.',
+  n:['The roof detail is something you can only know by having been there.','The monkey story is one moment, told quickly, and it does the work of an entire paragraph of description.']},
+ {t:'The other reason is the rain. In June it rains so hard that it sounds like the roof is being hit with rice. It rains for hours and nobody is upset about it, and nobody cancels anything. Where I live now, rain means practice is off and everyone is disappointed.',
+  n:['A comparison that reveals something about both places.','"Sounds like the roof is being hit with rice" is her own image, not a phrase copied from a book.']},
+ {t:'I know that moving there would mean leaving my school and my friends, and that living somewhere is not the same as visiting it for three weeks in the summer. But if I could pick one place to wake up in every day, it would be a place where the evening happens on the roof, with everybody in it.',
+  n:['Admitting the drawback makes the writer sound thoughtful rather than dreamy.','The closing returns to the roof image, so the essay ends where it was strongest.']}]},
+
+{kind:'opinion',prompt:'What is one rule you would change, and why?',
+ why:'It argues one narrow point, gives reasons in order of strength, and answers the objection before the reader can raise it.',
+ paras:[
+ {t:'At my school we have silent lunch on Fridays, and I would change that rule. Lunch is twenty-two minutes long and it is the only part of the day when we choose who we sit with. Taking away the talking takes away the whole point.',
+  n:['Names the rule exactly and takes a side in the first sentence.','"Twenty-two minutes" is a small number that makes the argument feel real.']},
+ {t:'The rule exists because two years ago the cafeteria got so loud that the teachers could not hear each other. I understand that. But silent lunch treats everybody the same for something that about six people were doing, and it happens every single Friday whether the week was loud or quiet.',
+  n:['Stating the other side first, and honestly, makes the argument stronger rather than weaker.','"About six people" turns a vague complaint into a specific unfairness.']},
+ {t:'There is also a cost that I do not think the adults see. Dev, who is new, joined our table by talking to us at lunch. On Fridays there is no way for a new person to join anything. They just sit down and eat and leave, and nothing changes for them all day.',
+  n:['This is the strongest reason, so it comes last. It moves from the writer to somebody else, which raises the stakes.']},
+ {t:'I would replace silent lunch with a warning system: if the room gets too loud, the last five minutes go silent. Then the quiet is a consequence instead of a schedule, and it would probably work better, because we would actually be trying not to earn it.',
+  n:['Proposing a specific replacement is what separates a complaint from an argument.','The closing explains why the new rule would work, so the essay ends with a reason and not a wish.']}]},
+
+{kind:'reflection',prompt:'Tell about a time you changed your mind about something.',
+ why:'It shows the writer being wrong on purpose, which takes nerve, and it explains what changed rather than only announcing that something did.',
+ paras:[
+ {t:'For the first month of fourth grade I thought Dev was stuck-up. He never talked to anybody, he never laughed at anything, and when our teacher asked him a question he answered in about four words and looked back down at his desk.',
+  n:['The opening states the wrong belief plainly and gives the evidence behind it. That evidence has to be real, or the change of mind means nothing.']},
+ {t:'What changed my mind was a worksheet. We had to trade papers to check each other\'s work, and I got his. His handwriting was so careful that it looked printed, and in the margin he had written the same word four times to figure out how it was spelled. He had erased so hard that the paper was thin in that spot.',
+  n:['One small object carries the whole turn in the essay. This is the best sentence in the piece.','"Erased so hard the paper was thin" is a detail nobody could invent without noticing something like it.']},
+ {t:'He was not stuck-up. He had moved here in August from a school in a different country, and he was working harder than any of us just to keep up in a language he had only spoken at home. I had watched him do that for a month and decided he was rude.',
+  n:['The explanation comes after the evidence, not before, so the reader discovers it at the same time she did.','"I had decided he was rude" takes responsibility instead of blaming the misunderstanding on him.']},
+ {t:'Now Dev sits at our table and he still does not talk very much, and I have stopped thinking that means anything. What I actually changed my mind about was not really Dev. It was the idea that quiet people are telling you something by being quiet.',
+  n:['The closing widens from one person to a lesson, which is what a reflection essay is for.','It does not overclaim. She has not become a perfect person; she has changed one belief.']}]}
+];
+// Every prompt maps to the model whose shape it shares.
+const PROMPT_KIND=['person','place','person','narrative','person','opinion','place','reflection','opinion','person','opinion','narrative','reflection','reflection','place','narrative','opinion','narrative'];
+const modelFor=i=>MODELS.find(m=>m.kind===PROMPT_KIND[i%PROMPT_KIND.length])||MODELS[0];
+
+// ===== PARENT REVIEW =====
+const RUBRIC=[
+ {h:'Does it answer the question that was asked?',s:'Reread the prompt out loud, then the first paragraph. A strong essay answers in its first two sentences.',w:'It circles the topic without ever taking a position, or it answers a different, easier question.'},
+ {h:'Is it organized?',s:'An opening that states the answer, two or three middle paragraphs that each do one job, and a closing that adds nothing new.',w:'One long block, or paragraphs that could be shuffled without anyone noticing.'},
+ {h:'Is it specific?',s:'At least one moment you can picture: a name, a place, a number, something somebody said. This is the single biggest difference between essays.',w:'Adjectives doing all the work. "She is very kind and generous and always helps everyone."'},
+ {h:'Does it sound like her?',s:'Words she would actually use. A plain sentence in her own voice beats a fancy one she borrowed.',w:'Vocabulary that does not fit the rest of the writing, or a stiff, formal tone she never uses out loud.'},
+ {h:'Is it clean enough?',s:'Capital letters, end punctuation, no missing words. Handwriting a stranger can read.',w:'Errors so frequent that the reader is decoding instead of reading. A few spelling slips in 30 minutes are normal and fine.'}];
+const PARENT_QS=[
+ 'Read me your favourite sentence. Why that one?',
+ 'Which of your reasons felt strongest, and which one felt thin?',
+ 'If you had five more minutes, what would you have added?'];
+const PARENT_HOWTO=`
+<p><b>Praise something specific first.</b> Not "this is good," but "the part where the door just opened one morning — that was the best sentence." She will write more of whatever you name.</p>
+<p><b>Pick one thing to work on.</b> Only one, even if you see five. The next essay is for the next thing.</p>
+<p><b>Do not correct spelling out loud line by line.</b> The essay is unscored and schools know it was handwritten in 30 minutes under pressure. Organization and specific detail matter far more than a misspelled word.</p>
+<p><b>Ask before you tell.</b> The three questions above usually get her to find the weak paragraph herself, which sticks better than being told.</p>`;
+
 // ================= PLAN =================
 const CATS={num:'Numbers & Operations',frac:'Fractions',dec:'Decimals, Percents & Ratios',alg:'Algebraic Concepts',geo:'Geometry',meas:'Measurement',data:'Data Analysis',prob:'Probability',qr:'Quantitative Reasoning',verbal:'Verbal Reasoning',read:'Reading Comprehension',write:'Writing'};
 const MATHCATS=['num','frac','dec','alg','geo','meas','data','prob','qr'];
@@ -1833,7 +1938,7 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
    {k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='essay'){
   cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'lesson',title:'How to write it',min:6,topic:'wr_essay'},
-   {k:'essay',title:'Write your essay',min:30,prompt:ESSAY_PROMPTS[sess.prompt%ESSAY_PROMPTS.length],limit:30*60,phase:'plan'},
+   {k:'essay',title:'Write your essay',min:30,prompt:ESSAY_PROMPTS[sess.prompt%ESSAY_PROMPTS.length],promptIdx:sess.prompt%ESSAY_PROMPTS.length,limit:30*60,phase:'plan'},
    {k:'quiz',title:'Essay know-how',min:5,qs:topicQs('wr_essay',5)},{k:'wrap',title:'Wrap-up',min:3}]}
  else if(sess.type==='final'){cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'final',title:'Test-day game plan',min:8},{k:'quiz',title:'Confidence mix',min:12,qs:mixedMath(shuf(ALLMATH),8)},{k:'quiz',title:'Verbal victory lap',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'You did it!',min:3}]}
  cur.steps.forEach(st=>{if(st.qs){st.i=0;st.ans=[];st.picked=null}if(st.cards){st.ci=0;st.flipped=false;st.res=[]}});
@@ -1849,9 +1954,9 @@ function ring(p,size=64,label){const r=(size-8)/2,c=2*Math.PI*r;return `<svg cla
 
 // ================= VIEWS =================
 function render(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
- let v=S.view||'home';if(!S.name)v='home';app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · Verbal + Math</div></div></div>
- ${S.name?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${v===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
- <main class="wrap">${v==='home'?viewHome():v==='plan'?viewPlan():v==='practice'?viewPractice():v==='words'?viewWords():viewProgress()}</main>`;
+ let v=S.view||'home';if(!S.name)v='home';const navView=v==='review'?'progress':v;app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · Verbal + Math</div></div></div>
+ ${S.name?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${navView===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
+ <main class="wrap">${v==='home'?viewHome():v==='plan'?viewPlan():v==='practice'?viewPractice():v==='words'?viewWords():v==='review'?viewReview():viewProgress()}</main>`;
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{S.view=b.dataset.view;save();render()});wireCommon()}
 
 function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test);const exp=expectedDone(),dn=doneCount();const behind=exp-dn;const st=streak();
@@ -1879,7 +1984,7 @@ function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Five sessi
  <div class="weeks">${PLAN.map(wk=>{const ss=SESSIONS.filter(s=>s.week===wk.w);const dn=ss.filter(s=>S.done[s.id]).length;return `<div class="card week ${dn===ss.length?'complete':''}"><div class="cardhead"><h3><span class="wk">W${wk.w}</span> ${esc(wk.title)}</h3>${dn===ss.length?'<span class="badge">★ Complete</span>':`<span class="muted">${dn}/${ss.length}</span>`}</div><ul class="slist">${ss.map(s=>{const d=S.done[s.id];const ic=s.type==='test'?'⏱':s.type==='review'||s.type==='weak'?'↻':s.type==='final'?'★':s.type==='read'?'❝':s.type==='essay'?'✎':'';return `<li class="${d?'done':''}"><span class="chk">${d?'✓':ic}</span><button class="linkbtn" data-start="${s.id}">${esc(s.title)}</button>${d?`<span class="score">${d.score}%</span>`:''}</li>`}).join('')}</ul></div>`}).join('')}</div>`}
 
 function viewPractice(){return `<h2>Practice anything</h2><p class="muted">Ten questions on any topic, with explanations after each one. Or take a timed section to build stamina.</p>
- <div class="card"><h3>Reading &amp; writing</h3><div class="testbtns"><button class="btn" data-quick="read">Read a passage · 5 questions</button><button class="btn" data-quick="read2">Two passages · 10 questions</button><button class="btn" data-quick="essay">Write an essay · 30 min</button></div></div>
+ <div class="card"><h3>Reading &amp; writing</h3><div class="testbtns"><button class="btn" data-quick="read">Read a passage · 5 questions</button><button class="btn" data-quick="read2">Two passages · 10 questions</button><button class="btn" data-quick="essay">Write an essay · 30 min</button><button class="btn" data-models>Read model essays</button></div></div>
  <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:math:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
  ${Object.keys(CATS).map(c=>`<div class="card"><h3>${CATS[c]}</h3><div class="topicgrid">${Object.keys(T).filter(k=>T[k].cat===c).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;return `<button class="topicbtn" data-quick="topic:${k}"><span>${esc(T[k].t)}</span><span class="tacc ${n?(pct(s.r,n)>=80?'good':pct(s.r,n)>=60?'warn':'bad'):''}">${n?pct(s.r,n)+'%':'new'}</span></button>`}).join('')}</div></div>`).join('')}`}
 
@@ -1890,6 +1995,22 @@ function viewWords(){const f=S.wordFilter||'all';const lvl=w=>S.vocab[w]?S.vocab
  <div class="chips">${['all','new','learning','mastered'].map(k=>`<button class="chip ${f===k?'on':''}" data-wf="${k}">${k[0].toUpperCase()+k.slice(1)} <span>${counts[k]}</span></button>`).join('')}<button class="btn small" data-quick="flash">Flashcard drill (20)</button></div>
  <div class="wordgrid">${list.map(w=>`<button class="wcard lv${lvl(w[0])}" data-flip><span class="wfront"><b>${w[0]}</b><i>${w[1]}</i></span><span class="wback"><small>${w[2]}</small><em>${w[3].join(', ')}</em></span></button>`).join('')}</div>`}
 
+function viewReview(){const e=(S.essays||[])[S.reviewIdx||0];
+ if(!e)return `<h2>Review an essay</h2><p class="muted">No essays yet. The Practice tab has a 30-minute essay whenever she is ready.</p><button class="btn" data-view="practice">Go to Practice</button>`;
+ const m=modelFor(e.pi||0);
+ return `<div class="reviewhead"><div><div class="eyebrow">For a grown-up to read together with her</div><h2>Reviewing one essay</h2></div>
+  <div class="noprint"><button class="btn small ghost" data-view="progress">‹ Back</button> <button class="btn small" onclick="window.print()">Print</button></div></div>
+ ${(S.essays.length>1)?`<div class="chips noprint">${S.essays.map((x,i)=>`<button class="chip ${i===(S.reviewIdx||0)?'on':''}" data-rev="${i}">${x.date}</button>`).join('')}</div>`:''}
+ <section class="card"><p class="prompt">${esc(e.prompt)}</p>
+  <p class="muted small">${e.date} · ${e.words} words · ${e.mins<1?'finished in under a minute':'took '+e.mins+' minute'+(e.mins===1?'':'s')} of the 30 available</p>
+  <div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(nothing written)</p>'}</div></section>
+ <section class="card"><h3>What to look for</h3><p class="muted">Schools do not score this essay, but a person reads it. These five things are what they notice, in order.</p>
+  <div class="tblwrap"><table class="tbl"><thead><tr><th>Look for</th><th>Strong looks like</th><th>Weak looks like</th></tr></thead><tbody>
+  ${RUBRIC.map(r=>`<tr><td><b>${r.h}</b></td><td>${r.s}</td><td class="muted">${r.w}</td></tr>`).join('')}</tbody></table></div></section>
+ <section class="card"><h3>Three questions to ask her</h3><ol class="askq">${PARENT_QS.map(q=>`<li>${esc(q)}</li>`).join('')}</ol>
+  <h4>How to give the feedback</h4>${PARENT_HOWTO}</section>
+ <section class="card noprint"><div class="cardhead"><h3>A model answer for this kind of prompt</h3></div>
+  <p class="muted">Read this together after she has read her own. Compare the shape, not the words.</p>${modelHTML(m)}</section>`}
 function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<b[1].date?1:-1).slice(0,12);const tv=Object.values(S.vocab);
  const days=[];for(let i=83;i>=0;i--){const d=addDays(today(),-i);days.push([d,S.days[d]||0])}
  return `<h2>Progress</h2>
@@ -1897,7 +2018,7 @@ function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<
  <div class="card"><h3>Vocabulary</h3><div class="vrow"><span>Mastered</span><b>${tv.filter(v=>v.lvl>=3).length}</b></div><div class="vrow"><span>Still learning</span><b>${tv.filter(v=>v.lvl<3).length}</b></div><div class="vrow"><span>Not yet seen</span><b>${VOCAB.length-tv.length}</b></div><div class="vrow"><span>Synonym/completion accuracy</span><b>${(()=>{let r=0,w=0;tv.forEach(v=>{r+=v.r;w+=v.w});return r+w?pct(r,r+w)+'%':'—'})()}</b></div></div></section>
  <section class="card"><h3>Accuracy by topic</h3><div class="tblwrap"><table class="tbl"><thead><tr><th>Topic</th><th>Strand</th><th>Answered</th><th>Accuracy</th></tr></thead><tbody>${Object.keys(T).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;const p=n?pct(s.r,n):null;return `<tr><td>${esc(T[k].t)}</td><td class="muted">${CATS[T[k].cat]}</td><td>${n}</td><td>${p===null?'—':`<span class="pill ${p>=80?'good':p>=60?'warn':'bad'}">${p}%</span>`}</td></tr>`}).join('')}</tbody></table></div></section>
  <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s?s.title:'Session '+id)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
- ${(S.essays&&S.essays.length)?`<section class="card"><h3>Essays you have written</h3><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words in ${e.mins} min</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div></details>`).join('')}</div></section>`:''}
+ ${(S.essays&&S.essays.length)?`<section class="card"><div class="cardhead"><h3>Essays you have written</h3><button class="btn small" data-rev="0">Review with a grown-up</button></div><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words, ${e.mins<1?'under a minute':e.mins+' min'}</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div><div class="actions"><button class="btn small ghost" data-model="${e.pi||0}">See a model</button><button class="btn small" data-rev="${i}">Review this one</button></div></details>`).join('')}</div></section>`:''}
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
  <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
@@ -1945,7 +2066,16 @@ function renderEssay(st){
   <p class="muted small">${words} words in ${mm(st.t||0)}. Your draft is saved on this device under Progress.</p>
   <h4>Check yourself honestly</h4>
   <div class="checks">${checks.map((c,i)=>`<label><input type="checkbox" data-chk="${i}" ${st.chk&&st.chk[i]?'checked':''}> ${c}</label>`).join('')}</div>
-  <div class="actions"><button class="btn primary" data-next>Finish this step</button></div></div>`}
+  <div class="actions"><button class="btn ghost" data-model="${st.promptIdx==null?0:st.promptIdx}">Compare with a model essay</button><button class="btn primary" data-next>Finish this step</button></div></div>`}
+function modelHTML(m){
+ return `<div class="modelessay"><div class="eyebrow">Model essay</div><p class="prompt">${esc(m.prompt)}</p>
+  <p class="muted">${esc(m.why)}</p>
+  ${m.paras.map((pa,i)=>`<div class="mpara"><p>${esc(pa.t)}</p><ul class="mnotes">${pa.n.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></div>`).join('')}
+  <p class="muted small">This is one strong answer, not the only one. Copying its sentences will not help; copying how it uses one real moment per reason will.</p></div>`}
+function showModel(m){const d=document.createElement('div');d.className='modal';
+ d.innerHTML=`<div class="card lesson modalcard">${modelHTML(m)}<div class="actions"><button class="btn primary" data-close>Close</button></div></div>`;
+ document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove();
+ d.onclick=e=>{if(e.target===d)d.remove()}}
 function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'||s.k==='test');let r=0,t=0;const missed=[];quizzes.forEach(s=>{s.ans.forEach((a,i)=>{if(!a)return;t++;if(a.ok)r++;else missed.push({q:s.qs[i],pick:a.pick})})});
  const warm=c.steps.find(s=>s.k==='warm');const learned=warm?warm.res.filter(x=>x.ok).length:0;const test=c.steps.find(s=>s.k==='test');
  const essayStep=c.steps.find(x=>x.k==='essay');const cardsOnly=!t&&warm&&!essayStep;const seenCards=warm?warm.res.length:0;
@@ -1966,8 +2096,8 @@ function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
  else if(kind==='read'||kind==='read2'){const n=kind==='read2'?2:1;const start=R(0,PASSAGES.length-1);
   const steps=[];for(let i=0;i<n;i++)steps.push({k:'quiz',title:`Passage ${i+1}`,min:11,qs:passageSet(start+i),i:0,ans:[],picked:null});
   cur={id:'quick',type:'quick',title:'Reading practice',step:0,elapsed:0,steps:[...steps,{k:'wrap',title:'Results',min:3}]}}
- else if(kind==='essay'){cur={id:'quick',type:'quick',title:'Essay practice',step:0,elapsed:0,steps:[
-   {k:'essay',title:'Write your essay',min:30,prompt:pick(ESSAY_PROMPTS),limit:30*60,phase:'plan'},{k:'wrap',title:'Done',min:2}]}}
+ else if(kind==='essay'){const epi=R(0,ESSAY_PROMPTS.length-1);cur={id:'quick',type:'quick',title:'Essay practice',step:0,elapsed:0,steps:[
+   {k:'essay',title:'Write your essay',min:30,prompt:ESSAY_PROMPTS[epi],promptIdx:epi,limit:30*60,phase:'plan'},{k:'wrap',title:'Done',min:2}]}}
  else if(kind==='flash'){const seen=VOCAB.filter(w=>S.vocab[w[0]]).map(w=>w[0]).sort((x,y)=>vstat(x).lvl-vstat(y).lvl);const cards=[...seen.slice(0,12),...shuf(VOCAB.filter(w=>!S.vocab[w[0]]).map(w=>w[0])).slice(0,20-Math.min(12,seen.length))];cur={id:'quick',type:'quick',title:'Flashcard drill',step:0,elapsed:0,steps:[{k:'warm',title:'Flashcards',min:8,cards,ci:0,flipped:false,res:[]},{k:'wrap',title:'Done',min:1}]}}
  S.cur=cur;save();render()}
 function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
@@ -1976,7 +2106,7 @@ function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
    st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
    const el=document.querySelector('.timer.big');if(el){el.textContent=mm(Math.max(0,st.limit-st.t));if(st.limit-st.t<300)el.classList.add('low')}
    if(st.t>=st.limit){const e=$('#essay');if(e)st.text=e.value;st.phase='check';
-     S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,text:st.text||'',mins:Math.round(st.t/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});
+     S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,pi:st.promptIdx||0,text:st.text||'',mins:Math.round(st.t/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});S.essays=S.essays.slice(0,20);
      markDay();save();render();return}
    return}
  if(st.k==='test'){ // a timed section runs on the clock, even if the app is in the background
@@ -1993,6 +2123,7 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
    if(c.type==='quick')S.cur=null;else{S.paused=c;S.cur=null}
    S.view='home';save();render()});
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
+ document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
  document.querySelectorAll('[data-relearn]').forEach(b=>b.onclick=()=>{const t=T[b.dataset.relearn];const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="card lesson modalcard"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-close>Back to cheat sheet</button></div></div>`;document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove()});
  if(st.k==='warm'){document.querySelectorAll('[data-flipcard]').forEach(b=>b.onclick=()=>{st.flipped=!st.flipped;render()});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const ok=b.dataset.card==='1';const w=st.cards[st.ci];recordVocab(w,ok);st.res.push({w,ok});st.ci++;st.flipped=false;markDay();if(st.ci>=st.cards.length)nextStep();else{save();render()}})}
  if(st.k==='essay'){
@@ -2000,7 +2131,7 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
   document.querySelectorAll('[data-essay-start]').forEach(b=>b.onclick=()=>{st.p0=g('pl0');st.p1=g('pl1');st.p2=g('pl2');st.p3=g('pl3');st.phase='write';st.t=0;st.t0=Date.now();save();render()});
   const box=$('#essay');if(box){box.oninput=()=>{st.text=box.value;save();const c=document.querySelector('.essaybar .muted');if(c){const n=box.value.trim()?box.value.trim().split(/\s+/).length:0;c.textContent=n+' word'+(n===1?'':'s')}};box.focus()}
   document.querySelectorAll('[data-essay-done]').forEach(b=>b.onclick=()=>{const e=$('#essay');if(e)st.text=e.value;st.phase='check';
-    S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,text:st.text||'',mins:Math.round((st.t||0)/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});S.essays=S.essays.slice(0,20);
+    S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,pi:st.promptIdx||0,text:st.text||'',mins:Math.round((st.t||0)/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});S.essays=S.essays.slice(0,20);
     markDay();save();render()});
   document.querySelectorAll('[data-chk]').forEach(b=>b.onchange=()=>{st.chk=st.chk||[];st.chk[+b.dataset.chk]=b.checked;save()})}
  if(st.k==='quiz'){document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{if(st.picked!=null)return;const i=+b.dataset.choice;const q=st.qs[st.i];st.picked=i;st.ans[st.i]={pick:i,ok:i===q.a};if(q.topic)recordTopic(q.topic,i===q.a);if(q.word)recordVocab(q.word,i===q.a);save();render();const fb=$('.feedback');if(fb)fb.scrollIntoView({behavior:'smooth',block:'nearest'})});
@@ -2014,6 +2145,16 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
 function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{const s=SESSIONS.find(x=>x.id===b.dataset.start);if(S.done[s.id]&&!confirm('You already finished this session. Do it again with fresh questions?'))return;startSession(s)});
  document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>quickSession(b.dataset.quick));
  document.querySelectorAll('[data-resume]').forEach(b=>b.onclick=resumeSession);
+ document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{S.reviewIdx=+b.dataset.rev;S.view='review';save();render();window.scrollTo(0,0)});
+ document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
+ document.querySelectorAll('[data-models]').forEach(b=>b.onclick=()=>{const d=document.createElement('div');d.className='modal';
+   d.innerHTML=`<div class="card lesson modalcard"><h2>Model essays</h2><p class="muted">One strong answer for each shape of prompt, with notes on why each paragraph works.</p>
+   <div class="chips">${MODELS.map((m,i)=>`<button class="chip" data-mpick="${i}">${m.kind}</button>`).join('')}</div><div id="mbody">${modelHTML(MODELS[0])}</div>
+   <div class="actions"><button class="btn primary" data-close>Close</button></div></div>`;
+   document.body.appendChild(d);
+   d.querySelectorAll('[data-mpick]').forEach(x=>x.onclick=()=>{d.querySelectorAll('[data-mpick]').forEach(y=>y.classList.remove('on'));x.classList.add('on');d.querySelector('#mbody').innerHTML=modelHTML(MODELS[+x.dataset.mpick])});
+   d.querySelector('[data-mpick]').classList.add('on');
+   d.querySelector('[data-close]').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove()}});
  document.querySelectorAll('[data-tipdone]').forEach(b=>b.onclick=()=>{S.installTipDone=true;save();render()});
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));

@@ -11,6 +11,11 @@ All four scored sections, plus the essay.
 - **Reading Comprehension** — 18 original passages (science, history, biography and fiction) with 90 questions covering main idea, supporting detail, vocabulary in context, inference, author's purpose, tone and organization, plus four reading-strategy lessons.
 - **The Essay** — a timed 30-minute writing workspace with a planning organizer, live word count, a self-check rubric, and 18 prompts in the style of the real test. Drafts are kept on the device.
 
+## Writing feedback
+The app runs offline with no AI, so it cannot grade an essay. Instead it gives two things a person can work from:
+- **Model essays** — five full answers, one for each shape of prompt (a person, a narrative, a place, an opinion, a reflection), each paragraph annotated with why it works. Reachable from the Practice tab, and offered right after she finishes writing.
+- **A parent review page** — Progress → *Review with a grown-up* opens one essay beside the five things schools actually notice, three questions to ask her, and guidance on how to give the feedback. It prints cleanly.
+
 ## How it works
 - **12 weeks × 5 sessions = 60 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss.
 - Four sessions a week cover verbal and math. The fifth is reading — or, every fourth week, a timed essay.
