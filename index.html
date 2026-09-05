@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ISEE Launchpad</title>
 <meta name="description" content="A 12-week offline study program for the ISEE Lower Level: verbal reasoning, quantitative reasoning, and mathematics achievement.">
-<meta name="theme-color" content="#F0662B">
+<meta name="theme-color" content="#D9531C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="ISEE">
@@ -13,9 +13,9 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>
-:root{--paper:#F3F6FA;--card:#FFFFFF;--ink:#1B2437;--muted:#5D6779;--line:#D9E0EA;--accent:#F0662B;--accent-ink:#fff;--teal:#0F8B8D;--plum:#6C4AB6;--good:#1F9D62;--goodbg:#E3F5EB;--warn:#C98A00;--warnbg:#FFF3D6;--bad:#D6453D;--badbg:#FBE5E3;--figfill:#E8EEF9;--grid:#DFE5EF;--bar1:#3D6BE0;--bar2:#F5A524;--bar3:#2FA36B;--bar4:#D64F8C;--bar5:#8E5BD9;--bar6:#20A6C9;--shadow:0 1px 2px rgba(27,36,55,.06),0 6px 18px rgba(27,36,55,.06)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121924;--card:#1B2434;--ink:#EDF1F7;--muted:#A3ADC0;--line:#2B3648;--accent:#FF7E45;--goodbg:#173626;--warnbg:#3A2E10;--badbg:#3D1E1C;--figfill:#243047;--grid:#2C3749;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25)}}
-:root[data-theme="dark"]{--paper:#121924;--card:#1B2434;--ink:#EDF1F7;--muted:#A3ADC0;--line:#2B3648;--accent:#FF7E45;--goodbg:#173626;--warnbg:#3A2E10;--badbg:#3D1E1C;--figfill:#243047;--grid:#2C3749;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25)}
+:root{--paper:#F3F6FA;--card:#FFFFFF;--ink:#1B2437;--muted:#5D6779;--line:#D9E0EA;--accent:#D9531C;--accent-ink:#fff;--teal:#0F8B8D;--plum:#6C4AB6;--good:#1F9D62;--goodbg:#E3F5EB;--warn:#8A5E00;--warnbg:#FFF3D6;--bad:#D6453D;--badbg:#FBE5E3;--figfill:#E8EEF9;--grid:#DFE5EF;--bar1:#3D6BE0;--bar2:#F5A524;--bar3:#2FA36B;--bar4:#D64F8C;--bar5:#8E5BD9;--bar6:#20A6C9;--shadow:0 1px 2px rgba(27,36,55,.06),0 6px 18px rgba(27,36,55,.06)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#121924;--card:#1B2434;--ink:#EDF1F7;--muted:#A3ADC0;--line:#2B3648;--accent:#FF7E45;--accent-ink:#2A1206;--warn:#E0AE49;--goodbg:#173626;--warnbg:#3A2E10;--badbg:#3D1E1C;--figfill:#243047;--grid:#2C3749;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25)}}
+:root[data-theme="dark"]{--paper:#121924;--card:#1B2434;--ink:#EDF1F7;--muted:#A3ADC0;--line:#2B3648;--accent:#FF7E45;--accent-ink:#2A1206;--warn:#E0AE49;--goodbg:#173626;--warnbg:#3A2E10;--badbg:#3D1E1C;--figfill:#243047;--grid:#2C3749;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25)}
 *{box-sizing:border-box}
 html{font-size:16px}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
@@ -34,7 +34,9 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px clamp(12px,3vw,28px);background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px}.logo{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:900;font-size:1.2rem}
 .brandname{font-weight:800;letter-spacing:-.02em}.brandsub{font-size:.75rem;color:var(--muted)}
-.tabs{display:flex;gap:4px;background:var(--paper);padding:4px;border-radius:12px}
+.tabs{display:flex;gap:4px;background:var(--paper);padding:4px;border-radius:12px;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;flex:none}
 .tab{border:0;background:transparent;padding:.45em .9em;border-radius:9px;font-weight:600;color:var(--muted)}
 .tab.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
 .tab:hover{color:var(--ink)}
@@ -124,7 +126,9 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .ex{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0}.exq{font-weight:700}.exa{margin-top:4px}
 .sheetrow{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.sheetrow:first-of-type{border:0}
 /* quiz */
-.qhead{display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:8px}
+.qhead{display:flex;justify-content:space-between;gap:14px;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:8px}
+.qhead span:first-child{flex:none}
+.qhead span:last-child{text-align:right;min-width:0}
 .dirs{font-style:italic;color:var(--muted);margin:0 0 8px}
 .qtext{font-size:1.15rem;font-weight:600;margin:10px 0 16px;line-height:1.5}.qtext.small{font-size:1rem}
 .stem{font-size:1.4rem;letter-spacing:.06em;font-weight:800}
@@ -153,7 +157,7 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .ringtxt{font-size:15px;font-weight:800;fill:var(--ink)}
 .missed{text-align:left;display:grid;gap:12px}.miss{border:1px solid var(--line);border-radius:10px;padding:12px}.miss .pill{margin:6px 6px 6px 0}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:start center;padding:30px 12px;overflow:auto;z-index:20}.modalcard{max-width:760px;width:100%}
-@media (max-width:760px){.hero{grid-template-columns:1fr}.strand{grid-template-columns:1fr 90px 40px}.tabs{width:100%;justify-content:space-between}.tab{padding:.45em .6em;font-size:.9rem}}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.strand{grid-template-columns:1fr 90px 40px}.tabs{width:100%}.tab{padding:.45em .6em;font-size:.9rem}.top{gap:10px}.qhead{flex-direction:column;gap:2px}.qhead span:last-child{text-align:left}}
 @media print{.top,.rail,.actions{display:none}}
 
 </style>
@@ -426,14 +430,42 @@ const dec=(x,p=2)=>{const s=(Math.round(x*Math.pow(10,p))/Math.pow(10,p)).toStri
 const ORD=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 const NAMES=['Maya','Leo','Priya','Sam','Ava','Noah','Zoe','Eli','Mia','Omar','Lily','Kai','Nina','Jonah','Ruby','Theo'];
 const nm=()=>pick(NAMES);
-// build a multiple-choice question. wrongs may contain duplicates or the answer; we filter.
-function mc(q,ans,wrongs,exp,extra){
-  const A=String(ans);const seen=new Set([A]);const W=[];
-  for(const w of wrongs){const s=String(w);if(!seen.has(s)){seen.add(s);W.push(s);if(W.length===3)break}}
-  let k=1;const numA=parseFloat(A.replace(/[$,%]/g,''));const isNum=!isNaN(numA)&&/^[\$]?[\d,.]+%?$/.test(A);
-  while(W.length<3&&k<60){let s;if(isNum){const v=numA+(k%2?1:-1)*Math.ceil(k/2)*(Math.abs(numA)>=100?10:1);s=A.replace(/[\d,.]+/,String(Math.round(v*100)/100))}else{s=A+' '.repeat(k)}if(!seen.has(s)){seen.add(s);W.push(s)}k++}
-  const ch=shuf([A,...W]);return Object.assign({q,ch,a:ch.indexOf(A),exp},extra||{});
+// ---------- choice building ----------
+const stripTags=s=>String(s).replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+// A stable key for the VALUE a choice represents, so two choices that look the
+// same, or mean the same number, are never offered together.
+function valKey(s){
+  s=String(s);
+  let m=s.match(/^\s*(-?\d+)\s*<span class="fr mx"><span>(-?\d+)<\/span><span>(-?\d+)<\/span><\/span>\s*$/);
+  if(m)return 'n:'+(+m[1]+(+m[2])/(+m[3])).toFixed(6);
+  m=s.match(/^\s*<span class="fr"><span>(-?\d+)<\/span><span>(-?\d+)<\/span><\/span>\s*$/);
+  if(m)return 'n:'+((+m[1])/(+m[2])).toFixed(6);
+  const t=stripTags(s);
+  m=t.match(/^\$?\s*(-?[\d,]+(?:\.\d+)?)\s*(%|[a-zA-Z\u00b0\u00b2\u00b3]*\.?)?$/);
+  if(m){const v=parseFloat(m[1].replace(/,/g,''));if(!isNaN(v))return 'n:'+v.toFixed(6)+':'+String(m[2]||'').toLowerCase().replace(/\.$/,'')}
+  return 't:'+t.toLowerCase();
 }
+// Build a question. `wrongs` may contain duplicates, look-alikes or values equal
+// to the answer; those are dropped. If too few real distractors survive we return
+// null and the caller regenerates -- we never invent a choice from the answer.
+// extra.min: how many choices this question needs (default 4; 3 for questions
+//   whose option set is genuinely only three, e.g. always/sometimes/never).
+// extra.form: true when the question asks for a FORM ("in simplest form"), where
+//   an equal-value-but-differently-written distractor is legitimate.
+function mc(q,ans,wrongs,exp,extra){
+  const A=String(ans);const opt=extra||{};const need=opt.min||4;
+  const key=opt.form?(x=>stripTags(x).toLowerCase()):valKey;
+  const seen=new Set([key(A)]);const W=[];
+  for(const w of wrongs){const t=String(w);const k=key(t);
+    if(seen.has(k))continue;seen.add(k);W.push(t);if(W.length===need-1)break}
+  if(W.length<need-1)return null;
+  const ch=shuf([A,...W]);const out={q,ch,a:ch.indexOf(A),exp};
+  if(opt.kind)out.kind=opt.kind;if(opt.word)out.word=opt.word;
+  return out;
+}
+// Ordinal words, so we never print "23th".
+const ord=n=>{const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+const plural=(n,w)=>n===1?w.replace(/s$/,''):w;
 function words(n){ // number to words (0..9,999,999)
   const ones=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
   const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
@@ -442,7 +474,7 @@ function words(n){ // number to words (0..9,999,999)
   if(m)parts.push(h(m)+' million');if(t)parts.push(h(t)+' thousand');if(r)parts.push(h(r));return parts.join(', ');
 }
 // ---------- SVG helpers ----------
-const SVG=(w,h,inner)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" width="${w}" role="img">${inner}</svg>`;
+const SVG=(w,h,inner,alt)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${alt||'figure'}">${inner}</svg>`;
 function svgRect(w,h,lw,lh){const W=Math.max(60,Math.min(220,w*18)),H=Math.max(40,Math.min(150,h*18));
   return SVG(W+70,H+50,`<rect x="30" y="10" width="${W}" height="${H}" fill="var(--figfill)" stroke="var(--ink)" stroke-width="2"/><text x="${30+W/2}" y="${H+38}" text-anchor="middle" class="ft">${lw}</text><text x="${W+40}" y="${10+H/2}" class="ft" dominant-baseline="middle">${lh}</text>`)}
 function svgTri(b,h){const W=180,H=110;return SVG(W+70,H+50,`<polygon points="30,${H+10} ${W+30},${H+10} ${90},10" fill="var(--figfill)" stroke="var(--ink)" stroke-width="2"/><line x1="90" y1="10" x2="90" y2="${H+10}" stroke="var(--ink)" stroke-dasharray="4 4"/><rect x="90" y="${H-2}" width="12" height="12" fill="none" stroke="var(--ink)"/><text x="${30+W/2}" y="${H+38}" text-anchor="middle" class="ft">${b}</text><text x="100" y="${H/2+10}" class="ft">${h}</text>`)}
@@ -454,25 +486,33 @@ function svgNumLine(pt,closed,dir,lo=-5,hi=5){const W=320,x=v=>20+(v-lo)*(W-40)/
   return SVG(W+10,70,`<line x1="6" y1="40" x2="${W+4}" y2="40" stroke="var(--ink)" stroke-width="2"/>${s}<line x1="${x(pt)}" y1="40" x2="${end}" y2="40" stroke="var(--accent)" stroke-width="5"/><polygon points="${end},40 ${end-dir*10},34 ${end-dir*10},46" fill="var(--accent)"/><circle cx="${x(pt)}" cy="40" r="7" fill="${closed?'var(--accent)':'var(--paper)'}" stroke="var(--accent)" stroke-width="3"/>`)}
 function svgGrid(px,py,extra=''){const W=240,c=W/2,u=20;let g='';for(let i=-5;i<=5;i++){g+=`<line x1="${c+i*u}" y1="10" x2="${c+i*u}" y2="${W-10}" stroke="var(--grid)"/><line x1="10" y1="${c+i*u}" x2="${W-10}" y2="${c+i*u}" stroke="var(--grid)"/>`;if(i&&i%1===0&&Math.abs(i)%2===1){g+=`<text x="${c+i*u}" y="${c+14}" text-anchor="middle" class="ft tiny">${i}</text><text x="${c-8}" y="${c-i*u+3}" text-anchor="end" class="ft tiny">${i}</text>`}}
   return SVG(W,W,`${g}<line x1="10" y1="${c}" x2="${W-10}" y2="${c}" stroke="var(--ink)" stroke-width="2"/><line x1="${c}" y1="10" x2="${c}" y2="${W-10}" stroke="var(--ink)" stroke-width="2"/><text x="${W-14}" y="${c-6}" class="ft small">x</text><text x="${c+6}" y="18" class="ft small">y</text>${extra}<circle cx="${c+px*u}" cy="${c-py*u}" r="6" fill="var(--accent)" stroke="var(--ink)" stroke-width="1.5"/>`)}
-function svgBar(labels,vals,title,vals2,leg){const n=labels.length,W=340,H=200,pad=40,mx=Math.max(...vals,...(vals2||[0]));const step=mx>50?20:mx>20?10:mx>10?5:mx>5?2:1;const top=Math.ceil(mx/step)*step||step;
+function svgBar(labels,vals,title,vals2,leg){const n=labels.length,W=340,H=210,pad=40,mx=Math.max(...vals,...(vals2||[0]));const step=mx>40?10:mx>20?5:mx>12?2:1;const top=Math.ceil(mx/step)*step||step;
   const bw=(W-pad-20)/n,y=v=>H-30-(v*(H-60)/top);let s='';
   for(let v=0;v<=top;v+=step)s+=`<line x1="${pad}" y1="${y(v)}" x2="${W-10}" y2="${y(v)}" stroke="var(--grid)"/><text x="${pad-6}" y="${y(v)+4}" text-anchor="end" class="ft tiny">${v}</text>`;
-  labels.forEach((l,i)=>{const x0=pad+i*bw;if(vals2){s+=`<rect x="${x0+bw*0.12}" y="${y(vals[i])}" width="${bw*0.34}" height="${H-30-y(vals[i])}" fill="var(--bar1)"/><rect x="${x0+bw*0.52}" y="${y(vals2[i])}" width="${bw*0.34}" height="${H-30-y(vals2[i])}" fill="var(--bar2)"/>`}else{s+=`<rect x="${x0+bw*0.18}" y="${y(vals[i])}" width="${bw*0.64}" height="${H-30-y(vals[i])}" fill="var(--bar1)"/>`}
+  labels.forEach((l,i)=>{const x0=pad+i*bw;if(vals2){s+=`<rect x="${x0+bw*0.12}" y="${y(vals[i])}" width="${bw*0.34}" height="${H-30-y(vals[i])}" fill="var(--bar1)"/><rect x="${x0+bw*0.52}" y="${y(vals2[i])}" width="${bw*0.34}" height="${H-30-y(vals2[i])}" fill="var(--bar2)"/><text x="${x0+bw*0.29}" y="${y(vals[i])-3}" text-anchor="middle" class="ft tiny">${vals[i]}</text><text x="${x0+bw*0.69}" y="${y(vals2[i])-3}" text-anchor="middle" class="ft tiny">${vals2[i]}</text>`}else{s+=`<rect x="${x0+bw*0.18}" y="${y(vals[i])}" width="${bw*0.64}" height="${H-30-y(vals[i])}" fill="var(--bar1)"/><text x="${x0+bw/2}" y="${y(vals[i])-3}" text-anchor="middle" class="ft tiny">${vals[i]}</text>`}
     s+=`<text x="${x0+bw/2}" y="${H-14}" text-anchor="middle" class="ft tiny">${l}</text>`});
   if(leg)s+=`<rect x="${W-110}" y="4" width="10" height="10" fill="var(--bar1)"/><text x="${W-96}" y="13" class="ft tiny">${leg[0]}</text><rect x="${W-56}" y="4" width="10" height="10" fill="var(--bar2)"/><text x="${W-42}" y="13" class="ft tiny">${leg[1]}</text>`;
-  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="${pad}" y1="${H-30}" x2="${W-10}" y2="${H-30}" stroke="var(--ink)"/>${s}`)}</div>`}
-function svgLine(labels,vals,title){const n=labels.length,W=340,H=200,pad=40,mx=Math.max(...vals);const step=mx>50?20:mx>20?10:mx>10?5:mx>5?2:1;const top=Math.ceil(mx/step)*step||step;
+  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="${pad}" y1="${H-30}" x2="${W-10}" y2="${H-30}" stroke="var(--ink)"/>${s}`,`Bar graph, ${title}. ${labels.map((l,i)=>l+': '+vals[i]+(vals2?' and '+vals2[i]:'')).join('; ')}`)}</div>`}
+function svgLine(labels,vals,title){const n=labels.length,W=340,H=210,pad=40,mx=Math.max(...vals);const step=mx>40?10:mx>20?5:mx>12?2:1;const top=Math.ceil(mx/step)*step||step;
   const dx=(W-pad-30)/(n-1),y=v=>H-30-(v*(H-60)/top),x=i=>pad+10+i*dx;let s='';
   for(let v=0;v<=top;v+=step)s+=`<line x1="${pad}" y1="${y(v)}" x2="${W-10}" y2="${y(v)}" stroke="var(--grid)"/><text x="${pad-6}" y="${y(v)+4}" text-anchor="end" class="ft tiny">${v}</text>`;
   s+=`<polyline points="${vals.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="var(--bar1)" stroke-width="2.5"/>`;
-  vals.forEach((v,i)=>{s+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--bar1)"/><text x="${x(i)}" y="${H-14}" text-anchor="middle" class="ft tiny">${labels[i]}</text>`});
-  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="${pad}" y1="${H-30}" x2="${W-10}" y2="${H-30}" stroke="var(--ink)"/>${s}`)}</div>`}
+  vals.forEach((v,i)=>{s+=`<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="var(--bar1)"/><text x="${x(i)}" y="${y(v)-8}" text-anchor="middle" class="ft tiny">${v}</text><text x="${x(i)}" y="${H-14}" text-anchor="middle" class="ft tiny">${labels[i]}</text>`});
+  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="${pad}" y1="${H-30}" x2="${W-10}" y2="${H-30}" stroke="var(--ink)"/>${s}`,`Line graph, ${title}. ${labels.map((l,i)=>l+': '+vals[i]).join('; ')}`)}</div>`}
 function svgDot(lo,hi,counts,title,unit){const W=340,n=hi-lo+1,dx=(W-40)/(n-1),x=i=>20+i*dx;let s='',mxc=Math.max(...counts);const H=40+mxc*16;
   for(let i=0;i<n;i++){s+=`<line x1="${x(i)}" y1="${H-24}" x2="${x(i)}" y2="${H-16}" stroke="var(--ink)"/><text x="${x(i)}" y="${H-2}" text-anchor="middle" class="ft tiny">${lo+i}</text>`;for(let k=0;k<counts[i];k++)s+=`<text x="${x(i)}" y="${H-30-k*16}" text-anchor="middle" class="ft" fill="var(--bar1)">✕</text>`}
-  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="10" y1="${H-20}" x2="${W-10}" y2="${H-20}" stroke="var(--ink)" stroke-width="2"/>${s}`)}<div class="figcap">${unit}</div></div>`}
+  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="10" y1="${H-20}" x2="${W-10}" y2="${H-20}" stroke="var(--ink)" stroke-width="2"/>${s}`,`Line plot, ${title}. ${counts.map((c,i)=>(lo+i)+': '+c).join('; ')}`)}<div class="figcap">${unit}</div></div>`}
 function svgPie(labels,pcts,title){const cx=90,cy=90,r=80;let a=-Math.PI/2,s='';const cols=['var(--bar1)','var(--bar2)','var(--bar3)','var(--bar4)','var(--bar5)'];let leg='';
   pcts.forEach((p,i)=>{const b=a+p/100*2*Math.PI;const x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b);s+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${p>50?1:0} 1 ${x2},${y2} Z" fill="${cols[i%5]}" stroke="var(--paper)" stroke-width="2"/>`;leg+=`<rect x="190" y="${20+i*22}" width="12" height="12" fill="${cols[i%5]}"/><text x="208" y="${31+i*22}" class="ft small">${labels[i]} ${p}%</text>`;a=b});
-  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(330,180,s+leg)}</div>`}
+  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(330,180,s+leg,`Circle graph, ${title}. ${labels.map((l,i)=>l+': '+pcts[i]+' percent').join('; ')}`)}</div>`}
+// scatter plot: two variables, used for correlation questions
+function svgScatter(pts,title,xl,yl){const W=320,H=210,pad=42;const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const xmin=Math.min(...xs)-1,xmax=Math.max(...xs)+1,ymin=0,ymax=Math.max(...ys)+2;
+  const X=v=>pad+(v-xmin)/(xmax-xmin)*(W-pad-14),Y=v=>H-34-(v-ymin)/(ymax-ymin)*(H-58);
+  let g='';for(let i=0;i<=4;i++){const v=ymin+(ymax-ymin)*i/4;g+=`<line x1="${pad}" y1="${Y(v)}" x2="${W-10}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${pad-6}" y="${Y(v)+4}" text-anchor="end" class="ft tiny">${Math.round(v)}</text>`}
+  pts.forEach(p=>{g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="4" fill="var(--bar1)"/>`});
+  g+=`<text x="${(W+pad)/2}" y="${H-6}" text-anchor="middle" class="ft tiny">${xl}</text>`;
+  return `<div class="figwrap"><div class="figtitle">${title}</div>${SVG(W,H,`<line x1="${pad}" y1="${H-34}" x2="${W-10}" y2="${H-34}" stroke="var(--ink)"/><line x1="${pad}" y1="14" x2="${pad}" y2="${H-34}" stroke="var(--ink)"/>${g}`,`Scatter plot, ${title}, ${xl} against ${yl}`)}<div class="figcap">${yl} vs. ${xl}</div></div>`}
 function table(head,rows){return `<div class="tblwrap"><table class="tbl"><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function spinnerSVG(secs){const cx=70,cy=70,r=60,n=secs.length;let a=-Math.PI/2,s='';const cols=['var(--bar1)','var(--bar2)','var(--bar3)','var(--bar4)','var(--bar5)','var(--bar6)'];
   secs.forEach((l,i)=>{const b=a+2*Math.PI/n;const x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b);const m=(a+b)/2;s+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0 1 ${x2},${y2} Z" fill="${cols[i%6]}" stroke="var(--paper)" stroke-width="2"/><text x="${cx+r*0.62*Math.cos(m)}" y="${cy+r*0.62*Math.sin(m)+4}" text-anchor="middle" class="ft small" fill="#fff">${l}</text>`;a=b});
@@ -497,13 +537,13 @@ gen(){const t=R(1,5);
   return mc(`What is the value of the digit <b>${d}</b> in <b>${fmt(n)}</b>?`,fmt(v),[fmt(d*p*10),fmt(d*p/10||d),fmt(d),fmt(p)],`The ${d} is in the ${['ones','tens','hundreds','thousands','ten-thousands','hundred-thousands','millions'][s.length-1-i]} place, so its value is ${d} × ${fmt(p)} = ${fmt(v)}.`)}
  if(t===2){const p=pick([10,100,1000,10000]);let n=R(p*3,p*90)+R(1,p-1);if(n%p===0)n+=1;const r=Math.round(n/p)*p;const name={10:'ten',100:'hundred',1000:'thousand',10000:'ten thousand'}[p];const dgt=Math.floor(n%p/(p/10));
   return mc(`Round <b>${fmt(n)}</b> to the nearest ${name}.`,fmt(r),[fmt(Math.floor(n/p)*p),fmt(Math.ceil(n/p)*p),fmt(Math.round(n/(p/10))*(p/10)),fmt(Math.round(n/(p*10))*(p*10))],`Look at the digit to the right of the ${name}s place: it is ${dgt}. ${dgt>=5?'It is 5 or more, so round up':'It is less than 5, so keep the digit and change the rest to zeros'}: ${fmt(r)}.`)}
- if(t===3){const n=R(1001,999999);const wrong=[];const s=String(n);wrong.push(+(s.slice(0,-2)+s.slice(-1)+s.slice(-2,-1)));wrong.push(n*10);wrong.push(Math.floor(n/10));wrong.push(n+(n%1000<900?90:-90));
+ if(t===3){const n=R(1001,999999);const wrong=[];const s=String(n);wrong.push(+(s.slice(0,-2)+s.slice(-1)+s.slice(-2,-1)));wrong.push(n*10);wrong.push(Math.floor(n/10));wrong.push(n+(n%1000<900?90:-90));wrong.push(n+100);wrong.push(n-100);
   return mc(`Which number is <b>${words(n)}</b>?`,fmt(n),wrong.map(fmt),`"${words(n)}" written in standard form is ${fmt(n)}. Each comma-group name (thousand, hundred) tells you where each digit goes.`)}
  if(t===4){const base=R(10000,99999);const set=shuf([base,base+R(1,9)*10,base-R(1,9)*100,base+R(1,9)*1000]);const mx=Math.max(...set);const big=pick([true,false]);const ans=big?mx:Math.min(...set);
   return mc(`Which number is the <b>${big?'greatest':'least'}</b>?<br>${set.map(fmt).join(' &nbsp; ')}`,fmt(ans),set.filter(x=>x!==ans).map(fmt),`Compare the digits from left to right. The first place where the numbers differ tells you which is ${big?'greatest':'least'}: ${fmt(ans)}.`)}
  const n=R(1000,99999);const s=String(n);const parts=[];for(let i=0;i<s.length;i++){const d=+s[i];if(d)parts.push(fmt(d*Math.pow(10,s.length-1-i)))}
  const right=parts.join(' + ');const w1=parts.map((p,i)=>i===0?p:p.replace(/0/g,'')).join(' + ');const w2=s.split('').filter(d=>d!=='0').join(' + ');const w3=parts.map((p,i)=>i===1?fmt(+p.replace(/,/g,'')*10):p).join(' + ');
- return mc(`Which shows <b>${fmt(n)}</b> in expanded form?`,right,[w1,w2,w3],`Expanded form shows the value of each digit added together: ${right}.`)}};
+ return mc(`Which shows <b>${fmt(n)}</b> in expanded form?`,right,[w1,w2,w3],`Take each digit and give it the value of its place: ${s.split('').map((d,i)=>d+' in the '+['ones','tens','hundreds','thousands','ten-thousands'][s.length-1-i]+' place').filter((_,i)=>+s[i]).join(', ')}. Added together that is ${right}.`)}};
 
 T.n_order={t:'Order of Operations',cat:'num',lesson:`
 <p>When an expression has more than one operation, follow this order (remember <b>PEMDAS</b>):</p>
@@ -512,13 +552,14 @@ ${ex('5 × 6 + 4 + 4 ÷ 2 − 1','Multiply and divide first, left to right: 30 +
 ${ex('(8 + 4) × 3','Parentheses first: 12 × 3 = <b>36</b>. Without parentheses, 8 + 4 × 3 would be 8 + 12 = 20.')}
 ${tip('Multiplication does not always come before division. They are equal partners: whichever is on the left goes first. Same for addition and subtraction.')}`,
 gen(){const t=R(1,4);
- if(t===1){const a=R(2,9),b=R(2,9),c=R(2,9);const forms=[
-   {s:`${a} + ${b} × ${c}`,v:a+b*c,w:[(a+b)*c,a*b+c,a+b+c]},
-   {s:`(${a} + ${b}) × ${c}`,v:(a+b)*c,w:[a+b*c,a*c+b,a+b+c]},
-   {s:`${a*c} ÷ ${a} + ${b}`,v:c+b,w:[Math.round(a*c/(a+b)*100)/100,a*c+b-a,c*b]},
-   {s:`${a} × ${b} − ${c} × 2`,v:a*b-2*c,w:[(a*b-c)*2,a*(b-c)*2,a*b-c]},
-   {s:`${a+b} − ${b} + ${c}`,v:a+c,w:[a+b-(b+c),a+2*b+c,a-c]}];const f=pick(forms);
-  return mc(`What is the value of <b>${f.s}</b>?`,f.v,f.w,`Follow the order of operations: parentheses, then multiplication/division left to right, then addition/subtraction left to right. The result is ${f.v}.`)}
+ if(t===1){const a=R(2,9),b=R(2,9),c=R(3,9);const forms=[
+   {s:`${a} + ${b} × ${c}`,v:a+b*c,w:[(a+b)*c,a*b+c,a+b+c],steps:`multiply first, ${b} × ${c} = ${b*c}, then add, ${a} + ${b*c}`},
+   {s:`(${a} + ${b}) × ${c}`,v:(a+b)*c,w:[a+b*c,a*c+b,a+b+c],steps:`parentheses first, ${a} + ${b} = ${a+b}, then ${a+b} × ${c}`},
+   {s:`${a*c} ÷ ${a} + ${b}`,v:c+b,w:[a*c+b-a,c*b,a*c-a+b+1],steps:`divide first, ${a*c} ÷ ${a} = ${c}, then add, ${c} + ${b}`},
+   {s:`${a} × ${b} + ${c} × 2`,v:a*b+2*c,w:[(a*b+c)*2,a*(b+c)*2,a*b+c],steps:`both multiplications first, ${a} × ${b} = ${a*b} and ${c} × 2 = ${2*c}, then add`},
+   {s:`${a+b} − ${b} + ${c}`,v:a+c,w:[a+b-(b+c),a+2*b+c,a+c+b],steps:`left to right, ${a+b} − ${b} = ${a}, then ${a} + ${c}`}];const f=pick(forms);
+  if(f.v<0)return this.gen();
+  return mc(`What is the value of <b>${f.s}</b>?`,f.v,f.w,`Work through the steps in order: ${f.steps}. The result is <b>${f.v}</b>.`)}
  if(t===2){const a=R(2,9),b=R(2,9),c=R(2,9),d=R(2,9);const forms=[
    {s:`${a} × ${b} + ${c} ÷ ${d}`,ans:'Multiplication',w:['Addition','Division','Subtraction'],why:'Multiplication and division come before addition, and multiplication is on the left, so it goes first.'},
    {s:`${a} + ${b} × (${c} − ${d})`,ans:'Subtraction',w:['Addition','Multiplication','Division'],why:'Parentheses come first, and inside them is subtraction.'},
@@ -527,7 +568,8 @@ gen(){const t=R(1,4);
    {s:`${a*b} ÷ ${a} × ${c} − ${d}`,ans:'Division',w:['Multiplication','Subtraction','Addition'],why:'Division and multiplication are equal partners. Work left to right, so division goes first.'}];const f=pick(forms);
   return mc(`In the expression <b>${f.s}</b>, which operation should be done <b>first</b>?`,f.ans,f.w,f.why)}
  if(t===3){const a=R(2,6),b=R(2,6),c=R(2,6);const target=(a+b)*c;
-  return mc(`Which expression equals <b>${target}</b>?`,`(${a} + ${b}) × ${c}`,[`${a} + ${b} × ${c}`,`${a} × ${b} + ${c}`,`${a} + (${b} × ${c})`],`(${a} + ${b}) × ${c} = ${a+b} × ${c} = ${target}. Without parentheses, ${a} + ${b} × ${c} would equal ${a+b*c}.`)}
+  const vals=[target,a+b*c,a*b+c,a*(b+c)];if(new Set(vals).size!==4)return this.gen();
+  return mc(`Which expression equals <b>${target}</b>?`,`(${a} + ${b}) × ${c}`,[`${a} + ${b} × ${c}`,`${a} × ${b} + ${c}`,`${a} × (${b} + ${c})`],`(${a} + ${b}) × ${c} = ${a+b} × ${c} = ${target}. Without the parentheses, ${a} + ${b} × ${c} would equal ${a+b*c}, because multiplication comes first.`)}
  const a=R(3,9),b=R(2,5),e=R(2,3);const v=a+Math.pow(b,e);
  return mc(`What is the value of <b>${a} + ${b}<sup>${e}</sup></b>?`,v,[a+b*e,(a+b)*e,Math.pow(a+b,e)],`Exponents come before addition. ${b}<sup>${e}</sup> = ${Math.pow(b,e)}, then ${a} + ${Math.pow(b,e)} = ${v}.`)}};
 
@@ -548,6 +590,14 @@ gen(){const t=R(1,5);const factors=n=>{const f=[];for(let i=1;i<=n;i++)if(n%i===
  if(t===4){const pairs=[[8,12],[6,9],[12,18],[10,15],[16,24],[9,12],[14,21],[18,24],[20,30],[6,8],[4,10],[15,25]];const [a,b]=pick(pairs);const g=gcd(a,b),l=lcm(a,b);const want=pick(['GCF','LCM']);
   if(want==='GCF')return mc(`What is the <b>greatest common factor</b> of ${a} and ${b}?`,g,[l,Math.min(a,b),g*2,1,a*b],`Factors of ${a}: ${factors(a).join(', ')}. Factors of ${b}: ${factors(b).join(', ')}. The greatest shared factor is ${g}.`);
   return mc(`What is the <b>least common multiple</b> of ${a} and ${b}?`,l,[g,a*b,Math.max(a,b),l*2,a+b],`Multiples of ${a}: ${[1,2,3,4].map(i=>a*i).join(', ')}… Multiples of ${b}: ${[1,2,3].map(i=>b*i).join(', ')}… The smallest they share is ${l}.`)}
+ if(t===5&&R(1,2)===1){const n=pick([12,18,20,24,28,30,36,40,45,50,54,56,60,72]);
+  const pf=(x)=>{const f=[];let d=2;while(x>1){while(x%d===0){f.push(d);x/=d}d++}return f};
+  const right=pf(n).join(' × ');const w1=pf(n).slice(0,-1).concat([pf(n)[pf(n).length-1]+1]).join(' × ');
+  const w2=factors(n).filter(x=>x>1&&x<n).slice(0,2).join(' × ');const w3=pf(n).concat([2]).join(' × ');
+  return mc(`Which is the <b>prime factorization</b> of ${n}?`,right,[w1,w2,w3,pf(n).slice(1).join(' × ')],`Break ${n} down until only prime numbers are left: ${right}. Multiply them back to check: ${pf(n).join(' × ')} = ${n}.`)}
+ if(t===5&&R(1,2)===1){const rules=[[2,'it is even (ends in 0, 2, 4, 6 or 8)'],[3,'its digits add to a multiple of 3'],[5,'it ends in 0 or 5'],[9,'its digits add to a multiple of 9'],[10,'it ends in 0']];
+  const [k,why]=pick(rules);const good=[];const bad=[];for(let i=0;i<400;i++){const v=R(102,987);(v%k===0?good:bad).push(v)}
+  const ans=pick(good);return mc(`Which number is divisible by <b>${k}</b>?`,fmt(ans),shuf(bad).slice(0,5).map(fmt),`A number is divisible by ${k} when ${why}. ${fmt(ans)} ÷ ${k} = ${fmt(ans/k)} with nothing left over.`)}
  const n=pick([12,16,18,20,24,28,30,36]);const c=factors(n).length;return mc(`How many factors does <b>${n}</b> have?`,c,[c-1,c+1,c+2,c-2],`The factors of ${n} are ${factors(n).join(', ')}. That is ${c} factors. Count them in pairs so you do not miss any.`)}};
 
 T.n_wordops={t:'Choosing the Operation & Estimating',cat:'num',lesson:`
@@ -558,12 +608,13 @@ ${ex('Carey has 50 pounds of fertilizer. Each lawn segment needs 11 pounds. How 
 ${tip('Read the last sentence first to see what the question is asking. Then read the whole problem for the numbers you need. Watch for extra numbers that are not needed.')}`,
 gen(){const t=R(1,5);const n=nm();
  if(t===1){const g=R(4,12),e=R(6,25);const forms=[
-  {q:`${n} buys ${g} boxes of markers. Each box has ${e} markers. How many markers in all?`,ans:g*e,op:'multiplication',w:[g+e,e-g,Math.round(e/g*10)/10]},
-  {q:`${n} has ${g*e} stickers to share equally among ${g} friends. How many does each friend get?`,ans:e,op:'division',w:[g*e-g,g*e+g,g*e*g]},
+  {q:`${n} buys ${g} boxes of markers. Each box has ${e} markers. How many markers in all?`,ans:g*e,op:'multiplication',w:[g+e,g*e-e,g*e+e,g*(e+1)]},
+  {q:`${n} has ${g*e} stickers to share equally among ${g} friends. How many does each friend get?`,ans:e,op:'division',w:[g*e-g,g*e+g,e+g,e*2]},
   {q:`${n} read ${e*3} pages on Monday and ${e*2+R(1,9)} pages on Tuesday. How many pages did ${n} read altogether?`,ans:null,op:'addition'},
   {q:`A jar held ${e*4+R(10,30)} beads. ${n} used ${e*2+R(1,9)} of them. How many beads are left?`,ans:null,op:'subtraction'}];
   const f=pick(forms);if(f.ans===null){const nums=f.q.match(/\d+/g).map(Number);f.ans=f.op==='addition'?nums[0]+nums[1]:nums[0]-nums[1];f.w=[f.op==='addition'?Math.abs(nums[0]-nums[1]):nums[0]+nums[1],f.ans+10,f.ans-10]}
-  return mc(f.q,f.ans,f.w,`This is a ${f.op} problem. The answer is ${f.ans}.`)}
+  f.w=f.w.filter(x=>Number.isInteger(x)&&x>0&&x!==f.ans);
+  return mc(f.q,f.ans,f.w,`This is a <b>${f.op}</b> problem: ${f.op==='multiplication'?'equal groups repeated':f.op==='division'?'a total split into equal groups':f.op==='addition'?'two amounts combined into a total':'a difference between two amounts'}. The answer is ${fmt(f.ans)}.`)}
  if(t===2){const forms=[
   {q:`A baker made ${R(40,90)} cookies and packed them into boxes of 6. Which operation finds the number of boxes?`,a:'Division',why:'Splitting a total into equal groups of 6 is division.'},
   {q:`Tickets cost $${R(4,9)} each. Which operation finds the cost of ${R(5,12)} tickets?`,a:'Multiplication',why:'Equal groups (the same price repeated) means multiplication.'},
@@ -594,14 +645,16 @@ gen(){const t=R(1,5);
   return mc(`${fr(n,d2)} = ${fr('?',d2*k)}. What is the missing numerator?`,n*k,[n+k,n*k+d2,n*(k+1),k],`The denominator was multiplied by ${k} (${d2} × ${k} = ${d2*k}), so multiply the numerator by ${k} too: ${n} × ${k} = ${n*k}.`)}
  if(t===2){const pairs=[[3,4,5,6],[2,3,3,5],[5,8,3,4],[2,5,3,8],[7,10,3,4],[5,6,7,8],[1,3,2,7],[4,5,7,9],[3,5,2,3],[5,12,1,2]];let [a,b,c,d]=pick(pairs);if(R(0,1)){[a,b,c,d]=[c,d,a,b]}
   const A=a*d,C=c*b;const ans=A>C?fr(a,b):fr(c,d);const L=lcm(b,d);
-  return mc(`Which fraction is <b>greater</b>: ${fr(a,b)} or ${fr(c,d)}?`,ans,[A>C?fr(c,d):fr(a,b),'They are equal'],`Use a common denominator of ${L}: ${fr(a,b)} = ${fr(a*L/b,L)} and ${fr(c,d)} = ${fr(c*L/d,L)}. The greater fraction is ${ans}.`)}
+  return mc(`Which fraction is <b>greater</b>: ${fr(a,b)} or ${fr(c,d)}?`,ans,[A>C?fr(c,d):fr(a,b),'They are equal'],`Use a common denominator of ${L}: ${fr(a,b)} = ${fr(a*L/b,L)} and ${fr(c,d)} = ${fr(c*L/d,L)}. The greater fraction is ${ans}.`,{min:3})}
  if(t===3){const [n,d]=pick([[8,12],[6,9],[10,15],[4,16],[12,18],[9,12],[6,8],[15,20],[14,21],[16,24],[10,25],[18,24]]);const [sn,sd]=simp(n,d);
-  return mc(`Write ${fr(n,d)} in <b>simplest form</b>.`,fr(sn,sd),[fr(sn+1,sd+1),fr(sn,sd+1),fr(n/2,d/2),fr(sd,sn)].filter(x=>x!==fr(sn,sd)),`The GCF of ${n} and ${d} is ${gcd(n,d)}. Divide both by ${gcd(n,d)}: ${fr(sn,sd)}.`)}
+  return mc(`Write ${fr(n,d)} in <b>simplest form</b>.`,fr(sn,sd),[fr(sn+1,sd+1),fr(sn,sd+1),fr(n/2,d/2),fr(sd,sn)],`The GCF of ${n} and ${d} is ${gcd(n,d)}. Divide the top and the bottom by ${gcd(n,d)}: ${fr(sn,sd)}.`,{form:true})}
  if(t===4){const tot=pick([8,10,12,15,16,20,24]);const part=R(2,tot-2);const [sn,sd]=simp(part,tot);const item=pick(['marbles','students','apples','crayons','cards']);const desc=pick(['red','blue','green','new']);
-  return mc(`${part} of the ${tot} ${item} are ${desc}. What fraction of the ${item} are ${desc}, in simplest form?`,fr(sn,sd),[fr(part,tot)===fr(sn,sd)?fr(part+1,tot):fr(part,tot),fr(tot-part,tot),fr(sd,sn),fr(sn,sd+1)],`${part} out of ${tot} is ${fr(part,tot)}. Simplify by dividing top and bottom by ${gcd(part,tot)}: ${fr(sn,sd)}.`)}
- const sets=[[[1,2],[2,3],[3,4]],[[1,4],[3,8],[1,2]],[[2,5],[1,2],[3,5]],[[1,3],[1,2],[2,3]],[[3,8],[1,2],[5,8]],[[1,6],[1,3],[1,2]],[[2,3],[3,4],[5,6]]];const s=pick(sets);const asc=pick([true,false]);const ordered=asc?s:s.slice().reverse();const str=a=>a.map(f=>fr(...f)).join(', ');
- const wrongs=[str(s.slice().reverse()===ordered?s:s.slice().reverse()),str([s[1],s[0],s[2]]),str([s[0],s[2],s[1]])].filter(x=>x!==str(ordered));
- return mc(`Which list shows the fractions in order from <b>${asc?'least to greatest':'greatest to least'}</b>?`,str(ordered),wrongs,`Compare using a common denominator or benchmarks like ${fr(1,2)}. In order from ${asc?'least to greatest':'greatest to least'}: ${str(ordered)}.`)}};
+  return mc(`${part} of the ${tot} ${item} are ${desc}. What fraction of the ${item} are ${desc}, in simplest form?`,fr(sn,sd),[fr(part,tot),fr(tot-part,tot),fr(sd,sn),fr(sn,sd+1)],`${part} out of ${tot} is ${fr(part,tot)}. Simplify by dividing top and bottom by ${gcd(part,tot)}: ${fr(sn,sd)}.`,{form:true})}
+ const sets=[[[1,2],[2,3],[3,4]],[[1,4],[3,8],[1,2]],[[2,5],[1,2],[3,5]],[[1,3],[1,2],[2,3]],[[3,8],[1,2],[5,8]],[[1,6],[1,3],[1,2]],[[2,3],[3,4],[5,6]]];const set=pick(sets);const asc=pick([true,false]);
+ const ordered=asc?set:set.slice().reverse();const str=a=>a.map(f=>fr(...f)).join(', ');
+ const perms=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]].map(p=>p.map(i=>ordered[i]));
+ const wrongs=shuf(perms.slice(1)).map(str);
+ return mc(`Which list shows the fractions in order from <b>${asc?'least to greatest':'greatest to least'}</b>?`,str(ordered),wrongs,`Compare using a common denominator, or against the benchmark ${fr(1,2)}. In order from ${asc?'least to greatest':'greatest to least'}: ${str(ordered)}.`)}};
 
 T.f_addsub={t:'Adding & Subtracting Fractions',cat:'frac',lesson:`
 <p><b>Same denominator</b>: add or subtract the numerators, keep the denominator. ${fr(3,8)} + ${fr(2,8)} = ${fr(5,8)}.</p>
@@ -612,13 +665,15 @@ ${ex(fr(3,4)+' − '+fr(1,6),'LCM of 4 and 6 is 12. '+fr(9,12)+' − '+fr(2,12)+
 ${tip('Never add the denominators! '+fr(1,2)+' + '+fr(1,2)+' is 1, not '+fr(2,4)+'. The denominator names the size of the piece; only the count of pieces changes.')}`,
 gen(){const t=R(1,4);const D=[2,3,4,5,6,8,10,12];
  if(t===1){const d=pick([5,6,8,9,10,12]);const a=R(1,d-2),b=R(1,d-a-1);const [sn,sd]=simp(a+b,d);
-  return mc(`${fr(a,d)} + ${fr(b,d)} = ?`,fr(sn,sd),[fr(a+b,2*d),fr(a*b,d),fr(a+b+1,d),fr(a+b,d)].filter(x=>x!==fr(sn,sd)),`Same denominator, so add the numerators: ${a} + ${b} = ${a+b}. The sum is ${fr(a+b,d)}${sd!==d?' = '+fr(sn,sd)+' in simplest form':''}.`)}
+  return mc(`${fr(a,d)} + ${fr(b,d)} = ?`,fr(sn,sd),[fr(a+b,2*d),fr(a*b,d),fr(a+b+1,d),fr(a+b-1,d),fr(d-a-b,d)],`Same denominator, so add the numerators: ${a} + ${b} = ${a+b}. The sum is ${fr(a+b,d)}${sd!==d?' = '+fr(sn,sd)+' in simplest form':''}.`)}
  if(t===2){let b=pick(D),d=pick(D);while(b===d||b%d===0||d%b===0){b=pick(D);d=pick(D)}const a=R(1,b-1),c=R(1,d-1);const L=lcm(b,d);const num=a*L/b+c*L/d;const [sn,sd]=simp(num,L);const ans=mixed(num,L);
-  return mc(`${fr(a,b)} + ${fr(c,d)} = ?`,ans,[fr(a+c,b+d),fr(a+c,Math.max(b,d)),mixed(num+1,L),fr(a*c,b*d)].filter(x=>x!==ans),`Common denominator ${L}: ${fr(a,b)} = ${fr(a*L/b,L)} and ${fr(c,d)} = ${fr(c*L/d,L)}. Add: ${fr(num,L)}${ans!==fr(num,L)?' = '+ans:''}.`)}
+  return mc(`${fr(a,b)} + ${fr(c,d)} = ?`,ans,[fr(a+c,b+d),fr(a+c,Math.max(b,d)),mixed(num+1,L),fr(a*c,b*d),mixed(num+L,L)],`Common denominator ${L}: ${fr(a,b)} = ${fr(a*L/b,L)} and ${fr(c,d)} = ${fr(c*L/d,L)}. Add: ${fr(num,L)}${ans!==fr(num,L)?' = '+ans:''}.`)}
  if(t===3){let b=pick(D),d=pick(D);while(b===d){b=pick(D);d=pick(D)}let a=R(1,b-1),c=R(1,d-1);if(a/b<c/d){[a,b,c,d]=[c,d,a,b]}if(a/b===c/d)return this.gen();const L=lcm(b,d);const num=a*L/b-c*L/d;const [sn,sd]=simp(num,L);
-  return mc(`${fr(a,b)} − ${fr(c,d)} = ?`,fr(sn,sd),[fr(Math.abs(a-c),Math.abs(b-d)||1),fr(Math.abs(a-c),Math.max(b,d)),fr(num+1,L),fr(num,L*2)].filter(x=>x!==fr(sn,sd)),`Common denominator ${L}: ${fr(a*L/b,L)} − ${fr(c*L/d,L)} = ${fr(num,L)}${sd!==L?' = '+fr(sn,sd):''}.`)}
+  if(num<=0)return this.gen();
+  return mc(`${fr(a,b)} − ${fr(c,d)} = ?`,fr(sn,sd),[fr(Math.abs(a-c),Math.abs(b-d)||1),fr(Math.abs(a-c),Math.max(b,d)),fr(num+1,L),fr(num+2,L),fr(L-num,L)],`Common denominator ${L}: ${fr(a*L/b,L)} − ${fr(c*L/d,L)} = ${fr(num,L)}${sd!==L?' = '+fr(sn,sd):''}.`)}
  const n=nm();const d=pick([4,6,8,10,12]);const a=R(1,d-2),b=R(1,d-a-1);const left=d-a-b;const [ln,ld]=simp(left,d);
- return mc(`${n} ate ${fr(a,d)} of a pizza and a friend ate ${fr(b,d)} of the same pizza. What fraction of the pizza is <b>left</b>?`,fr(ln,ld),[frS(a+b,d),fr(left,2*d),frS(d-a,d),frS(Math.abs(a-b),d)].filter(x=>x!==fr(ln,ld)),`Together they ate ${fr(a,d)} + ${fr(b,d)} = ${fr(a+b,d)}. The whole pizza is ${fr(d,d)}, so ${fr(d,d)} − ${fr(a+b,d)} = ${fr(left,d)}${ld!==d?' = '+fr(ln,ld):''} is left.`)}};
+ if(left<=0)return this.gen();
+ return mc(`${n} ate ${fr(a,d)} of a pizza and a friend ate ${fr(b,d)} of the same pizza. What fraction of the pizza is <b>left</b>?`,fr(ln,ld),[frS(a+b,d),frS(d-a,d),frS(Math.abs(a-b),d),fr(left+1,d),fr(left,d+2)],`Together they ate ${fr(a,d)} + ${fr(b,d)} = ${fr(a+b,d)}. The whole pizza is ${fr(d,d)}, so ${fr(d,d)} − ${fr(a+b,d)} = ${fr(left,d)}${ld!==d?' = '+fr(ln,ld):''} is left.`)}};
 
 T.f_muldiv={t:'Multiplying & Dividing Fractions',cat:'frac',lesson:`
 <p><b>Multiplying</b>: multiply the numerators, multiply the denominators. No common denominator needed! ${fr(2,3)} × ${fr(3,4)} = ${fr(6,12)} = ${fr(1,2)}.</p>
@@ -631,11 +686,11 @@ gen(){const t=R(1,5);
  if(t===1){const d=pick([3,4,5,6,8,10]);const n=R(1,d-1);const w=d*R(2,6);const ans=n*w/d;
   return mc(`${fr(n,d)} × ${w} = ?`,ans,[n*w,Math.round(w/d),ans+n,w/d+n],`${fr(n,d)} × ${w} = ${fr(n*w,d)} = ${ans}. Or: ${w} ÷ ${d} = ${w/d}, then × ${n} = ${ans}.`)}
  if(t===2){const a=R(1,4),b=R(a+1,6),c=R(1,4),d=R(c+1,6);const [sn,sd]=simp(a*c,b*d);
-  return mc(`${fr(a,b)} × ${fr(c,d)} = ?`,fr(sn,sd),[fr(a*c,b+d),frS(a*d+c*b,b*d),fr(a+c,b*d),frS(a*d,b*c)].filter(x=>x!==fr(sn,sd)),`Multiply straight across: ${fr(a*c,b*d)}${sd!==b*d?' = '+fr(sn,sd):''}.`)}
+  return mc(`${fr(a,b)} × ${fr(c,d)} = ?`,fr(sn,sd),[fr(a*c,b+d),frS(a*d+c*b,b*d),fr(a+c,b*d),frS(a*d,b*c),fr(a+c,b+d)],`Multiply straight across: ${fr(a*c,b*d)}${sd!==b*d?' = '+fr(sn,sd):''}.`)}
  if(t===3){const w=R(2,8);const d=pick([2,3,4,5]);const ans=w*d;
   return mc(`${w} ÷ ${fr(1,d)} = ?`,ans,[fr(w,d),w+d,fr(1,w*d),w*d-w],`Dividing by ${fr(1,d)} is the same as multiplying by ${d}: ${w} × ${d} = ${ans}. There are ${ans} ${['','','halves','thirds','fourths','fifths'][d]} in ${w} wholes.`)}
  if(t===4){const d=pick([3,4,5,6,8]);const n=R(1,d-1);const w=R(2,4);const [sn,sd]=simp(n,d*w);
-  return mc(`${fr(n,d)} ÷ ${w} = ?`,fr(sn,sd),[frS(n*w,d),fr(n,d),frS(n,d+w),frS(d,n*w)].filter(x=>x!==fr(sn,sd)),`Dividing by ${w} means multiplying by ${fr(1,w)}: ${fr(n,d)} × ${fr(1,w)} = ${fr(n,d*w)}${sd!==d*w?' = '+fr(sn,sd):''}.`)}
+  return mc(`${fr(n,d)} ÷ ${w} = ?`,fr(sn,sd),[frS(n*w,d),fr(n,d),frS(n,d+w),frS(d,n*w),fr(n+1,d*w)],`Dividing by ${w} means multiplying by ${fr(1,w)}: ${fr(n,d)} × ${fr(1,w)} = ${fr(n,d*w)}${sd!==d*w?' = '+fr(sn,sd):''}.`)}
  const n=nm();const tot=pick([12,16,20,24,30,36]);const d=pick([2,3,4,6].filter(x=>tot%x===0));const p=R(1,d-1);const ans=tot*p/d;const item=pick(['cupcakes','marbles','stickers','coins']);
  return mc(`${n} has ${tot} ${item} and gives away ${fr(p,d)} of them. How many ${item} does ${n} give away?`,ans,[tot-ans,tot/d,ans+d,p*d],`${fr(p,d)} of ${tot} = ${tot} ÷ ${d} × ${p} = ${tot/d} × ${p} = ${ans}.`)}};
 
@@ -650,11 +705,11 @@ gen(){const t=R(1,4);
  if(t===1){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;
   return mc(`Write ${mixed(imp,d)} as an improper fraction.`,fr(imp,d),[fr(w+n,d),fr(w*n+d,d),fr(imp,w),fr(w*d,n)],`Multiply the whole by the denominator and add the numerator: ${w} × ${d} + ${n} = ${imp}. Keep the denominator: ${fr(imp,d)}.`)}
  if(t===2){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;
-  return mc(`Write ${fr(imp,d)} as a mixed number.`,mixed(imp,d),[mixed(imp+d,d),mixed((w-1)*d+n,d),`${w}${fr(d,n)}`,`${n}${fr(w,d)}`].filter(x=>x!==mixed(imp,d)),`${imp} ÷ ${d} = ${w} remainder ${n}, so ${fr(imp,d)} = ${mixed(imp,d)}.`)}
+  return mc(`Write ${fr(imp,d)} as a mixed number.`,mixed(imp,d),[mixed(imp+d,d),mixed((w-1)*d+n,d),`${w}${fr(d,n)}`,`${n}${fr(w,d)}`,mixed(imp+1,d)],`${imp} ÷ ${d} = ${w} remainder ${n}, so ${fr(imp,d)} = ${mixed(imp,d)}.`)}
  if(t===3){const d=pick([3,4,5,6,8]);const w1=R(1,5),n1=R(1,d-1),w2=R(1,5),n2=R(1,d-1);const tot=(w1+w2)*d+n1+n2;
-  return mc(`${mixed(w1*d+n1,d)} + ${mixed(w2*d+n2,d)} = ?`,mixed(tot,d),[mixed(tot-d,d),`${w1+w2}${fr(n1+n2,d)}`,mixed(tot+1,d),`${w1+w2}${fr(n1+n2,2*d)}`].filter(x=>x!==mixed(tot,d)),`Add the wholes: ${w1} + ${w2} = ${w1+w2}. Add the fractions: ${fr(n1+n2,d)}${n1+n2>=d?' = '+mixed(n1+n2,d)+', so regroup':''}. Total: ${mixed(tot,d)}.`)}
+  return mc(`${mixed(w1*d+n1,d)} + ${mixed(w2*d+n2,d)} = ?`,mixed(tot,d),[mixed(tot-d,d),mixed(tot+d,d),mixed(tot+1,d),mixed(tot-1,d),`${w1+w2}${fr(n1+n2,2*d)}`],`Add the wholes: ${w1} + ${w2} = ${w1+w2}. Add the fractions: ${fr(n1+n2,d)}${n1+n2>=d?' = '+mixed(n1+n2,d)+', so regroup':''}. Total: ${mixed(tot,d)}.`)}
  const d=pick([2,3,4]);const w=R(2,9),n=R(1,d-1);const k=R(2,4);const imp=w*d+n;const prod=imp*k;const item=pick(['cups of flour','miles','hours','inches of rain']);
- return mc(`A recipe needs ${mixed(imp,d)} ${item}. How much is needed for ${k} batches?`,mixed(prod,d),[mixed(w*k*d+n,d),mixed(imp+k,d),mixed(prod+d,d),`${w*k}${fr(n*k,d*k)}`].filter(x=>x!==mixed(prod,d)),`Convert to an improper fraction: ${mixed(imp,d)} = ${fr(imp,d)}. Multiply by ${k}: ${fr(prod,d)} = ${mixed(prod,d)}.`)}};
+ return mc(`A recipe needs ${mixed(imp,d)} ${item}. How much is needed for ${k} batches?`,mixed(prod,d),[mixed(w*k*d+n,d),mixed(imp+k,d),mixed(prod+d,d),mixed(prod-d,d),mixed(prod+1,d)],`Convert to an improper fraction: ${mixed(imp,d)} = ${fr(imp,d)}. Multiply by ${k}: ${fr(prod,d)} = ${mixed(prod,d)}.`)}};
 
 // ===== DECIMALS, PERCENTS, RATIOS =====
 T.d_ops={t:'Decimals: Place Value & Operations',cat:'dec',lesson:`
@@ -684,11 +739,13 @@ ${table(['Fraction','Decimal','Percent'],[[fr(1,2),'0.5','50%'],[fr(1,4),'0.25',
 <ul><li><b>Fraction → decimal</b>: divide top by bottom. ${fr(3,8)} = 3 ÷ 8 = 0.375.</li><li><b>Decimal → percent</b>: multiply by 100 (move the point two places right). 0.13 → 13%.</li><li><b>Percent → decimal</b>: divide by 100. 125% → 1.25.</li><li><b>Percent → fraction</b>: put it over 100 and simplify. 80% = ${fr(80,100)} = ${fr(4,5)}.</li><li><b>Decimal → fraction</b>: read the place value. 0.48 = ${fr(48,100)} = ${fr(12,25)}.</li></ul>
 ${tip('Memorize the table above. On the test, converting everything to decimals is often the fastest way to compare or order mixed numbers like 3/5, 0.7, and 65%.')}`,
 gen(){const t=R(1,5);const pairs=[[1,2,0.5,50],[1,4,0.25,25],[3,4,0.75,75],[1,5,0.2,20],[2,5,0.4,40],[3,5,0.6,60],[4,5,0.8,80],[1,10,0.1,10],[3,10,0.3,30],[7,10,0.7,70],[9,10,0.9,90],[1,8,0.125,12.5],[3,8,0.375,37.5],[5,8,0.625,62.5],[1,20,0.05,5],[3,20,0.15,15],[7,20,0.35,35],[1,25,0.04,4],[3,25,0.12,12],[9,25,0.36,36],[1,50,0.02,2],[11,20,0.55,55]];const p=pick(pairs);
- if(t===1)return mc(`Write ${fr(p[0],p[1])} as a decimal.`,String(p[2]),[String(p[2]*10),String(Math.round(p[2]/10*1000)/1000),String(p[0]/(p[1]+1)).slice(0,5),String(p[1]/100)].filter(x=>x!==String(p[2])),`Divide the numerator by the denominator: ${p[0]} ÷ ${p[1]} = ${p[2]}.`);
- if(t===2)return mc(`Write ${p[2]} as a percent.`,p[3]+'%',[(p[2]*10)+'%',(p[3]/10)+'%',(p[3]+10)+'%',(100-p[3])+'%'],`Multiply by 100 (move the decimal point two places to the right): ${p[2]} → ${p[3]}%.`);
+ const rnd=(x,k)=>String(Math.round(x*Math.pow(10,k))/Math.pow(10,k));
+ if(t===1)return mc(`Write ${fr(p[0],p[1])} as a decimal.`,String(p[2]),[rnd(p[2]*10,4),rnd(p[2]/10,5),rnd(p[2]+0.1,4),rnd(p[1]/100,4)],`Divide the numerator by the denominator: ${p[0]} ÷ ${p[1]} = ${p[2]}.`);
+ if(t===2)return mc(`Write ${p[2]} as a percent.`,p[3]+'%',[rnd(p[2]*10,4)+'%',rnd(p[3]/10,4)+'%',(p[3]+10)+'%',(100-p[3])+'%'],`Multiply by 100 (move the decimal point two places to the right): ${p[2]} → ${p[3]}%.`);
  if(t===3)return mc(`Write ${p[3]}% as a fraction in simplest form.`,fr(p[0],p[1]),[fr(p[3],10),fr(p[0],p[1]*2),fr(p[1],p[0]),fr(p[3],1000)].filter(x=>x!==fr(p[0],p[1])),`${p[3]}% = ${fr(p[3],100)}. Simplify: ${fr(p[0],p[1])}.`);
- if(t===4){const pct=pick([120,150,175,200,250,110,105]);return mc(`Write ${pct}% as a decimal.`,String(pct/100),[String(pct/10),String(pct/1000),String(pct),String(pct/100+1)],`Divide by 100: ${pct}% = ${pct/100}. A percent greater than 100 gives a decimal greater than 1.`)}
- const [a,b,c,d]=pick(pairs.filter(x=>x[1]<=10));const items=[[fr(a,b),c],[String(Math.round((c+0.15)*100)/100),Math.round((c+0.15)*100)/100],[(d-5)+'%',(d-5)/100]];
+ if(t===4){const pct=pick([5,8,12,20,25,40,60,75,90,4,15,35,120,150]);return mc(`Write ${pct}% as a decimal.`,String(pct/100),[rnd(pct/10,4),rnd(pct/1000,5),String(pct),rnd(pct/100+1,4)],`Percent means "per hundred," so divide by 100 (move the decimal point two places left): ${pct}% = ${pct/100}.${pct>100?' A percent greater than 100 gives a number greater than 1.':''}`)}
+ const [a,b,c,d]=pick(pairs.filter(x=>x[1]<=10));const items=[[fr(a,b),c],[rnd(c+0.15,2),+rnd(c+0.15,2)],[(d-5)+'%',(d-5)/100]];
+ if(new Set(items.map(x=>x[1])).size!==3)return this.gen();
  const sorted=items.slice().sort((x,y)=>x[1]-y[1]);const str=arr=>arr.map(x=>x[0]).join(', ');
  return mc(`Which list is in order from <b>least to greatest</b>?`,str(sorted),[str(sorted.slice().reverse()),str([sorted[1],sorted[0],sorted[2]]),str([sorted[0],sorted[2],sorted[1]])],`Convert everything to decimals: ${items.map(x=>x[0]+' = '+x[1]).join('; ')}. In order: ${str(sorted)}.`)}};
 
@@ -745,7 +802,8 @@ gen(){const t=R(1,5);
  if(t===2){const start=pick([1,2,3,5]),r=pick([2,3,4]);const seq=[0,1,2,3].map(i=>start*Math.pow(r,i));const nxt=start*Math.pow(r,4);
   return mc(`What is the next number in the pattern? <b>${seq.join(', ')}, …</b>`,nxt,[seq[3]+(seq[3]-seq[2]),seq[3]*r+r,seq[3]+r,seq[3]*(r+1)],`Each number is multiplied by ${r}. ${seq[3]} × ${r} = ${nxt}.`)}
  if(t===3){const cores=[['○','○','▲'],['□','◆'],['★','○','○','□'],['▲','▲','○'],['A','B','B','C']];const core=pick(cores);const N=R(9,25);const idx=(N-1)%core.length;const ans=core[idx];
-  return mc(`The pattern <b>${core.join('')} ${core.join('')} ${core.join('')} …</b> continues. What is the ${N}th item?`,ans,shuf(core.filter(x=>x!==ans)).concat(['◇']),`The core ${core.join('')} has ${core.length} items. ${N} ÷ ${core.length} = ${Math.floor(N/core.length)} remainder ${N%core.length}${N%core.length?', so the '+N+'th item is item '+(N%core.length)+' of the core':', so the '+N+'th item is the last item of the core'}: ${ans}.`)}
+  const pool=['◇','✦','▢','◐'].filter(x=>!core.includes(x));
+  return mc(`The pattern <b>${core.join('')} ${core.join('')} ${core.join('')} …</b> continues. What is the ${ord(N)} item?`,ans,shuf([...new Set(core.filter(x=>x!==ans))]).concat(pool),`The core ${core.join('')} has ${core.length} items. ${N} ÷ ${core.length} = ${Math.floor(N/core.length)} remainder ${N%core.length}${N%core.length?', so the '+ord(N)+' item is item '+(N%core.length)+' of the core':', so the '+ord(N)+' item is the last one in the core'}: ${ans}.`)}
  if(t===4){const m=R(2,5),b=R(0,6);const rows=[1,2,3,4].map(i=>m*i+b);const inp=R(5,9);
   return mc(`The table follows a rule. What is the output when the input is ${inp}?${table(['Input',1,2,3,4],[['Output',...rows]])}`,m*inp+b,[m*inp+b+m,m*inp,m*inp+b-m,inp+rows[0]],`The output goes up by ${m} each time the input goes up by 1, and ${m} × 1 + ${b} = ${rows[0]}. So the rule is output = ${m} × input${b?' + '+b:''}. For input ${inp}: ${m} × ${inp}${b?' + '+b:''} = ${m*inp+b}.`)}
  const m=R(2,6),b=R(1,9);const rows=[1,2,3].map(i=>m*i+b);const rule=`Multiply by ${m}, then add ${b}`;
@@ -760,9 +818,9 @@ ${ex('"Five times a number added to forty"','5n + 40. Note: "6 less than a numbe
 <p><b>Like terms</b> have the same variable: 3x + 2x = 5x. You cannot combine 3x and 2 (they are not alike).</p>
 ${tip('2x means 2 × x. When you substitute, write it as 2(4), not 24!')}`,
 gen(){const t=R(1,5);
- if(t===1){const a=R(2,6),b=R(1,9),x=R(2,8);const op=pick(['+','-']);const v=op==='+'?a*x+b:a*x-b;
+ if(t===1){const a=R(2,6),b=R(1,9),x=R(2,8);const op=pick(['+','-']);const v=op==='+'?a*x+b:a*x-b;if(v<0)return this.gen();
   return mc(`If x = ${x}, what is the value of ${a}x ${op} ${b}?`,v,[+(String(a)+String(x))+(op==='+'?b:-b),a+x+(op==='+'?b:-b),op==='+'?a*x-b:a*x+b,a*(x+(op==='+'?b:-b))],`Substitute ${x} for x: ${a}(${x}) ${op} ${b} = ${a*x} ${op} ${b} = ${v}. Remember, ${a}x means ${a} × x.`)}
- if(t===2){const a=R(2,9),b=R(2,9);const forms=[
+ if(t===2){const a=R(2,9);let b=R(2,9);if(a===b)b=b%9+1;const forms=[
   {w:`${a} more than a number`,e:`n + ${a}`,d:[`${a}n`,`n − ${a}`,`${a} − n`]},
   {w:`${a} less than a number`,e:`n − ${a}`,d:[`${a} − n`,`n + ${a}`,`${a}n`]},
   {w:`${['twice','three times','four times','five times'][Math.min(a-2,3)]} a number, increased by ${b}`,e:`${Math.min(a,5)}n + ${b}`,d:[`${Math.min(a,5)}(n + ${b})`,`${Math.min(a,5)} + n + ${b}`,`${b}n + ${Math.min(a,5)}`]},
@@ -788,9 +846,9 @@ ${ex('Some students were in class. 11 more arrived, and now there are 17. How ma
 ${tip('A missing-number box □ works the same as a variable: □ × 4 = 36 means 36 ÷ 4 = 9.')}`,
 gen(){const t=R(1,5);
  if(t===1){const x=R(2,30),a=R(2,40);return mc(`Solve: x + ${a} = ${x+a}`,x,[x+a+a,x+2*a,a,x+1],`Subtract ${a} from both sides: x = ${x+a} − ${a} = ${x}.`)}
- if(t===2){const x=R(10,60),a=R(2,30);return mc(`Solve: x − ${a} = ${x-a}`,x,[x-2*a,x-a,a-x+2*a,x-1],`Add ${a} to both sides: x = ${x-a} + ${a} = ${x}.`)}
+ if(t===2){const x=R(20,60),a=R(2,15);return mc(`Solve: x − ${a} = ${x-a}`,x,[x-2*a,x-a,x+a,x-1].filter(v=>v>0),`Add ${a} to both sides: x = ${x-a} + ${a} = ${x}.`)}
  if(t===3){const a=R(2,9),x=R(2,12);return mc(`Solve: ${a}x = ${a*x}`,x,[a*x-a,a*x+a,x+a,a*a*x],`Divide both sides by ${a}: x = ${a*x} ÷ ${a} = ${x}.`)}
- if(t===4){const a=R(2,9),x=R(2,12);return mc(`Solve: x ÷ ${a} = ${x}`,x*a,[x+a,x-a>0?x-a:x+2*a,Math.round(x/a*100)/100,x],`Multiply both sides by ${a}: x = ${x} × ${a} = ${x*a}.`)}
+ if(t===4){const a=R(2,9),x=R(2,12);return mc(`Solve: x ÷ ${a} = ${x}`,x*a,[x+a,x*a+a,x*a-a,x],`Multiply both sides by ${a}: x = ${x} × ${a} = ${x*a}.`)}
  const n=nm();const forms=[
   ()=>{const start=R(5,20),add=R(3,15);return {q:`Some kids were at the park. ${add} more came, and then there were ${start+add}. How many kids were at the park at first?`,a:start,w:[start+2*add,add,start+add,start-1],e:`? + ${add} = ${start+add}. Work backwards: ${start+add} − ${add} = ${start}.`}},
   ()=>{const each=R(3,9),g=R(4,9);return {q:`${n} shares ${each*g} stickers equally among some friends. Each friend gets ${each} stickers. How many friends are there?`,a:g,w:[each*g-each,each+g,each*g,g+1],e:`? × ${each} = ${each*g}. Divide: ${each*g} ÷ ${each} = ${g}.`}},
@@ -808,14 +866,17 @@ ${svgNumLine(1,true,1)}
 ${tip('"At least 5" means ≥ 5. "At most 5" means ≤ 5. "More than 5" means > 5 (5 itself is not included).')}`,
 gen(){const t=R(1,5);
  if(t===1){const a=R(2,6),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;
-  return mc(`Solve: ${a}x ${op} ${b} = ${rhs}`,x,[op==='+'?Math.round((rhs+b)/a*10)/10:Math.round((rhs-b)/a*10)/10,x+1,x-1,rhs-b],`First ${op==='+'?'subtract':'add'} ${b}: ${a}x = ${a*x}. Then divide by ${a}: x = ${x}. Check: ${a}(${x}) ${op} ${b} = ${rhs} ✓`)}
+  return mc(`Solve: ${a}x ${op} ${b} = ${rhs}`,x,[x+1,x-1,rhs-b,x+a,x*2].filter(v=>v>0),`First ${op==='+'?'subtract':'add'} ${b}: ${a}x = ${a*x}. Then divide by ${a}: x = ${x}. Check: ${a}(${x}) ${op} ${b} = ${rhs} ✓`)}
  if(t===2){const pt=R(-4,4);const closed=pick([true,false]);const dir=pick([1,-1]);const sym=dir>0?(closed?'≥':'>'):(closed?'≤':'<');const opp=dir>0?(closed?'>':'≥'):(closed?'<':'≤');const rev=dir>0?(closed?'≤':'<'):(closed?'≥':'>');
   return mc(`Which inequality is shown on the number line?${svgNumLine(pt,closed,dir)}`,`x ${sym} ${pt}`,[`x ${opp} ${pt}`,`x ${rev} ${pt}`,`x ${dir>0?(closed?'<':'≤'):(closed?'>':'≥')} ${pt}`],`The dot on ${pt} is ${closed?'filled, so '+pt+' is included (≤ or ≥)':'open, so '+pt+' is not included (< or >)'}. The arrow points ${dir>0?'right toward greater numbers':'left toward lesser numbers'}. So x ${sym} ${pt}.`)}
- if(t===3){const a=R(2,12);const sym=pick(['<','>','≤','≥']);const cands=[a-3,a-1,a,a+1,a+4];const ok=v=>sym==='<'?v<a:sym==='>'?v>a:sym==='≤'?v<=a:v>=a;const good=cands.filter(ok),bad=cands.filter(v=>!ok(v));if(!good.length||bad.length<3)return this.gen();
+ if(t===3){const a=R(5,14);const sym=pick(['<','>','≤','≥']);const cands=[a-3,a-1,a,a+1,a+4].filter(v=>v>0);const ok=v=>sym==='<'?v<a:sym==='>'?v>a:sym==='≤'?v<=a:v>=a;const good=cands.filter(ok),bad=cands.filter(v=>!ok(v));if(!good.length||bad.length<3)return this.gen();
   const ans=pick(good);return mc(`Which value of x makes <b>x ${sym} ${a}</b> true?`,ans,shuf(bad),`x ${sym} ${a} means x is ${sym==='<'?'less than':sym==='>'?'greater than':sym==='≤'?'less than or equal to':'greater than or equal to'} ${a}. ${ans} works; ${bad.slice(0,3).join(', ')} do not.`)}
  if(t===4){const forms=[
   {w:'at least',s:'≥'},{w:'at most',s:'≤'},{w:'more than',s:'>'},{w:'fewer than',s:'<'},{w:'no more than',s:'≤'},{w:'no fewer than',s:'≥'}];const f=pick(forms);const n=R(5,30);
   return mc(f.w.includes('than')?`A raft can carry <b>${f.w}</b> ${n} people. Which inequality shows the number of people, x, allowed on the raft?`:`Riders must be <b>${f.w}</b> ${n} years old. Which inequality shows the ages, x, that are allowed?`,`x ${f.s} ${n}`,['<','>','≤','≥'].filter(s=>s!==f.s).map(s=>`x ${s} ${n}`),`"${f.w}" means ${f.s}. ${f.s==='≥'||f.s==='≤'?'The number '+n+' itself is allowed, so the sign includes "or equal to."':'The number '+n+' itself is not included.'}`)}
+ if(R(1,2)===1){const a=R(2,5),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;const sym=pick(['>','<','≥','≤']);
+  const dir=sym==='>'||sym==='≥';const inc=sym==='≥'||sym==='≤';
+  return mc(`Solve for x: ${a}x ${op} ${b} ${sym} ${rhs}`,`x ${sym} ${x}`,[`x ${dir?(inc?'≤':'<'):(inc?'≥':'>')} ${x}`,`x ${sym} ${x+1}`,`x ${sym} ${rhs-b}`,`x ${sym} ${x*a}`],`Solve it exactly like an equation. ${op==='+'?'Subtract':'Add'} ${b} from both sides: ${a}x ${sym} ${a*x}. Then divide both sides by ${a}: x ${sym} ${x}. Because ${a} is positive, the sign does not flip.`)}
  const a=R(2,5),x=R(2,8),b=R(1,6);const cost=a*x+b;const n=nm();
  return mc(`${n} paid $${cost} for ${a} notebooks and a $${b} pen. Each notebook costs the same. What is the price of one notebook?`,'$'+x,['$'+(cost-b),'$'+Math.round((cost)/a*100)/100,'$'+(x+1),'$'+(cost-a)],`${a}n + ${b} = ${cost}. Subtract the pen: ${a}n = ${cost-b}. Divide by ${a}: n = ${x}. Each notebook costs $${x}.`)}};
 
@@ -834,7 +895,8 @@ gen(){const t=R(1,5);
  if(t===2){const a=R(25,80),b=R(25,80);if(a+b>=170)return this.gen();const c=180-a-b;
   return mc(`Two angles of a triangle measure ${a}° and ${b}°. What is the measure of the third angle?`,c+'°',[(a+b)+'°',(360-a-b)+'°',(90-Math.min(a,b))+'°',(c+10)+'°'],`The angles of a triangle add to 180°. 180 − ${a} − ${b} = ${c}°.`)}
  if(t===3){const comp=pick([true,false]);const tot=comp?90:180;const a=R(15,tot-15);
-  return mc(`Two angles are <b>${comp?'complementary':'supplementary'}</b>. One measures ${a}°. What is the other?`,(tot-a)+'°',[(comp?180-a:90-a<0?360-a:90-a)+'°',(tot+a)+'°',a+'°',(tot-a+10)+'°'],`${comp?'Complementary':'Supplementary'} angles add to ${tot}°. ${tot} − ${a} = ${tot-a}°.`)}
+  if(a===tot-a)return this.gen();
+  return mc(`Two angles are <b>${comp?'complementary':'supplementary'}</b>. One measures ${a}°. What is the other?`,(tot-a)+'°',[(comp?180-a:360-a)+'°',(tot+a)+'°',a+'°',(tot-a+10)+'°',(tot-a-10)+'°'],`${comp?'Complementary':'Supplementary'} angles add to ${tot}°. ${tot} − ${a} = ${tot-a}°.`)}
  if(t===4){const forms=[
   {q:'Which pair of lines will <b>never</b> meet, no matter how far they extend?',a:'Parallel lines',w:['Perpendicular lines','Intersecting lines','A ray and a line segment'],e:'Parallel lines stay the same distance apart forever and never cross.'},
   {q:'Two lines cross and form four right angles. What are these lines called?',a:'Perpendicular',w:['Parallel','Curved','Skew'],e:'Perpendicular lines meet at 90° angles.'},
@@ -901,21 +963,23 @@ ${svgGrid(3,2)}
 ${ex('Move the point (2, 5) three units right and one unit down.','x: 2 + 3 = 5. y: 5 − 1 = 4. New point: <b>(5, 4)</b>.')}
 ${tip('Reflect over the x-axis: the y changes sign, (3, 2) → (3, −2). Reflect over the y-axis: the x changes sign, (3, 2) → (−3, 2).')}`,
 gen(){const t=R(1,5);
- if(t===1){const x=R(-4,4),y=R(-4,4);if(!x||!y)return this.gen();
-  return mc(`What are the coordinates of the point?${svgGrid(x,y)}`,`(${x}, ${y})`,[`(${y}, ${x})`,`(${-x}, ${y})`,`(${x}, ${-y})`,`(${x+1}, ${y})`],`Start at the origin. Move ${Math.abs(x)} ${x>0?'right':'left'} (x = ${x}) and ${Math.abs(y)} ${y>0?'up':'down'} (y = ${y}). The point is (${x}, ${y}).`)}
- if(t===2){const x=R(-3,3),y=R(-3,3),dx=R(1,4)*pick([1,-1]),dy=R(1,4)*pick([1,-1]);
+ if(t===1){const x=R(1,5),y=R(1,5);
+  if(x===y)return this.gen();
+  return mc(`What are the coordinates of the point?${svgGrid(x,y)}`,`(${x}, ${y})`,[`(${y}, ${x})`,`(${x+1}, ${y})`,`(${x}, ${y+1})`,`(${x-1}, ${y+1})`],`Start at the origin. Move ${Math.abs(x)} ${x>0?'right':'left'} (x = ${x}) and ${Math.abs(y)} ${y>0?'up':'down'} (y = ${y}). The point is (${x}, ${y}).`)}
+ if(t===2){const x=R(2,5),y=R(2,5);const dx=R(1,3)*pick([1,-1]),dy=R(1,3)*pick([1,-1]);if(x+dx<0||y+dy<0)return this.gen();
   return mc(`The point (${x}, ${y}) is moved ${Math.abs(dx)} unit${Math.abs(dx)>1?'s':''} ${dx>0?'right':'left'} and ${Math.abs(dy)} unit${Math.abs(dy)>1?'s':''} ${dy>0?'up':'down'}. Where is it now?`,`(${x+dx}, ${y+dy})`,[`(${x-dx}, ${y-dy})`,`(${x+dy}, ${y+dx})`,`(${x+dx}, ${y-dy})`,`(${x-dx}, ${y+dy})`],`${dx>0?'Right':'Left'} changes x: ${x} ${dx>0?'+':'−'} ${Math.abs(dx)} = ${x+dx}. ${dy>0?'Up':'Down'} changes y: ${y} ${dy>0?'+':'−'} ${Math.abs(dy)} = ${y+dy}. New point: (${x+dx}, ${y+dy}).`)}
- if(t===3){const y=R(-4,4),x1=R(-5,1),x2=x1+R(2,7);if(x2>5)return this.gen();const horiz=pick([true,false]);
-  if(horiz)return mc(`What is the distance between the points (${x1}, ${y}) and (${x2}, ${y})?`,`${x2-x1} units`,[`${x2+x1} units`,`${Math.abs(y)+x2} units`,`${x2-x1+1} units`,`${Math.abs(x1)} units`],`Both points have the same y, so they are on a horizontal line. Count along the x-axis: ${x2} − (${x1}) = ${x2-x1} units.`);
-  return mc(`What is the distance between the points (${y}, ${x1}) and (${y}, ${x2})?`,`${x2-x1} units`,[`${x2+x1} units`,`${Math.abs(y)+x2} units`,`${x2-x1+1} units`,`${Math.abs(x1)} units`],`Both points have the same x, so they are on a vertical line. Count along the y-axis: ${x2} − (${x1}) = ${x2-x1} units.`)}
- if(t===4){const x=R(1,5),y=R(1,5);const axis=pick(['x','y']);const ans=axis==='x'?`(${x}, ${-y})`:`(${-x}, ${y})`;
-  return mc(`The point (${x}, ${y}) is reflected over the <b>${axis}-axis</b>. What are the new coordinates?`,ans,[axis==='x'?`(${-x}, ${y})`:`(${x}, ${-y})`,`(${-x}, ${-y})`,`(${y}, ${x})`,`(${x}, ${y})`],`Reflecting over the ${axis}-axis flips the ${axis==='x'?'y':'x'}-coordinate to its opposite. (${x}, ${y}) → ${ans}.`)}
+ if(t===3){const y=R(1,5),x1=R(0,3),x2=x1+R(2,5);if(x2>8)return this.gen();const horiz=pick([true,false]);
+  if(horiz)return mc(`What is the distance between the points (${x1}, ${y}) and (${x2}, ${y})?`,`${x2-x1} units`,[`${x2+x1} units`,`${x2-x1+1} units`,`${x2-x1+2} units`,`${x2} units`],`Both points have the same y, so they are on a horizontal line. Count along the x-axis: ${x2} − (${x1}) = ${x2-x1} units.`);
+  return mc(`What is the distance between the points (${y}, ${x1}) and (${y}, ${x2})?`,`${x2-x1} units`,[`${x2+x1} units`,`${x2-x1+1} units`,`${x2-x1+2} units`,`${x2} units`],`Both points have the same x, so they are on a vertical line. Count along the y-axis: ${x2} − (${x1}) = ${x2-x1} units.`)}
+ if(t===4){const x=R(1,5),y=R(1,5);if(x===y)return this.gen();const ask=pick(['x','y']);
+  return mc(`A point is at (${x}, ${y}). What is its <b>${ask}-coordinate</b>?`,ask==='x'?x:y,[ask==='x'?y:x,x+y,Math.abs(x-y)||x+1,x+y+1],`In the ordered pair (${x}, ${y}), the first number is the x-coordinate and the second is the y-coordinate. The ${ask}-coordinate is <b>${ask==='x'?x:y}</b>.`)}
  const forms=[
   {q:'A shape slides 4 units to the right without turning or flipping. What is this transformation called?',a:'Translation',w:['Reflection','Rotation','Dilation'],e:'A slide is a translation. The shape keeps the same size and orientation.'},
   {q:'A shape is flipped over a line so that it becomes a mirror image. What is this called?',a:'Reflection',w:['Translation','Rotation','Enlargement'],e:'A flip that creates a mirror image is a reflection.'},
   {q:'A shape is turned 90° around a point. What is this transformation called?',a:'Rotation',w:['Reflection','Translation','Symmetry'],e:'A turn around a point is a rotation.'},
   {q:'In the ordered pair (7, 2), what does the 7 tell you?',a:'Move 7 units right from the origin',w:['Move 7 units up from the origin','The point is in the 7th quadrant','Move 7 units left from the origin'],e:'The first number is the x-coordinate: how far to move horizontally (right if positive).'},
-  {q:'Which point lies on the y-axis?',a:'(0, 5)',w:['(5, 0)','(5, 5)','(1, 5)'],e:'Points on the y-axis have an x-coordinate of 0.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
+  {q:'Which point lies on the y-axis?',a:'(0, 5)',w:['(5, 0)','(5, 5)','(1, 5)'],e:'Points on the y-axis have an x-coordinate of 0.'},
+  {q:'Starting at the origin, you move 3 units right and 4 units up. Where are you?',a:'(3, 4)',w:['(4, 3)','(3, 3)','(7, 7)'],e:'Right is the x-direction and up is the y-direction, so the point is (3, 4).'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
 
 // ===== MEASUREMENT =====
 T.m_units={t:'Units & Conversions',cat:'meas',lesson:`
@@ -929,14 +993,14 @@ ${tip('Remember "Gallon Man": 1 gallon = 4 quarts = 8 pints = 16 cups. Going dow
 gen(){const t=R(1,4);const conv=[['feet','inches',12],['yards','feet',3],['pounds','ounces',16],['gallons','quarts',4],['quarts','pints',2],['pints','cups',2],['cups','fluid ounces',8],['meters','centimeters',100],['kilometers','meters',1000],['kilograms','grams',1000],['liters','milliliters',1000],['centimeters','millimeters',10],['hours','minutes',60],['minutes','seconds',60],['days','hours',24],['weeks','days',7],['years','months',12]];
  if(t===1){const c=pick(conv);const k=R(2,12);return mc(`How many ${c[1]} are in ${k} ${c[0]}?`,fmt(k*c[2]),[fmt(k*c[2]*10),fmt(k+c[2]),fmt(k*c[2]/2),fmt(k*(c[2]+1))],`1 ${c[0].replace(/s$/,'')} = ${fmt(c[2])} ${c[1]}. Big unit → small unit, so multiply: ${k} × ${fmt(c[2])} = ${fmt(k*c[2])} ${c[1]}.`)}
  if(t===2){const c=pick(conv);const k=R(2,9);return mc(`Convert ${fmt(k*c[2])} ${c[1]} to ${c[0]}.`,fmt(k),[fmt(k*c[2]*c[2]),fmt(k*2),fmt(k+1),fmt(k*c[2]-c[2])],`${fmt(c[2])} ${c[1]} = 1 ${c[0].replace(/s$/,'')}. Small unit → big unit, so divide: ${fmt(k*c[2])} ÷ ${fmt(c[2])} = ${k} ${c[0]}.`)}
- if(t===3){const c=pick(conv.slice(0,7));const k=R(2,6),extra=R(1,c[2]-1);return mc(`${k} ${c[0]} and ${extra} ${c[1]} is the same as how many ${c[1]}?`,k*c[2]+extra,[k*c[2],k+extra,(k+extra)*c[2],k*c[2]+extra+c[2]],`${k} ${c[0]} = ${k} × ${c[2]} = ${k*c[2]} ${c[1]}. Add the extra ${extra}: ${k*c[2]+extra} ${c[1]}.`)}
+ if(t===3){const c=pick(conv.slice(0,7));const k=R(2,6),extra=R(2,c[2]-1);return mc(`${k} ${c[0]} and ${extra} ${c[1]} is the same as how many ${c[1]}?`,k*c[2]+extra,[k*c[2],k+extra,(k+extra)*c[2],k*c[2]+extra+c[2]],`${k} ${c[0]} = ${k} × ${c[2]} = ${k*c[2]} ${c[1]}. Add the extra ${extra}: ${k*c[2]+extra} ${c[1]}.`)}
  const forms=[
   {q:'Which unit is best for measuring the length of a school bus?',a:'meters',w:['millimeters','kilometers','liters'],e:'A bus is about 12 meters long. Millimeters would give a huge number; kilometers a tiny one.'},
   {q:'Which unit is best for measuring the weight of an apple?',a:'ounces',w:['tons','pounds','miles'],e:'An apple weighs about 5 or 6 ounces.'},
   {q:'Which unit is best for measuring the amount of water in a swimming pool?',a:'gallons',w:['cups','fluid ounces','inches'],e:'A pool holds thousands of gallons. Cups would give an enormous number.'},
   {q:'Which unit is best for measuring the distance between two cities?',a:'miles',w:['inches','feet','yards'],e:'Distances between cities are measured in miles (or kilometers).'},
   {q:'About how long is a new pencil?',a:'18 centimeters',w:['18 millimeters','18 meters','18 kilometers'],e:'A pencil is about 18 cm, a bit longer than your hand.'},
-  {q:'Which measurement is the greatest?',a:'2 yards',w:['5 feet','60 inches','1 meter'],e:'2 yards = 6 feet = 72 inches. That beats 5 feet (60 inches) and 1 meter (about 39 inches).'},
+  {q:'Which measurement is the greatest?',a:'2 yards',w:['5 feet','30 inches','1 meter'],e:'2 yards = 6 feet = 72 inches. That beats 5 feet (60 inches), 30 inches, and 1 meter (about 39 inches).'},
   {q:'Which holds the most?',a:'1 gallon',w:['3 quarts','7 pints','12 cups'],e:'1 gallon = 4 quarts = 8 pints = 16 cups, more than any of the other choices.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
 
 T.m_time={t:'Time, Money & Temperature',cat:'meas',lesson:`
@@ -947,17 +1011,18 @@ ${ex('Practice starts at 3:40 and lasts 1 hour 35 minutes. When does it end?','3
 ${ex('Three notebooks at $2.35 each; you pay with a $10 bill. Change?','3 × $2.35 = $7.05. $10.00 − $7.05 = <b>$2.95</b>.')}
 <p><b>Temperature</b>: water freezes at 32°F (0°C) and boils at 212°F (100°C). To find a change, subtract. From −4°F to 15°F is a rise of 15 − (−4) = <b>19°</b>.</p>
 ${tip('Remember that clocks work in 60s, not 100s. 2:50 + 20 minutes is 3:10, not 2:70.')}`,
-gen(){const t=R(1,5);const n=nm();const fmtT=m=>{m=((m%720)+720)%720;let h=Math.floor(m/60);const mm=m%60;h=h===0?12:h;return `${h}:${String(mm).padStart(2,'0')}`};
+gen(){const t=R(1,5);const n=nm();const dur=m=>m<60?`${m} min`:`${Math.floor(m/60)} hr ${m%60} min`;const fmtT=m=>{m=((m%720)+720)%720;let h=Math.floor(m/60);const mm=m%60;h=h===0?12:h;return `${h}:${String(mm).padStart(2,'0')}`};
  if(t===1){const s=R(7*60,11*60)+pick([0,5,10,15,20,25,30,35,40,45,50,55]);const d=R(1,3)*60+pick([5,10,15,20,25,30,35,40,45,50]);const e=s+d;const ap=e>=12*60?'p.m.':'a.m.';
   return mc(`${n}'s soccer game starts at ${fmtT(s)} a.m. and lasts ${Math.floor(d/60)} hour${d>=120?'s':''} ${d%60} minutes. What time does it end?`,`${fmtT(e)} ${ap}`,[`${fmtT(e+10)} ${ap}`,`${fmtT(e-15)} ${ap}`,`${fmtT(e+60)} ${e+60>=720?'p.m.':'a.m.'}`,`${fmtT(s+Math.floor(d/60)*100+d%60)} ${ap}`],`Add the hours first: ${fmtT(s)} + ${Math.floor(d/60)} hr = ${fmtT(s+Math.floor(d/60)*60)}. Then add ${d%60} minutes: ${fmtT(e)} ${ap}.`)}
  if(t===2){const s=R(1*60,5*60)+pick([0,15,30,45,10,20,40,50]);const d=R(0,3)*60+pick([15,20,25,30,35,40,45,50,55]);const e=s+d;
-  return mc(`A movie starts at ${fmtT(s)} p.m. and ends at ${fmtT(e)} p.m. How long is the movie?`,`${Math.floor(d/60)} hr ${d%60} min`,[`${Math.floor(d/60)+1} hr ${d%60} min`,`${Math.floor(d/60)} hr ${(d%60+10)%60} min`,`${Math.floor((d+30)/60)} hr ${(d+30)%60} min`,`${Math.floor(d/60)} hr ${60-d%60} min`],`Count up from ${fmtT(s)}: to ${fmtT(e)} is ${Math.floor(d/60)} hour${Math.floor(d/60)===1?'':'s'} and ${d%60} minutes.`)}
- if(t===3){const price=R(125,899)/100;const q=R(2,4);const tot=Math.round(price*q*100)/100;const paid=Math.ceil(tot/5)*5;const ch=Math.round((paid-tot)*100)/100;
+  return mc(`A movie starts at ${fmtT(s)} p.m. and ends at ${fmtT(e)} p.m. How long is the movie?`,dur(d),[dur(d+60),dur(d+10),dur(d+30),dur(Math.max(5,d-15)),dur(d+5)],`Count up from ${fmtT(s)}: to ${fmtT(e)} is ${dur(d)}.`)}
+ if(t===3){const price=R(125,899)/100;const q=R(2,4);const tot=Math.round(price*q*100)/100;const paid=Math.ceil(tot/5)*5;const ch=Math.round((paid-tot)*100)/100;if(ch<0.25)return this.gen();
   return mc(`${n} buys ${q} ${pick(['juice boxes','markers','erasers','snacks'])} at ${money(price)} each and pays with a $${paid} bill. How much change should ${n} get?`,money(ch),[money(paid-price),money(tot),money(ch+1),money(Math.abs(paid-tot-0.5))],`Total cost: ${q} × ${money(price)} = ${money(tot)}. Change: $${paid}.00 − ${money(tot)} = ${money(ch)}.`)}
  if(t===4){const q=R(3,9),d=R(0,4),nk=R(0,5),p=R(0,9);const tot=q*25+d*10+nk*5+p;
+  if(d<2||nk<2||p<2)return this.gen();
   return mc(`${n} has ${q} quarters, ${d} dimes, ${nk} nickels, and ${p} pennies. How much money is that?`,money(tot/100),[money((tot+25)/100),money((tot-10)/100),money((q*25+d*10+nk*5)/100+p),money((q+d+nk+p)/100)],`${q} × 25¢ = ${q*25}¢, ${d} × 10¢ = ${d*10}¢, ${nk} × 5¢ = ${nk*5}¢, ${p} × 1¢ = ${p}¢. Total ${tot}¢ = ${money(tot/100)}.`)}
  let lo=R(-15,10);if(lo===0)lo=-3;const hi=lo+R(8,35);
- return mc(`The temperature at 6 a.m. was ${lo}°F. By 2 p.m. it was ${hi}°F. By how many degrees did the temperature rise?`,`${hi-lo}°`,[`${hi+lo}°`,`${Math.abs(hi)-Math.abs(lo)}°`,`${hi-lo+2}°`,`${hi}°`],`Subtract: ${hi} − (${lo}) = ${hi-lo}°. ${lo<0?'Going from '+lo+' up to 0 is '+Math.abs(lo)+' degrees, then 0 up to '+hi+' is '+hi+' more.':''}`)}};
+ return mc(`The temperature at 6 a.m. was ${lo}°F. By 2 p.m. it was ${hi}°F. By how many degrees did the temperature rise?`,`${hi-lo}°`,[`${hi+lo}°`,`${hi-lo+2}°`,`${hi-lo-2}°`,`${hi}°`],`Subtract: ${hi} − (${lo}) = ${hi-lo}°. ${lo<0?'Going from '+lo+' up to 0 is '+Math.abs(lo)+' degrees, then 0 up to '+hi+' is '+hi+' more.':''}`)}};
 
 T.m_volume={t:'Volume & Surface Area',cat:'meas',lesson:`
 <p><b>Volume</b> is the space inside a 3-D shape, measured in <b>cubic</b> units (cm³, in³, ft³). Think of filling a box with unit cubes.</p>
@@ -998,7 +1063,13 @@ gen(){const t=R(1,5);const n=nm();
  const cm=R(2,9),mm=R(1,9);return mc(`A paper clip's end lines up ${mm} small mark${mm>1?'s':''} past the ${cm} cm line on a centimeter ruler. How long is the paper clip?`,`${cm}.${mm} cm`,[`${cm}${mm} cm`,`${cm}.${mm} mm`,`${cm+mm} cm`,`${cm}.${mm+1 > 9 ? 1 : mm+1} cm`],`Each small mark is 1 millimeter, or 0.1 cm. ${cm} cm + ${mm} mm = ${cm}.${mm} cm.`)}};
 
 // ===== DATA ANALYSIS =====
-const DATASETS=()=>{const cats=pick([['Pizza','Tacos','Pasta','Salad','Soup'],['Mon','Tue','Wed','Thu','Fri'],['Dogs','Cats','Fish','Birds','Hamsters'],['Soccer','Tennis','Swim','Track','Golf'],['Red','Blue','Green','Yellow','Purple']]);return cats};
+// Each category set carries its own title, so a chart never contradicts itself.
+const DATASETS=()=>pick([
+  {t:'Favorite lunch',c:['Pizza','Tacos','Pasta','Salad','Soup'],u:'students'},
+  {t:'Books read this week',c:['Mon','Tue','Wed','Thu','Fri'],u:'books'},
+  {t:'Pets in Room 12',c:['Dogs','Cats','Fish','Birds','Hamsters'],u:'pets'},
+  {t:'Favorite sport',c:['Soccer','Tennis','Swim','Track','Golf'],u:'students'},
+  {t:'Favorite color',c:['Red','Blue','Green','Yellow','Purple'],u:'students'}]);
 T.s_center={t:'Mean, Median, Mode & Range',cat:'data',lesson:`
 <p>These numbers describe a set of data.</p>
 ${table(['Measure','How to find it','For 7, 9, 10, 13, 14, 14'],[['Mean (average)','add all values, divide by how many','67 ÷ 6 ≈ 11.2'],['Median (middle)','order the values, take the middle one (or average the two middles)','(10 + 13) ÷ 2 = 11.5'],['Mode (most)','the value that appears most often','14'],['Range (spread)','greatest − least','14 − 7 = 7']])}
@@ -1027,14 +1098,14 @@ ${svgBar(['Pad Thai','Pizza','Chocolate','Pancakes'],[4,2,3,6],'Favorite foods',
 <p><b>Steps for any graph question</b>: 1) Read the title and axis labels. 2) Find the scale (what each line is worth). 3) Find the exact value(s) asked for. 4) Do the math (add, subtract, compare).</p>
 ${tip('Watch the scale! If grid lines go by 5, a bar between 10 and 15 is about 12 or 13, not 11.')}`,
 gen(){const t=R(1,5);const cats=DATASETS();
- if(t<=2){const k=4;const labs=cats.slice(0,k);const vals=labs.map(()=>R(2,18));const ttl=pick(['Favorite lunch','Pets in Room 12','Books read this month','Favorite sport']);const fig=svgBar(labs,vals,ttl);
-  if(t===1){const i=R(0,k-1),j=(i+R(1,k-1))%k;const d=Math.abs(vals[i]-vals[j]);return mc(`How many more ${vals[i]>vals[j]?labs[i]:labs[j]} than ${vals[i]>vals[j]?labs[j]:labs[i]} are there?${fig}`,d,[vals[i]+vals[j],d+1,d-1,Math.max(vals[i],vals[j])],`Read the bars: ${labs[i]} = ${vals[i]}, ${labs[j]} = ${vals[j]}. Difference: ${Math.max(vals[i],vals[j])} − ${Math.min(vals[i],vals[j])} = ${d}.`)}
+ if(t<=2){const k=4;const labs=cats.c.slice(0,k);const vals=labs.map(()=>R(2,18));if(new Set(vals).size<k)return this.gen();const fig=svgBar(labs,vals,cats.t);
+  if(t===1){const i=R(0,k-1),j=(i+R(1,k-1))%k;const d=Math.abs(vals[i]-vals[j]);if(!d)return this.gen();return mc(`How many more ${vals[i]>vals[j]?labs[i]:labs[j]} than ${vals[i]>vals[j]?labs[j]:labs[i]} are there?${fig}`,d,[vals[i]+vals[j],d+1,d-1,Math.max(vals[i],vals[j])],`Read the bars: ${labs[i]} = ${vals[i]}, ${labs[j]} = ${vals[j]}. Difference: ${Math.max(vals[i],vals[j])} − ${Math.min(vals[i],vals[j])} = ${d}.`)}
   const tot=vals.reduce((a,b)=>a+b,0);return mc(`How many responses were recorded in all?${fig}`,tot,[tot-vals[0],tot+2,Math.max(...vals),tot-1],`Add all the bars: ${vals.join(' + ')} = ${tot}.`)}
- if(t===3){const labs=cats.slice(0,4);const b=labs.map(()=>R(1,9)),g=labs.map(()=>R(1,9));const i=R(0,3);const fig=svgBar(labs,b,'Favorite '+pick(['food','sport','color']),g,['Boys','Girls']);const kind=pick(['g','tot','more']);
+ if(t===3){const labs=cats.c.slice(0,4);const b=labs.map(()=>R(1,9)),g=labs.map(()=>R(1,9));const i=R(0,3);const fig=svgBar(labs,b,cats.t,g,['Boys','Girls']);const kind=pick(['g','tot','more']);
   if(kind==='g')return mc(`How many girls chose ${labs[i]}?${fig}`,g[i],[b[i],g[i]+b[i],g[i]+1,g[i]-1],`Use the key: the lighter bar is girls. For ${labs[i]}, the girls' bar reaches ${g[i]}.`);
   if(kind==='tot')return mc(`How many students in total chose ${labs[i]}?${fig}`,g[i]+b[i],[g[i],b[i],Math.abs(g[i]-b[i]),g[i]+b[i]+1],`Add the boys' and girls' bars for ${labs[i]}: ${b[i]} + ${g[i]} = ${g[i]+b[i]}.`);
   const tb=b.reduce((a,c)=>a+c,0),tg=g.reduce((a,c)=>a+c,0);return mc(`How many more ${tb>tg?'boys':'girls'} than ${tb>tg?'girls':'boys'} answered the survey?${fig}`,Math.abs(tb-tg),[tb+tg,tb,tg,Math.abs(tb-tg)+2],`Boys total: ${b.join(' + ')} = ${tb}. Girls total: ${g.join(' + ')} = ${tg}. Difference: ${Math.abs(tb-tg)}.`)}
- const years=pick([['2019','2020','2021','2022','2023'],['Jan','Feb','Mar','Apr','May'],['Week 1','Week 2','Week 3','Week 4','Week 5']]);let v=R(10,25);const vals=years.map((_,i)=>{if(i)v=Math.max(3,Math.min(40,v+pick([-9,-7,-5,-3,-2,2,3,4,6,8,10])));return v});const diffs=vals.slice(1).map((x,i)=>Math.abs(x-vals[i]));if(new Set(diffs).size<4)return this.gen();const fig=svgLine(years,vals,pick(['Plants sold','Rainy days','Library visitors (tens)']));
+ const years=pick([['2019','2020','2021','2022','2023'],['Jan','Feb','Mar','Apr','May'],['Week 1','Week 2','Week 3','Week 4','Week 5']]);let v=R(10,25);const vals=years.map((_,i)=>{if(i)v=Math.max(3,Math.min(40,v+pick([-9,-7,-5,-3,-2,2,3,4,6,8,10])));return v});const diffs=vals.slice(1).map((x,i)=>Math.abs(x-vals[i]));if(new Set(diffs).size<4)return this.gen();const fig=svgLine(years,vals,years[0].includes('Week')?'Books read each week':years[0].length===4?'Plants sold each year':'Rainy days each month');
  if(t===4){let best=0;for(let i=1;i<vals.length;i++)if(Math.abs(vals[i]-vals[i-1])>Math.abs(vals[best]-vals[best-1]||0))best=i;if(best===0)return this.gen();const others=[1,2,3,4].filter(i=>i!==best);
   return mc(`Between which two ${years[0].includes('Week')?'weeks':years[0].length===4?'years':'months'} was the <b>biggest change</b>?${fig}`,`${years[best-1]} to ${years[best]}`,others.map(i=>`${years[i-1]} to ${years[i]}`),`Look for the steepest segment. From ${years[best-1]} (${vals[best-1]}) to ${years[best]} (${vals[best]}) the change is ${Math.abs(vals[best]-vals[best-1])}, larger than any other.`)}
  const i=R(1,4);const d=vals[i]-vals[i-1];return mc(`How did the value change from ${years[i-1]} to ${years[i]}?${fig}`,d===0?'It stayed the same':`It ${d>0?'increased':'decreased'} by ${Math.abs(d)}`,[`It ${d>0?'decreased':'increased'} by ${Math.abs(d)||1}`,`It ${d>=0?'increased':'decreased'} by ${Math.abs(d)+2}`,'It stayed the same',`It ${d>0?'increased':'decreased'} by ${vals[i]}`].filter(x=>x!==(d===0?'It stayed the same':`It ${d>0?'increased':'decreased'} by ${Math.abs(d)}`)),`${years[i-1]}: ${vals[i-1]}. ${years[i]}: ${vals[i]}. ${vals[i]} − ${vals[i-1]} = ${d}.`)}};
@@ -1054,13 +1125,13 @@ gen(){const t=R(1,5);
   const mx=Math.max(...counts);const modes=counts.map((c,i)=>c===mx?lo+i:null).filter(x=>x!==null);if(modes.length>1)return this.gen();const v=R(lo,hi);const atLeast=counts.slice(v-lo).reduce((a,b)=>a+b,0);const kind=pick(['mode','atleast']);
   if(kind==='mode')return mc(`What is the mode of the data?${fig}`,modes[0],[mx,tot,lo+counts.indexOf(Math.min(...counts.filter(c=>c))),modes[0]+1],`The mode is the value with the most X's: ${modes[0]} (it has ${mx} X's).`);
   return mc(`How many people had ${v} or more?${fig}`,atLeast,[counts[v-lo],tot-atLeast,atLeast+1,tot],`Count the X's at ${v} and everything to the right: ${atLeast}.`)}
- if(t===3){const labs=pick([['Pizza','Tacos','Salad','Soup'],['Reading','Sports','Music','Games'],['Bus','Walk','Bike','Car']]);let p=[R(3,6)*5,R(2,5)*5,R(1,4)*5];const last=100-p[0]-p[1]-p[2];if(last<5||last>60)return this.gen();p.push(last);const tot=pick([20,40,60,80,100,200]);const i=R(0,3);const ans=tot*p[i]/100;const fig=svgPie(labs,p,pick(['Favorite lunch','After-school activity','How students get to school']));
+ if(t===3){const ds=pick([{t:'Favorite lunch',c:['Pizza','Tacos','Salad','Soup']},{t:'After-school activity',c:['Reading','Sports','Music','Games']},{t:'How students get to school',c:['Bus','Walk','Bike','Car']}]);const labs=ds.c;let p=[R(3,6)*5,R(2,5)*5,R(1,4)*5];const last=100-p[0]-p[1]-p[2];if(last<5||last>60)return this.gen();p.push(last);const tot=pick([20,40,60,80,100,200]);const i=R(0,3);const ans=tot*p[i]/100;const fig=svgPie(labs,p,ds.t);
   return mc(`${tot} students were surveyed. How many chose ${labs[i]}?${fig}`,ans,[p[i],tot-ans,ans*2,Math.round(ans/2)],`${p[i]}% of ${tot} = ${p[i]/100} × ${tot} = ${ans} students.`)}
- if(t===4){const starts=[60,65,70,75,80,85];const counts=starts.map(()=>R(1,9));const fig=svgBar(starts.map(s=>`${s}–${s+5}`),counts,'Heights of trees (feet)');const i=R(0,5);const kind=pick(['one','two','total']);
+ if(t===4){const starts=[60,65,70,75,80,85];const counts=starts.map(()=>R(1,9));if(new Set(counts).size<4)return this.gen();const fig=svgBar(starts.map(s=>`${s}–${s+5}`),counts,'Heights of trees (feet)');const i=R(0,5);const kind=pick(['one','two','total']);
   if(kind==='one')return mc(`How many trees are between ${starts[i]} and ${starts[i]+5} feet tall?${fig}`,counts[i],[counts[(i+1)%6],counts[i]+1,starts[i],counts[i]-1],`Find the bar labeled ${starts[i]}–${starts[i]+5} and read its height: ${counts[i]}.`);
   if(kind==='two'){const j=Math.min(i+1,5),ii=j===i?i-1:i;const s=counts[ii]+counts[j];return mc(`How many trees are between ${starts[ii]} and ${starts[j]+5} feet tall?${fig}`,s,[counts[ii],counts[j],s+2,s-1],`Add the two bars: ${counts[ii]} + ${counts[j]} = ${s}.`)}
   const tot=counts.reduce((a,b)=>a+b,0);return mc(`How many trees were measured in all?${fig}`,tot,[tot-counts[0],6,tot+3,Math.max(...counts)],`Add every bar: ${counts.join(' + ')} = ${tot}.`)}
- const per=pick([2,4,5,10]);const labs=pick([['Class A','Class B','Class C'],['Mon','Tue','Wed'],['Team 1','Team 2','Team 3']]);const cnt=labs.map(()=>R(2,6));const half=pick([0,1,2]);const rows=labs.map((l,i)=>[l,'★'.repeat(cnt[i])+(i===half?'<span class="halfstar">★</span>':'')]);const i=R(0,2);const v=cnt[i]*per+(i===half?per/2:0);
+ const per=pick([2,4,10]);const labs=pick([['Class A','Class B','Class C'],['Mon','Tue','Wed'],['Team 1','Team 2','Team 3']]);const cnt=labs.map(()=>R(2,6));const half=pick([0,1,2]);const rows=labs.map((l,i)=>[l,'★'.repeat(cnt[i])+(i===half?'<span class="halfstar">★</span>':'')]);const i=R(0,2);const v=cnt[i]*per+(i===half?per/2:0);
  return mc(`In this pictograph, each ★ = ${per} books (a half-star = ${per/2}). How many books did ${labs[i]} read?${table(['','Books read'],rows)}`,v,[cnt[i],v+per,v-per/2,cnt[i]*per*2],`${labs[i]} has ${cnt[i]} full star${cnt[i]>1?'s':''}${i===half?' and a half-star':''}: ${cnt[i]} × ${per}${i===half?' + '+per/2:''} = ${v}.`)}};
 
 T.s_interpret={t:'Choosing & Interpreting Data Displays',cat:'data',lesson:`
@@ -1070,7 +1141,7 @@ ${table(['You want to show…','Best display'],[['how a value changes over time'
 <p>An outlier pulls the <b>mean</b> a lot but barely moves the <b>median</b>. Scores 80, 82, 85, 88, 10: the median (82) describes the typical score better than the mean (69).</p>
 <p><b>Reading tables</b>: find the right row AND the right column. Check totals by adding across or down.</p>
 ${tip('When a question says "about" or "approximately," estimate from the graph instead of trying to be exact.')}`,
-gen(){const t=R(1,4);
+gen(){const t=R(1,5);
  if(t===1){const forms=[
   ['the temperature every hour during one day','Line graph'],['the number of students who chose each favorite color','Bar graph'],['what fraction of a budget is spent on each category','Circle graph'],['how many students got each score on a 10-question quiz','Line plot'],['the number of trees whose heights fall into 5-foot ranges','Histogram'],['how a puppy\'s weight changed each month for a year','Line graph'],['the percent of each type of pet owned by a class','Circle graph'],['the number of books read by each of 5 classes','Bar graph']];const f=pick(forms);
   return mc(`Which type of graph is <b>best</b> for showing ${f[0]}?`,f[1],['Line graph','Bar graph','Circle graph','Line plot','Histogram'].filter(x=>x!==f[1]),`${f[1]}s are best for this kind of data. ${f[1]==='Line graph'?'Line graphs show change over time.':f[1]==='Bar graph'?'Bar graphs compare counts across categories.':f[1]==='Circle graph'?'Circle graphs show parts of a whole.':f[1]==='Line plot'?'Line plots show how often each value occurs.':'Histograms show how many values fall in each interval.'}`)}
@@ -1080,8 +1151,13 @@ gen(){const t=R(1,4);
   if(kind==='row')return mc(`How many students in ${rows[i][0]} were surveyed in all?${fig}`,rows[i][1]+rows[i][2],[rows[i][1],rows[i][2],Math.abs(rows[i][1]-rows[i][2]),rows[i][1]+rows[i][2]+5],`Add across the ${rows[i][0]} row: ${rows[i][1]} + ${rows[i][2]} = ${rows[i][1]+rows[i][2]}.`);
   if(kind==='col'){const c=pick([1,2]);const s=rows.reduce((a,r)=>a+r[c],0);return mc(`How many students altogether chose ${c===1?'pizza':'tacos'}?${fig}`,s,[rows.reduce((a,r)=>a+r[3-c],0),s-rows[0][c],s+10,rows[0][c]],`Add down the "${c===1?'Chose pizza':'Chose tacos'}" column: ${rows.map(r=>r[c]).join(' + ')} = ${s}.`)}
   const d=Math.abs(rows[i][1]-rows[i][2]);if(!d)return this.gen();return mc(`In ${rows[i][0]}, how many more students chose ${rows[i][1]>rows[i][2]?'pizza':'tacos'} than ${rows[i][1]>rows[i][2]?'tacos':'pizza'}?${fig}`,d,[rows[i][1]+rows[i][2],d+2,rows[i][1],rows[i][2]],`In the ${rows[i][0]} row: ${Math.max(rows[i][1],rows[i][2])} − ${Math.min(rows[i][1],rows[i][2])} = ${d}.`)}
+ if(t===4){const up=pick([true,false]);const pts=[];
+  for(let k=0;k<10;k++){const base=up?4+k*1.7:20-k*1.7;pts.push([k+1,Math.max(1,Math.round(base+R(-2,2)))])}
+  const fig=svgScatter(pts,up?'Study time and test scores':'TV time and test scores',up?'Hours studied':'Hours of TV','Test score');
+  const ans=up?'A positive relationship: more hours goes with higher scores':'A negative relationship: more hours goes with lower scores';
+  return mc(`What does this scatter plot show?${fig}`,ans,[up?'A negative relationship: more hours goes with lower scores':'A positive relationship: more hours goes with higher scores','No relationship at all between the two','The two amounts are always equal','Every student scored the same'],`Each dot is one student. The dots ${up?'rise':'fall'} from left to right, so as the hours go up the score goes ${up?'up':'down'} too. That is a <b>${up?'positive':'negative'}</b> relationship.`)}
  const forms=[
-  {q:'A scatter plot of hours studied and test scores shows the points rising from left to right. What does this show?',a:'A positive correlation: more study time goes with higher scores',w:['A negative correlation: more study time goes with lower scores','No relationship between studying and scores','That studying causes lower scores'],e:'When points rise from left to right, both variables increase together: a positive correlation.'},
+
   {q:'A histogram of test scores has a tall bar in the middle and short bars on both ends. How would you describe the data?',a:'Symmetric, with most scores near the middle',w:['Skewed, with most scores very high','Skewed, with most scores very low','It has no center'],e:'A tall middle with matching short sides is a symmetric (bell-shaped) distribution.'},
   {q:'In a data set of shoe sizes, every value is between 5 and 8 except one value of 13. What is the 13 called?',a:'An outlier',w:['The mode','The median','A gap'],e:'A value far away from the rest of the data is an outlier.'},
   {q:'A line graph of a plant\'s height goes up steeply, then becomes nearly flat. What happened?',a:'The plant grew quickly, then almost stopped growing',w:['The plant shrank','The plant grew at a steady rate the whole time','The plant grew faster at the end'],e:'A steep line means fast change; a flat line means little or no change.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
@@ -1097,11 +1173,11 @@ ${table(['Probability','Words'],[['0','impossible'],['close to 0 (like 1/10)','u
 ${tip('Always count the TOTAL first, including the group you are asking about. Then simplify the fraction.')}`,
 gen(){const t=R(1,5);
  if(t===1){const cols=shuf(['red','blue','green','yellow','white']).slice(0,3);const cnt=cols.map(()=>R(1,7));const tot=cnt.reduce((a,b)=>a+b,0);const i=R(0,2);const item=pick(['marbles','socks','cards','buttons']);
-  return mc(`A bag has ${cnt.map((c,k)=>c+' '+cols[k]).join(', ')} ${item}. If one is picked without looking, what is the probability it is ${cols[i]}?`,frS(cnt[i],tot),[fr(cnt[i],tot-cnt[i]),frS(tot-cnt[i],tot),fr(1,cnt[i]),fr(cnt[i],3)].filter(x=>x!==frS(cnt[i],tot)),`Total ${item}: ${cnt.join(' + ')} = ${tot}. ${cols[i][0].toUpperCase()+cols[i].slice(1)}: ${cnt[i]}. P = ${fr(cnt[i],tot)}${frS(cnt[i],tot)!==fr(cnt[i],tot)?' = '+frS(cnt[i],tot):''}.`)}
+  return mc(`A bag has ${cnt.map((c,k)=>c+' '+cols[k]).join(', ')} ${item}. If one is picked without looking, what is the probability it is ${cols[i]}?`,frS(cnt[i],tot),[fr(cnt[i],tot-cnt[i]),frS(tot-cnt[i],tot),fr(1,cnt[i]),fr(tot,cnt[i]),frS(cnt[i]+1,tot)],`Total ${item}: ${cnt.join(' + ')} = ${tot}. ${cols[i][0].toUpperCase()+cols[i].slice(1)}: ${cnt[i]}. P = ${fr(cnt[i],tot)}${frS(cnt[i],tot)!==fr(cnt[i],tot)?' = '+frS(cnt[i],tot):''}.`)}
  if(t===2){const n=pick([4,5,6,8]);const secs=Array.from({length:n},(_,i)=>i+1);const kind=pick(['one','even','gt']);const fig=spinnerSVG(secs);
   if(kind==='one'){const v=R(1,n);return mc(`The spinner has ${n} equal sections. What is the probability of landing on ${v}?${fig}`,fr(1,n),[fr(v,n),fr(1,n-1),fr(1,n+1),fr(n-1,n)].filter(x=>x!==fr(1,n)),`There are ${n} equal sections and one of them is ${v}: P = ${fr(1,n)}.`)}
-  if(kind==='even'){const ev=secs.filter(x=>x%2===0).length;return mc(`The spinner has ${n} equal sections numbered 1 to ${n}. What is the probability of landing on an <b>even</b> number?${fig}`,frS(ev,n),[fr(ev,n)===frS(ev,n)?fr(ev,n+1):fr(ev,n),fr(1,n),fr(ev,ev),frS(n-ev+1,n)].filter(x=>x!==frS(ev,n)),`Even numbers: ${secs.filter(x=>x%2===0).join(', ')}. That is ${ev} out of ${n}: ${fr(ev,n)}${frS(ev,n)!==fr(ev,n)?' = '+frS(ev,n):''}.`)}
-  const k=R(1,n-1);const g=n-k;return mc(`The spinner has ${n} equal sections numbered 1 to ${n}. What is the probability of landing on a number <b>greater than ${k}</b>?${fig}`,frS(g,n),[frS(k,n),fr(g,n)===frS(g,n)?fr(g+1,n):fr(g,n),fr(1,n),frS(g-1,n)].filter(x=>x!==frS(g,n)),`Numbers greater than ${k}: ${secs.filter(x=>x>k).join(', ')}. That is ${g} out of ${n}: ${frS(g,n)}.`)}
+  if(kind==='even'){const ev=secs.filter(x=>x%2===0).length;return mc(`The spinner has ${n} equal sections numbered 1 to ${n}. What is the probability of landing on an <b>even</b> number?${fig}`,frS(ev,n),[fr(1,n),frS(ev+1,n),frS(ev-1,n),fr(n,ev),fr(1,ev)],`Even numbers: ${secs.filter(x=>x%2===0).join(', ')}. That is ${ev} out of ${n}: ${fr(ev,n)}${frS(ev,n)!==fr(ev,n)?' = '+frS(ev,n):''}.`)}
+  const k=R(1,n-1);const g=n-k;if(g===k)return this.gen();return mc(`The spinner has ${n} equal sections numbered 1 to ${n}. What is the probability of landing on a number <b>greater than ${k}</b>?${fig}`,frS(g,n),[frS(k,n),fr(1,n),frS(g+1,n),frS(g-1,n),fr(n,g)],`Numbers greater than ${k}: ${secs.filter(x=>x>k).join(', ')}. That is ${g} out of ${n}: ${frS(g,n)}.`)}
  if(t===3){const forms=[
   ['rolling a number less than 7 on a standard die','certain'],['rolling a 7 on a standard die','impossible'],['flipping heads on a fair coin','equally likely as not'],['picking a red marble from a bag with 9 red and 1 blue','likely'],['picking a blue marble from a bag with 9 red and 1 blue','unlikely'],['the sun rising tomorrow','certain'],['drawing a heart from a deck of cards with 4 equal suits','unlikely'],['spinning an even number on a spinner numbered 1 to 4','equally likely as not']];const f=pick(forms);
   return mc(`How would you describe the probability of <b>${f[0]}</b>?`,f[1],['certain','impossible','likely','unlikely','equally likely as not'].filter(x=>x!==f[1]),`${f[0][0].toUpperCase()+f[0].slice(1)} is ${f[1]}. ${f[1]==='certain'?'It will always happen: probability 1.':f[1]==='impossible'?'It can never happen: probability 0.':f[1]==='equally likely as not'?'The probability is exactly 1/2.':f[1]==='likely'?'The probability is close to 1.':'The probability is close to 0.'}`)}
@@ -1118,7 +1194,7 @@ ${ex('P(heads AND rolling a 2)',fr(1,2)+' × '+fr(1,6)+' = <b>'+fr(1,12)+'</b>')
 ${tip('"With replacement" → the second pick has the same probability as the first. "Without replacement" → subtract one from the total (and from the group, if the first pick came from that group).')}`,
 gen(){const t=R(1,4);
  if(t===1){const n=pick([4,6,8]);const v=R(1,n);const coin=pick(['heads','tails']);return mc(`${nm()} flips a coin and spins a spinner with ${n} equal sections numbered 1 to ${n}. What is the probability of getting <b>${coin}</b> and a <b>${v}</b>?`,fr(1,2*n),[fr(1,n),fr(1,n+2),fr(2,n),fr(1,2)].filter(x=>x!==fr(1,2*n)),`Independent events: multiply. P(${coin}) = ${fr(1,2)}, P(${v}) = ${fr(1,n)}. ${fr(1,2)} × ${fr(1,n)} = ${fr(1,2*n)}.`)}
- if(t===2){const a=R(1,5),b=R(1,5);const [sn,sd]=simp(a*b,36);return mc(`Two standard dice are rolled. What is the probability of rolling a ${a} on the first die and a ${b} on the second?`,fr(1,36),[fr(2,36),fr(1,12),fr(1,6),fr(2,6)],`Each die has 6 faces, so there are 6 × 6 = 36 equally likely outcomes. Only one is (${a}, ${b}): ${fr(1,36)}.`)}
+ if(t===2){const a=R(1,6),b=R(1,6);const [sn,sd]=simp(a*b,36);return mc(`Two standard dice are rolled. What is the probability of rolling a ${a} on the first die and a ${b} on the second?`,fr(1,36),[fr(2,36),fr(1,12),fr(1,6),fr(2,6)],`Each die has 6 faces, so there are 6 × 6 = 36 equally likely outcomes. Only one is (${a}, ${b}): ${fr(1,36)}.`)}
  if(t===3){const c1=pick(['red','blue','green']),c2=pick(['white','yellow','black']);const a=R(2,5),b=R(2,5);const tot=a+b;const [sn,sd]=simp(a*(a-1),tot*(tot-1));
   return mc(`A bag has ${a} ${c1} marbles and ${b} ${c2} marbles. ${nm()} takes one marble, keeps it, then takes another. What is the probability that <b>both</b> are ${c1}?`,fr(sn,sd),[frS(a*a,tot*tot),frS(a,tot),frS(a*(a-1),tot*tot),frS(2*a,tot)].filter(x=>x!==fr(sn,sd)),`First pick: ${fr(a,tot)}. Now ${tot-1} marbles are left, ${a-1} of them ${c1}: ${fr(a-1,tot-1)}. Multiply: ${fr(a,tot)} × ${fr(a-1,tot-1)} = ${fr(a*(a-1),tot*(tot-1))} = ${fr(sn,sd)}.`)}
  const c1=pick(['red','blue','green']),c2=pick(['white','yellow','black']);const a=R(2,5),b=R(2,5);const tot=a+b;const [sn,sd]=simp(a*a,tot*tot);
@@ -1178,7 +1254,12 @@ gen(){const t=R(1,5);
   {q:'A number is multiplied by ½. What happens to it?',a:'It becomes half as large',w:['It doubles','It stays the same','It becomes 2 more'],e:'Multiplying by a number less than 1 makes the result smaller. × ½ gives half.'},
   {q:'12 is divided by ¼. Which is true about the answer?',a:'It is greater than 12',w:['It is less than 12','It equals 3','It equals 12'],e:'Dividing by a fraction less than 1 gives a bigger number: 12 ÷ ¼ = 48.'},
   {q:'Which expression shows the <b>distributive</b> property?',a:'4 × (3 + 2) = 4 × 3 + 4 × 2',w:['4 + 3 = 3 + 4','(4 × 3) × 2 = 4 × (3 × 2)','4 × 1 = 4'],e:'The distributive property multiplies each part inside the parentheses by the number outside.'},
-  {q:'Which shows the <b>commutative</b> property of addition?',a:'7 + 9 = 9 + 7',w:['7 + 0 = 7','(7 + 9) + 1 = 7 + (9 + 1)','7 × 9 = 9 × 7'],e:'Commutative means the order can switch without changing the sum.'},
+  {q:'Which shows the <b>commutative</b> property of addition?',a:'7 + 9 = 9 + 7',w:['7 + 0 = 7','(7 + 9) + 1 = 7 + (9 + 1)','7 × 1 = 7'],e:'Commutative means the order can switch without changing the sum.'},
+  {q:'Which shows the <b>associative</b> property?',a:'(6 + 4) + 9 = 6 + (4 + 9)',w:['6 + 4 = 4 + 6','6 × 1 = 6','6 × (4 + 9) = 6 × 4 + 6 × 9'],e:'Associative means the grouping can change without changing the answer. The order of the numbers stays the same; only the parentheses move.'},
+  {q:'Which shows the <b>identity</b> property of multiplication?',a:'8 × 1 = 8',w:['8 + 0 = 8','8 × 0 = 0','8 × 2 = 2 × 8'],e:'The identity property says a number keeps its value: multiplying by 1 (or adding 0) leaves it unchanged.'},
+  {q:'Which shows the <b>identity</b> property of addition?',a:'12 + 0 = 12',w:['12 × 1 = 12','12 − 12 = 0','12 + 3 = 3 + 12'],e:'Adding zero does not change a number, so zero is the identity for addition.'},
+  {q:'Which property is shown by <b>(2 × 5) × 3 = 2 × (5 × 3)</b>?',a:'Associative',w:['Commutative','Distributive','Identity'],e:'Only the grouping changed, so this is the associative property of multiplication.'},
+  {q:'Which property is shown by <b>15 + 0 = 15</b>?',a:'Identity',w:['Commutative','Associative','Distributive'],e:'Adding zero leaves the number unchanged: the identity property of addition.'},
   {q:'Which product is <b>even</b>?',a:'6 × 7',w:['5 × 7','3 × 9','7 × 11'],e:'Any number multiplied by an even number is even. 6 × 7 = 42.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}
  if(t===2){const a=R(21,49),b=R(11,29);const p=a*b;const opts=[p,p+a*10,p-a*10,p*10];const ea=Math.round(a/10)*10,eb=Math.round(b/10)*10;
   return mc(`Which is closest to the value of ${a} × ${b}? Use estimation.`,fmt(p),opts.slice(1).map(fmt),`Estimate: ${ea} × ${eb} = ${fmt(ea*eb)}. The only choice near that is ${fmt(p)}.`)}
@@ -1187,7 +1268,8 @@ gen(){const t=R(1,5);
  if(t===4){const cap=pick([4000,3000,5000]);const lim=cap*R(4,9)+R(500,cap-500);const q=Math.floor(lim/cap);
   return mc(`A bridge can hold at most ${fmt(lim)} pounds. Each truck weighs ${fmt(cap)} pounds. What is the greatest number of trucks that can be on the bridge at once?`,q,[q+1,Math.round(lim/cap*10)/10,q-1,Math.round(lim/1000)],`${fmt(lim)} ÷ ${fmt(cap)} = ${(lim/cap).toFixed(1)}. You cannot have part of a truck, and ${q+1} trucks would be too heavy, so round <b>down</b> to ${q}.`)}
  const items=[R(300,500),R(50,90),R(50,90),R(8,20)];const tot=items[0]+2*items[1]+items[3];const months=4;const est=Math.round(items[0]/10)*10+2*Math.round(items[1]/10)*10+Math.round(items[3]/10)*10;
- return mc(`A stereo costs $${items[0]}, two speakers cost $${items[1]} each, and cables cost $${items[3]}. The total is split into 4 equal monthly payments. Which is the <b>best estimate</b> of one payment?`,money(Math.round(est/4)),[money(Math.round(est/4)*4),money(Math.round(est/4/2)),money(Math.round(est/4)+50),money(Math.round(est/4)*2)],`Round each price to the nearest ten: ${Math.round(items[0]/10)*10} + 2 × ${Math.round(items[1]/10)*10} + ${Math.round(items[3]/10)*10} ≈ $${est}. Divide by 4: about ${money(est/4)}. (Exact: ${money(tot/4)}.)`)}};
+ const pay=Math.round(est/4);
+ return mc(`A stereo costs $${items[0]}, two speakers cost $${items[1]} each, and cables cost $${items[3]}. The total is split into 4 equal monthly payments. Which is the <b>best estimate</b> of one payment?`,money(pay),[money(pay*4),money(Math.round(pay/2)),money(pay+50),money(pay*2)],`Round each price to the nearest ten: ${Math.round(items[0]/10)*10} + 2 × ${Math.round(items[1]/10)*10} + ${Math.round(items[3]/10)*10} ≈ $${est}. Divide by 4 and round: about ${money(pay)}. (The exact payment is ${money(tot/4)}, so the estimate is close.)`)}};
 
 T.q_logic={t:'Logic & Reasoning Puzzles',cat:'qr',lesson:`
 <p>Some questions test how you <em>reason</em> rather than calculate.</p>
@@ -1204,7 +1286,7 @@ gen(){const t=R(1,5);
  if(t===2){const forms=[
   ['A square is a rectangle.','Always'],['A rectangle is a square.','Sometimes'],['The sum of two odd numbers is odd.','Never'],['A triangle has two right angles.','Never'],['The product of two whole numbers is greater than both of them.','Sometimes'],['A multiple of 10 is a multiple of 5.','Always'],['A number that ends in 2 is even.','Always'],['A prime number is odd.','Sometimes'],['A fraction with a numerator larger than its denominator is greater than 1.','Always'],['Dividing a whole number by 2 gives a whole number.','Sometimes']];const f=pick(forms);
   const why={'Always':'This is true for every example you can test.','Sometimes':'It is true for some examples but not others.','Never':'No example makes this true.'}[f[1]];const extra={'A rectangle is a square.':' A 3-by-5 rectangle is not a square, but a 4-by-4 rectangle is.','The sum of two odd numbers is odd.':' Try 3 + 5 = 8 or 7 + 9 = 16: always even.','The product of two whole numbers is greater than both of them.':' 3 × 4 = 12 is bigger than both, but 3 × 1 = 3 and 5 × 0 = 0 are not.','A prime number is odd.':' 2 is the only even prime.','Dividing a whole number by 2 gives a whole number.':' 8 ÷ 2 = 4 works, but 7 ÷ 2 = 3.5 does not.','A triangle has two right angles.':' Two right angles already total 180°, leaving nothing for the third angle.'}[f[0]]||'';
-  return mc(`Is this statement always, sometimes, or never true? "<b>${f[0]}</b>"`,f[1],['Always','Sometimes','Never'].filter(x=>x!==f[1]),why+extra)}
+  return mc(`Is this statement always, sometimes, or never true? "<b>${f[0]}</b>"`,f[1],['Always','Sometimes','Never'].filter(x=>x!==f[1]),why+extra,{min:3})}
  if(t===3){const k=R(2,4),m=k*R(2,5);const fruit=pick([['apples','plums'],['melons','oranges'],['books','notebooks']]);return mc(`${k} ${fruit[0]} weigh the same as ${m} ${fruit[1]}. How many ${fruit[1]} weigh the same as 1 ${fruit[0].slice(0,-1)}?`,m/k,[m-k,m,k,m/k+1],`Divide both sides by ${k}: 1 ${fruit[0].slice(0,-1)} = ${m} ÷ ${k} = ${m/k} ${fruit[1]}.`)}
  if(t===4){const both=R(2,8),onlyA=R(3,10),onlyB=R(3,10),none=R(0,5);const tot=both+onlyA+onlyB+none;const A=both+onlyA,B=both+onlyB;const kind=pick(['onlyA','none','either']);
   const q=`In a class of ${tot} students, ${A} have a dog, ${B} have a cat, and ${both} have both a dog and a cat. `;
@@ -1221,10 +1303,10 @@ ${ex('25 coworkers chose lunch: 12 chose sandwiches and 5 chose salad. The rest 
 ${ex('A movie ticket is $9 and popcorn is $4. A family of 4 buys tickets and 2 popcorns. Total?','4 × 9 = 36. 2 × 4 = 8. 36 + 8 = <b>$44</b>.')}
 ${tip('Read every answer choice with suspicion. Wrong choices are usually the result of stopping after step one. If your answer matches a choice too quickly, check whether you finished the problem.')}`,
 gen(){const t=R(1,6);const n=nm();
- if(t===1){const tot=R(20,40),a=R(5,12),b=R(3,9);return mc(`A group of ${tot} students chose one lunch each: ${a} chose a sandwich, ${b} chose salad, and the rest chose pizza. How many chose pizza?`,tot-a-b,[a+b,tot-a,tot-b,tot-a-b+1],`First find how many did not choose pizza: ${a} + ${b} = ${a+b}. Then ${tot} − ${a+b} = ${tot-a-b}.`)}
+ if(t===1){const tot=R(25,40),a=R(5,12),b=R(3,9);if(a+b>=tot)return this.gen();return mc(`A group of ${tot} students chose one lunch each: ${a} chose a sandwich, ${b} chose salad, and the rest chose pizza. How many chose pizza?`,tot-a-b,[a+b,tot-a,tot-b,tot-a-b+1],`First find how many did not choose pizza: ${a} + ${b} = ${a+b}. Then ${tot} − ${a+b} = ${tot-a-b}.`)}
  if(t===2){const tk=R(6,12),pc=R(3,6),ppl=R(3,5),pcs=R(1,3);const tot=tk*ppl+pc*pcs;return mc(`Movie tickets cost $${tk} each and popcorn costs $${pc} a bag. ${n}'s family buys ${ppl} tickets and ${pcs} bag${pcs>1?'s':''} of popcorn. How much do they spend?`,'$'+tot,['$'+(tk*ppl),'$'+(tk+pc)*ppl,'$'+(tot+pc),'$'+(tk*ppl+pc)],`Tickets: ${ppl} × $${tk} = $${tk*ppl}. Popcorn: ${pcs} × $${pc} = $${pc*pcs}. Total: $${tk*ppl} + $${pc*pcs} = $${tot}.`)}
  if(t===3){const had=R(30,60),price=R(3,8),q=R(2,5);const left=had-price*q;if(left<0)return this.gen();return mc(`${n} had $${had} and bought ${q} books for $${price} each. How much money does ${n} have left?`,'$'+left,['$'+(had-price),'$'+(price*q),'$'+(had-q),'$'+(left+price)],`Cost of books: ${q} × $${price} = $${price*q}. Money left: $${had} − $${price*q} = $${left}.`)}
- if(t===4){const perbox=R(6,12),boxes=R(3,8),gave=R(5,20);const tot=perbox*boxes;return mc(`${n} bought ${boxes} boxes of granola bars with ${perbox} bars in each box, then gave away ${gave} bars. How many bars are left?`,tot-gave,[tot,tot+gave,perbox*boxes-perbox,boxes*gave],`Total bars: ${boxes} × ${perbox} = ${tot}. Subtract the ${gave} given away: ${tot} − ${gave} = ${tot-gave}.`)}
+ if(t===4){const perbox=R(6,12),boxes=R(3,8);const tot=perbox*boxes;const gave=R(5,Math.min(20,tot-5));return mc(`${n} bought ${boxes} boxes of granola bars with ${perbox} bars in each box, then gave away ${gave} bars. How many bars are left?`,tot-gave,[tot,tot+gave,perbox*boxes-perbox,boxes*gave],`Total bars: ${boxes} × ${perbox} = ${tot}. Subtract the ${gave} given away: ${tot} − ${gave} = ${tot-gave}.`)}
  if(t===5){const rows=R(4,9),per=R(5,12),tot=rows*per;const stud=tot+R(1,per-1);const need=Math.ceil(stud/per);return mc(`An auditorium has rows of ${per} seats. If ${stud} students need seats, how many rows will be used?`,need,[need-1,Math.round(stud/per*10)/10,stud-per,need+1],`${stud} ÷ ${per} = ${Math.floor(stud/per)} remainder ${stud%per}. The leftover students need one more row, so ${need} rows.`)}
  const age=R(8,12),diff=R(3,6),yrs=R(2,5);return mc(`${n} is ${age} years old. ${n}'s brother is ${diff} years older. How old will the brother be in ${yrs} years?`,age+diff+yrs,[age+diff,age+yrs,age+diff-yrs,age+diff+yrs+1],`Brother's age now: ${age} + ${diff} = ${age+diff}. In ${yrs} years: ${age+diff} + ${yrs} = ${age+diff+yrs}.`)}};
 
@@ -1244,22 +1326,42 @@ gen(){const t=R(1,5);const n=nm();
 
 // ===== VERBAL =====
 const PREFIXES=[['un-','not, reverse','unable, unhappy'],['re-','again, back','reload, return'],['pre-','before','preview, predict'],['dis-','not, away, opposite','disagree, disappear'],['mis-','bad, wrong','misplace, misspell'],['non-','not','nonstop, nonsense'],['in-','not (or into)','invisible, incorrect'],['sub-','under, below','submarine, subway'],['inter-','between, among','international, interrupt'],['trans-','across, beyond','transport, transform'],['bi-','two','bicycle, bilingual'],['tri-','three','triangle, tricycle'],['uni-','one','unicycle, uniform'],['semi-','half, partly','semicircle, semifinal'],['anti-','against','antisocial, antifreeze'],['super-','above, extra','superhero, superior'],['ex-','out','exit, exhale'],['co-, com-','with, together','cooperate, combine'],['bene-','good, well','benefit, beneficial'],['mal-','bad, poorly','malfunction, malnourished'],['post-','after','postpone, postgame'],['fore-','before, in front','forecast, foresee'],['circum-','around','circumference, circumnavigate'],['omni-','all','omnivore, omnipresent'],['hyper-','over, too much','hyperactive, hyperextend'],['auto-','self','automatic, autobiography'],['tele-','far','telephone, telescope'],['de-','down, away from','descend, decrease'],['poly-','many','polygon, polyglot'],['mono-','one, single','monotone, monopoly']];
-const SUFFIXES=[['-able, -ible','capable of being (adjective)','teachable, flexible'],['-ful','full of, marked by (adjective)','helpful, joyful'],['-less','without, lacking (adjective)','fearless, careless'],['-ous','full of, having (adjective)','generous, joyous'],['-ish','like, somewhat (adjective)','childish, reddish'],['-er, -or','one who does (noun)','teacher, actor'],['-ist','one who does or believes (noun)','artist, scientist'],['-ness','state or quality (noun)','kindness, darkness'],['-ment','result or action (noun)','movement, agreement'],['-tion, -sion','action or state (noun)','celebration, decision'],['-hood','state or condition (noun)','childhood, neighborhood'],['-ship','position or state (noun)','friendship, leadership'],['-ity','quality or state (noun)','curiosity, ability'],['-ize','to make or cause (verb)','realize, organize'],['-fy','to make (verb)','simplify, beautify'],['-en','to make or become (verb)','soften, shorten'],['-ly','in a certain way (adverb)','quickly, softly'],['-esque','in the style of, like','statuesque, picturesque'],['-ard','one that does','coward, wizard'],['-tude','quality or state','attitude, gratitude']];
+const SUFFIXES=[['-able, -ible','capable of being (adjective)','teachable, flexible'],['-ful','full of, marked by (adjective)','helpful, joyful'],['-less','without, lacking (adjective)','fearless, careless'],['-ous','full of, having (adjective)','generous, joyous'],['-ish','like, somewhat (adjective)','childish, reddish'],['-er, -or','one who does (noun)','teacher, actor'],['-ist','one who does or believes (noun)','artist, scientist'],['-ness','state or quality (noun)','kindness, darkness'],['-ment','result or action (noun)','movement, agreement'],['-tion, -sion','action or state (noun)','celebration, decision'],['-hood','state or condition (noun)','childhood, neighborhood'],['-ship','position or state (noun)','friendship, leadership'],['-ity','quality or state (noun)','curiosity, ability'],['-ize','to make or cause (verb)','realize, organize'],['-fy','to make (verb)','simplify, beautify'],['-en','to make or become (verb)','soften, shorten'],['-ly','in a certain way (adverb)','quickly, softly'],['-esque','in the style of, like','statuesque, picturesque'],['-ard','one who does (often badly)','sluggard, drunkard'],['-tude','quality or state','attitude, gratitude']];
 const ROOTS=[['port','carry','transport, portable, import'],['dict','say, speak','predict, dictionary, verdict'],['spect','look, see','inspect, spectator, spectacles'],['aud','hear','audience, audible, audio'],['vis, vid','see','visible, video, vision'],['scrib, script','write','describe, manuscript, scribble'],['graph','write, draw','autograph, photograph, graphic'],['bio','life','biology, biography'],['geo','earth','geography, geology'],['chron','time','chronological, synchronize'],['phon','sound','telephone, symphony, phonics'],['ject','throw','eject, reject, project'],['rupt','break','erupt, interrupt, rupture'],['tract','pull','tractor, attract, subtract'],['struct','build','construct, structure, instruct'],['mit, miss','send','transmit, mission, dismiss'],['ped','foot','pedal, pedestrian, centipede'],['aqua','water','aquarium, aquatic'],['terr','land','territory, terrain'],['cred','believe','credit, incredible'],['form','shape','transform, uniform, formation'],['mem','remember','memory, memorial, remember'],['loc','place','location, local'],['vac','empty','vacant, vacuum, vacation'],['min','small','minimum, miniature'],['magn','great, large','magnify, magnificent'],['duc, duct','lead','conduct, educate, aqueduct'],['fract, frag','break','fraction, fragment, fragile'],['man','hand','manual, manufacture'],['cycl','circle','bicycle, cyclone, recycle']];
 const wordsByPos=pos=>VOCAB.filter(w=>w[1]===pos);
-function synQ(word){ // word entry
-  const [w,pos,def,syns]=word;const ans=syns[0];const others=wordsByPos(pos).filter(o=>o[0]!==w&&!o[3].some(s=>syns.includes(s))&&o[3][0]!==ans);
+// Everything a word "means": itself plus its synonyms. Two entries whose meaning
+// sets overlap are too close to sit in the same question, or both answers are right.
+const MEAN={};VOCAB.forEach(w=>{MEAN[w[0]]=new Set([w[0].toLowerCase(),...w[3].map(x=>x.toLowerCase())])});
+const tooClose=(a,b)=>{for(const x of MEAN[a])if(MEAN[b].has(x))return true;return false};
+const vowelStart=w=>/^[aeiou]/i.test(w);
+function synQ(word){
+  const [w,pos,def,syns]=word;const ans=syns[0];
+  const others=wordsByPos(pos).filter(o=>o[0]!==w
+    && !tooClose(w,o[0])                      // not a near-synonym of the stem
+    && o[3][0].toLowerCase()!==w.toLowerCase() // never offer the stem word itself
+    && !MEAN[w].has(o[3][0].toLowerCase()));   // nor any of the stem's own synonyms
   const d=shuf(others).slice(0,3).map(o=>o[3][0]);
   return mc(`<span class="stem">${w.toUpperCase()}</span>`,ans,d,`<b>${w}</b> (${pos==='adj'?'adjective':pos==='v'?'verb':pos==='n'?'noun':'adverb'}) means ${def}. The closest match is <b>${ans}</b>${syns[1]?' (also: '+syns[1]+')':''}.`,{kind:'syn',word:w})}
-function scQ(word){const [w,pos,def,syns,sent]=word;const others=wordsByPos(pos).filter(o=>o[0]!==w&&!o[3].some(s=>syns.includes(s)));
+function scQ(word){
+  const [w,pos,def,syns,sent]=word;
+  // If the blank follows "a"/"an", every choice must start the same way, or the
+  // article alone gives the answer away.
+  const article=/\b(an?)\s+___/.exec(sent);
+  const others=wordsByPos(pos).filter(o=>o[0]!==w&&!tooClose(w,o[0])
+    &&(!article||vowelStart(o[0])===vowelStart(w)));
   const d=shuf(others).slice(0,3).map(o=>o[0]);
   return mc(sent.replace('___','<span class="blank">______</span>'),w,d,`The clues in the sentence point to <b>${w}</b>: ${def}. "${sent.replace('___','<b>'+w+'</b>')}"`,{kind:'sc',word:w})}
+// Two word parts whose meanings share a content word (e.g. "write" in both) are
+// indistinguishable to a child, so they must never appear in the same question.
+const STOP=new Set(['a','an','the','of','or','to','in','on','and','be','is','not','one','that','who','does','with','off','from','into','over','out','up','down','make','cause','state','quality','condition','act','result','action','marked','given','full','having','like','style']);
+const glossWords=g=>new Set(String(g).toLowerCase().split(/[^a-z]+/).filter(x=>x.length>2&&!STOP.has(x)));
+function glossClash(a,b){const A=glossWords(a),B=glossWords(b);for(const x of A)if(B.has(x))return true;return false}
 function rootQ(){const t=R(1,5);
- if(t===1){const p=pick(PREFIXES);return mc(`What does the prefix <b>${p[0]}</b> mean, as in <em>${p[2]}</em>?`,p[1],shuf(PREFIXES.filter(x=>x[1]!==p[1])).slice(0,3).map(x=>x[1]),`<b>${p[0]}</b> means "${p[1]}." Examples: ${p[2]}.`)}
- if(t===2){const r=pick(ROOTS);return mc(`The root <b>${r[0]}</b> appears in <em>${r[2]}</em>. What does it mean?`,r[1],shuf(ROOTS.filter(x=>x[1]!==r[1])).slice(0,3).map(x=>x[1]),`<b>${r[0]}</b> means "${r[1]}." Think of ${r[2].split(', ')[0]}.`)}
- if(t===3){const s=pick(SUFFIXES);return mc(`What does the suffix <b>${s[0]}</b> mean, as in <em>${s[2]}</em>?`,s[1],shuf(SUFFIXES.filter(x=>x[1]!==s[1])).slice(0,3).map(x=>x[1]),`<b>${s[0]}</b> means "${s[1]}." Examples: ${s[2]}.`)}
+ if(t===1){const p=pick(PREFIXES);return mc(`What does the prefix <b>${p[0]}</b> mean, as in <em>${p[2]}</em>?`,p[1],shuf(PREFIXES.filter(x=>!glossClash(x[1],p[1]))).slice(0,3).map(x=>x[1]),`<b>${p[0]}</b> means "${p[1]}." Examples: ${p[2]}.`)}
+ if(t===2){const r=pick(ROOTS);return mc(`The root <b>${r[0]}</b> appears in <em>${r[2]}</em>. What does it mean?`,r[1],shuf(ROOTS.filter(x=>!glossClash(x[1],r[1]))).slice(0,3).map(x=>x[1]),`<b>${r[0]}</b> means "${r[1]}." Think of ${r[2].split(', ')[0]}.`)}
+ if(t===3){const s=pick(SUFFIXES);return mc(`What does the suffix <b>${s[0]}</b> mean, as in <em>${s[2]}</em>?`,s[1],shuf(SUFFIXES.filter(x=>!glossClash(x[1],s[1]))).slice(0,3).map(x=>x[1]),`<b>${s[0]}</b> means "${s[1]}." Examples: ${s[2]}.`)}
  if(t===4){const items=[['predict','to say what will happen before it does (pre- = before, dict = say)'],['transport','to carry across (trans- = across, port = carry)'],['inspect','to look into closely (in- = into, spect = look)'],['audible','able to be heard (aud = hear, -ible = able)'],['biography','writing about a life (bio = life, graph = write)'],['interrupt','to break in between (inter- = between, rupt = break)'],['submarine','a ship that goes under the sea (sub- = under)'],['unicycle','a cycle with one wheel (uni- = one)'],['fearless','without fear (-less = without)'],['misspell','to spell wrongly (mis- = wrong)'],['invisible','not able to be seen (in- = not, vis = see)'],['chronological','in time order (chron = time)'],['eject','to throw out (e- = out, ject = throw)'],['pedestrian','a person on foot (ped = foot)'],['incredible','hard to believe (in- = not, cred = believe)'],['magnify','to make larger (magn = large, -fy = make)'],['vacant','empty (vac = empty)'],['postpone','to put off until after (post- = after)']];const it=pick(items);
-  return mc(`Using word parts, what does <b>${it[0]}</b> most likely mean?`,it[1].split(' (')[0],shuf(items.filter(x=>x[0]!==it[0])).slice(0,3).map(x=>x[1].split(' (')[0]),`<b>${it[0]}</b>: ${it[1]}.`)}
+  return mc(`Using word parts, what does <b>${it[0]}</b> most likely mean?`,it[1].split(' (')[0],shuf(items.filter(x=>x[0]!==it[0]&&!glossClash(x[1].split(' (')[0],it[1].split(' (')[0]))).slice(0,3).map(x=>x[1].split(' (')[0]),`<b>${it[0]}</b>: ${it[1]}.`)}
  const items=[['not happy','unhappy'],['to view before','preview'],['to read again','reread'],['half of a circle','semicircle'],['a shape with many sides','polygon'],['without care','careless'],['full of joy','joyful'],['one who teaches','teacher'],['to make soft','soften'],['able to be read','readable'],['the state of being kind','kindness'],['against war','antiwar'],['to carry across','transport'],['to look inside','inspect'],['a person who walks (on foot)','pedestrian'],['able to be heard','audible']];const it=pick(items);
  return mc(`Which word means "<b>${it[0]}</b>"?`,it[1],shuf(items.filter(x=>x[1]!==it[1])).slice(0,3).map(x=>x[1]),`"${it[0]}" → <b>${it[1]}</b>. Break the word into its parts to check.`)}
 
@@ -1268,11 +1370,11 @@ T.v_roots={t:'Prefixes, Roots & Suffixes',cat:'verbal',lesson:`
 ${ex('<em>insensitive</em>','in- (not) + sensitive → "not sensitive," someone who does not notice or care about others\' feelings.')}
 ${ex('<em>bicycle</em> vs. <em>unicycle</em>','bi- = two, uni- = one; cycle = wheel. Two wheels vs. one wheel.')}
 <p><b>Common prefixes</b>:</p>
-${table(['Prefix','Meaning','Examples'],PREFIXES.slice(0,14))}
+${table(['Prefix','Meaning','Examples'],PREFIXES)}
 <p><b>Common roots</b>:</p>
-${table(['Root','Meaning','Examples'],ROOTS.slice(0,12))}
+${table(['Root','Meaning','Examples'],ROOTS)}
 <p><b>Common suffixes</b>:</p>
-${table(['Suffix','Meaning','Examples'],SUFFIXES.slice(0,12))}
+${table(['Suffix','Meaning','Examples'],SUFFIXES)}
 ${tip('Negative prefixes (un-, in-, non-, dis-, mis-, mal-) flip a word\'s charge from positive to negative. If a synonym question asks about "malfunction," you know the answer is something bad.')}`,
 gen:rootQ};
 
@@ -1291,7 +1393,7 @@ T.v_sc={t:'Sentence Completion Strategies',cat:'verbal',lesson:`
 <p>A sentence completion has one blank (sometimes a blank phrase). Every sentence contains <b>clues</b> that point to exactly one answer.</p>
 <p><b>Step 1: Read the whole sentence</b> and cover the choices. <b>Step 2: Predict</b> a word for the blank. <b>Step 3: Match</b> your prediction to a choice. <b>Step 4: Reread</b> with your choice in place.</p>
 <p><b>Types of clues</b>:</p>
-${table(['Clue type','Signal words','Example'],[['Contrast','but, although, however, yet, unlike, on the other hand','<em>Although</em> Mark seemed ___, he paced nervously. → calm'],['Cause and effect','because, since, so, therefore, as a result','<em>Since</em> she didn\'t cite sources, she lost points for ___. → copying'],['Description / example','such as, like, including, for example','Golden Retrievers and Pugs are the top ___ at the show. → breeds'],['Restatement','in other words, that is, which means',"He was <em>exhausted</em>, so ___ that he fell asleep standing. → tired"],['Tone / charge','positive or negative feeling words','Grandma\'s <em>rosy</em> cheeks looked ___ and <em>ghostlike</em>. → pale']])}
+${table(['Clue type','Signal words','Example'],[['Contrast','but, although, however, yet, unlike, on the other hand','<em>Although</em> Mark seemed ___, he paced nervously. → calm'],['Cause and effect','because, since, so, therefore, as a result','<em>Since</em> she didn\'t cite sources, she lost points for ___. → copying'],['Description / example','such as, like, including, for example','Golden Retrievers and Pugs are the top ___ at the show. → breeds'],['Restatement','in other words, that is, which means',"He was <em>exhausted</em>, so ___ that he fell asleep standing. → tired"],['Tone / charge','positive or negative feeling words','Grandma\'s <em>normally rosy</em> cheeks looked ___ and <em>ghostlike</em>. → pale']])}
 ${ex('After Kira wrote her first book, she ___ her fans the sequel would be just as exciting.','Fans, sequel, exciting: a positive promise. <b>promised</b>. "Denied" is the opposite; "germinated" means to sprout.')}
 ${tip('Watch for reversal words. "But," "although," and "however" mean the blank is the OPPOSITE of the clue. "Because" and "so" mean it matches the clue.')}`,
 gen(){return scQ(pick(VOCAB))}};
@@ -1345,17 +1447,33 @@ function markDay(){S.days[today()]=(S.days[today()]||0)+1}
 function streak(){let n=0,d=today();if(!S.days[d])d=addDays(d,-1);while(S.days[d]){n++;d=addDays(d,-1)}return n}
 const doneCount=()=>Object.keys(S.done).length;
 function nextSession(){return SESSIONS.find(s=>!S.done[s.id])||null}
+function resumeSession(){if(!S.paused)return;S.cur=S.paused;S.paused=null;save();render()}
 function expectedDone(){const total=daysBetween(S.start,S.test);const el=daysBetween(S.start,today());if(total<=0)return 48;return Math.max(0,Math.min(48,Math.floor(el/total*48)))}
-function newWordsFor(idx){return VOCAB.slice(idx*5,idx*5+5)}
-function introducedWords(idx){return VOCAB.slice(0,Math.min(VOCAB.length,(idx+1)*5))}
+// Spread every word across the 48 sessions, so none is ever met cold in a quiz.
+const NSESS=48;
+const wordEnd=idx=>Math.round((idx+1)*VOCAB.length/NSESS);
+function newWordsFor(idx){return VOCAB.slice(idx?wordEnd(idx-1):0,wordEnd(idx))}
+function introducedWords(idx){return VOCAB.slice(0,wordEnd(idx))}
 function weakTopics(k){return ALLMATH.map(id=>{const s=S.topics[id];const n=s?s.r+s.w:0;return {id,n,acc:n?s.r/n:1}}).filter(x=>x.n>=4).sort((a,b)=>a.acc-b.acc).slice(0,k).map(x=>x.id)}
 
 // ================= QUESTION SOURCING =================
-function verbalQ(kind,idx){const pool=idx!=null?introducedWords(idx):VOCAB;const useSeen=pool.length>=8?Math.random()<0.7:Math.random()<0.5;const w=useSeen?pick(pool):pick(VOCAB);return kind==='syn'?synQ(w):scQ(w)}
-function mixedMath(topics,n){const out=[];for(let i=0;i<n;i++){const id=topics[i%topics.length];const q=T[id].gen();q.topic=id;out.push(q)}return shuf(out)}
-function topicQs(id,n){const out=[];for(let i=0;i<n;i++){const q=T[id].gen();q.topic=id;out.push(q)}return out}
-function verbalSet(n,idx){const out=[];const half=Math.ceil(n/2);for(let i=0;i<half;i++){const q=verbalQ('syn',idx);q.topic='v_syn';out.push(q)}for(let i=half;i<n;i++){const q=verbalQ('sc',idx);q.topic='v_sc';out.push(q)}return out}
-function mathTest(n,kind){const topics=shuf(ALLMATH);return mixedMath(topics,n)}
+function verbalQ(kind,idx){const pool=idx!=null?introducedWords(idx):VOCAB;
+ for(let i=0;i<200;i++){const useSeen=pool.length>=8?Math.random()<0.7:Math.random()<0.5;
+  const w=useSeen?pick(pool):pick(VOCAB);const q=kind==='syn'?synQ(w):scQ(w);if(q)return q}
+ return null}
+// A generator returns null rather than build a question with look-alike choices;
+// ask again until it gives us a clean one.
+function genOne(id){for(let i=0;i<200;i++){const q=T[id].gen();if(q){q.topic=id;return q}}return null}
+function mixedMath(topics,n){const out=[];for(let i=0;i<n;i++){const q=genOne(topics[i%topics.length]);if(q)out.push(q)}return shuf(out)}
+function topicQs(id,n){const out=[];for(let i=0;i<n;i++){const q=genOne(id);if(q)out.push(q)}return out}
+function verbalSet(n,idx){const out=[];const half=Math.ceil(n/2);
+ for(let i=0;i<n;i++){const kind=i<half?'syn':'sc';const q=verbalQ(kind,idx);if(q){q.topic=kind==='syn'?'v_syn':'v_sc';out.push(q)}}
+ return out}
+// Quantitative Reasoning leans on concepts, estimation and logic; Mathematics
+// Achievement leans on computation. Weight the pools so the two tests differ.
+const QR_TOPICS=['q_sense','q_logic','q_multi','q_inverse','a_pattern','s_center','s_graphs','s_plots','s_interpret','p_basic','p_compound','p_count','p_predict','n_wordops','m_est','r_ratio'];
+const MA_TOPICS=ALLMATH.filter(id=>!['q_sense','q_logic','q_inverse'].includes(id));
+function mathTest(n,kind){const pool=kind==='verbal'?ALLMATH:kind==='math'?MA_TOPICS:QR_TOPICS;return mixedMath(shuf(pool),n)}
 
 // ================= SESSION BUILDER =================
 function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.type,title:sess.title,step:0,elapsed:0,started:Date.now(),steps:[],data:{}};
@@ -1373,7 +1491,7 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
 
 // ================= RENDER HELPERS =================
 const $=s=>document.querySelector(s);
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const mm=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
 function pct(r,t){return t?Math.round(r/t*100):0}
 function catAcc(cat){let r=0,w=0;Object.keys(T).filter(k=>T[k].cat===cat).forEach(k=>{const s=S.topics[k];if(s){r+=s.r;w+=s.w}});return {r,w,n:r+w}}
@@ -1381,8 +1499,8 @@ function ring(p,size=64,label){const r=(size-8)/2,c=2*Math.PI*r;return `<svg cla
 
 // ================= VIEWS =================
 function render(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
- const v=S.view||'home';app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · Verbal + Math</div></div></div>
- <nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${v===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav></header>
+ let v=S.view||'home';if(!S.name)v='home';app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · Verbal + Math</div></div></div>
+ ${S.name?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${v===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
  <main class="wrap">${v==='home'?viewHome():v==='plan'?viewPlan():v==='practice'?viewPractice():v==='words'?viewWords():viewProgress()}</main>`;
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{S.view=b.dataset.view;save();render()});wireCommon()}
 
@@ -1393,7 +1511,7 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  <label>What's your first name?<input id="nm" placeholder="Your name" maxlength="20"></label><label>Test date<input id="td" type="date" value="${S.test}"></label><button class="btn primary" id="go">Let's go</button>
  <details class="about"><summary>About the ISEE Lower Level</summary>${TEST_INFO}</details></section>`;
  return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of 48`:'All 48 sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
- <div class="herobtns">${nxt?`<button class="btn primary big" data-start="${nxt.id}">Start today's session</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
+ <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
  <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/48*100),56)}<div class="statl">plan done</div></div></div></section>
  <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/48*100)}%"></div><span class="marker" style="left:${Math.round(exp/48*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
  <div class="card"><div class="cardhead"><h3>This week</h3></div>${nxt?weekList(nxt.week):weekList(12)}</div></section>
@@ -1420,7 +1538,7 @@ function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<
  <section class="grid2"><div class="card"><h3>Study days (last 12 weeks)</h3><div class="heat">${days.map(([d,n])=>`<span class="${n?'hit':''}" title="${d}: ${n} activit${n===1?'y':'ies'}"></span>`).join('')}</div><p class="muted">Current streak: <b>${streak()}</b> day${streak()===1?'':'s'}. Sessions done: <b>${doneCount()}</b> of 48.</p></div>
  <div class="card"><h3>Vocabulary</h3><div class="vrow"><span>Mastered</span><b>${tv.filter(v=>v.lvl>=3).length}</b></div><div class="vrow"><span>Still learning</span><b>${tv.filter(v=>v.lvl<3).length}</b></div><div class="vrow"><span>Not yet seen</span><b>${VOCAB.length-tv.length}</b></div><div class="vrow"><span>Synonym/completion accuracy</span><b>${(()=>{let r=0,w=0;tv.forEach(v=>{r+=v.r;w+=v.w});return r+w?pct(r,r+w)+'%':'—'})()}</b></div></div></section>
  <section class="card"><h3>Accuracy by topic</h3><div class="tblwrap"><table class="tbl"><thead><tr><th>Topic</th><th>Strand</th><th>Answered</th><th>Accuracy</th></tr></thead><tbody>${Object.keys(T).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;const p=n?pct(s.r,n):null;return `<tr><td>${esc(T[k].t)}</td><td class="muted">${CATS[T[k].cat]}</td><td>${n}</td><td>${p===null?'—':`<span class="pill ${p>=80?'good':p>=60?'warn':'bad'}">${p}%</span>`}</td></tr>`}).join('')}</tbody></table></div></section>
- <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s.title)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
+ <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s?s.title:'Session '+id)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
  <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
@@ -1444,30 +1562,41 @@ function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=
  const choices=q.ch.map((c,i)=>{let cls='';if(done&&!isTest){if(i===q.a)cls='right';else if(i===picked)cls='wrong'}else if(isTest&&picked===i)cls='sel';return `<button class="choice ${cls}" data-choice="${i}" ${done&&!isTest?'disabled':''}><span class="ltr">${letters[i]}</span><span class="ctext">${c}</span></button>`}).join('');
  const right=st.ans.filter(a=>a.ok).length;
  const head=isTest?`<div class="qhead"><span>Question ${st.i+1} of ${st.qs.length}</span><span class="muted">${topicName}</span></div>`:`<div class="qhead"><span>Question ${st.i+1} of ${st.qs.length}</span><span class="muted">${topicName} · ${right} correct</span></div>`;
- const fb=done&&!isTest?`<div class="feedback ${picked===q.a?'ok':'no'}"><b>${picked===q.a?pick(['Correct!','Nice work!','Yes!','Exactly right.','You got it.']):'Not quite.'}</b> ${q.exp}</div><div class="actions"><button class="btn primary" data-next-q autofocus>${st.i+1<st.qs.length?'Next question':'Finish this step'}</button></div>`:isTest?`<div class="actions between"><button class="btn ghost" data-prev-q ${st.i===0?'disabled':''}>‹ Back</button><span class="muted small">${st.ans.filter(a=>a&&a.pick!=null).length} of ${st.qs.length} answered</span>${st.i+1<st.qs.length?`<button class="btn" data-next-q>Next ›</button>`:`<button class="btn primary" data-submit>Submit test</button>`}</div>`:'';
+ const fb=done&&!isTest?`<div class="feedback ${picked===q.a?'ok':'no'}" role="status" aria-live="polite"><b>${picked===q.a?pick(['Correct!','Nice work!','Yes!','Exactly right.','You got it.']):'Not quite.'}</b> ${q.exp}</div><div class="actions"><button class="btn primary" data-next-q autofocus>${st.i+1<st.qs.length?'Next question':'Finish this step'}</button></div>`:isTest?`<div class="actions between"><button class="btn ghost" data-prev-q ${st.i===0?'disabled':''}>‹ Back</button><span class="muted small">${st.ans.filter(a=>a&&a.pick!=null).length} of ${st.qs.length} answered</span>${st.i+1<st.qs.length?`<button class="btn" data-next-q>Next ›</button>`:`<button class="btn primary" data-submit>Submit test</button>`}</div>`:'';
  return `<div class="card quiz">${head}${dirs}<div class="qtext">${q.q}</div><div class="choices">${choices}</div>${fb}</div>${isTest?`<p class="muted small center">Timed section: no feedback until you submit. Skip and come back if you get stuck.</p>`:''}`}
 function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'||s.k==='test');let r=0,t=0;const missed=[];quizzes.forEach(s=>{s.ans.forEach((a,i)=>{if(!a)return;t++;if(a.ok)r++;else missed.push({q:s.qs[i],pick:a.pick})})});
  const warm=c.steps.find(s=>s.k==='warm');const learned=warm?warm.res.filter(x=>x.ok).length:0;const test=c.steps.find(s=>s.k==='test');
- const score=pct(r,t);const words=score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
+ const cardsOnly=!t&&warm;const seenCards=warm?warm.res.length:0;
+ const score=cardsOnly?pct(learned,seenCards):pct(r,t);
+ const words=cardsOnly?(score>=80?'Great recall!':'Good practice. The words you missed come back sooner.')
+   :score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
  const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':'On the real test, Quantitative Reasoning is 38 questions in 35 minutes and Math Achievement is 30 in 30.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
- return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>score</span></div><div><div class="statn">${r}/${t}</div><span>correct</span></div><div><div class="statn">${learned}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${testNote}
- ${missed.length?`<h3>Review what you missed</h3><div class="missed">${missed.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill bad">You chose: ${m.q.ch[m.pick]}</span> <span class="pill good">Answer: ${m.q.ch[m.q.a]}</span></div><div class="muted">${m.q.exp}</div></div>`).join('')}</div>`:'<p class="muted">No misses. Perfect round!</p>'}
+ return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>${cardsOnly?'words known':'score'}</span></div>${cardsOnly?'':`<div><div class="statn">${r}/${t}</div><span>correct</span></div>`}<div><div class="statn">${learned}${cardsOnly?'/'+seenCards:''}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${testNote}
+ ${cardsOnly?'':''}${missed.length?`<h3>Review what you missed</h3><div class="missed">${missed.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill bad">${m.pick==null?'You skipped this one':'You chose: '+m.q.ch[m.pick]}</span> <span class="pill good">Answer: ${m.q.ch[m.q.a]}</span></div><div class="muted">${m.q.exp}</div></div>`).join('')}</div>`:cardsOnly?`<p class="muted">You marked ${learned} of ${seenCards} cards as known. The rest will come back in your next warm-up.</p>`:'<p class="muted">No misses. Perfect round!</p>'}
  <div class="actions"><button class="btn primary big" data-finish>Finish session</button></div></div>`}
 
 // ================= SESSION LOGIC =================
 let timerHandle=null;
-function startSession(sess){S.cur=buildSession(sess);S.view='home';save();render()}
+function startSession(sess){if(S.paused&&S.paused.id===sess.id)S.paused=null;S.cur=buildSession(sess);S.view='home';save();render()}
 function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
  if(kind==='topic'){cur={id:'quick',type:'quick',title:T[a].t,step:0,elapsed:0,steps:[{k:'quiz',title:'Practice',min:10,qs:topicQs(a,10),i:0,ans:[],picked:null},{k:'wrap',title:'Results',min:2}]}}
  else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':'Math',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):mathTest(n),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
  else if(kind==='flash'){const seen=VOCAB.filter(w=>S.vocab[w[0]]).map(w=>w[0]).sort((x,y)=>vstat(x).lvl-vstat(y).lvl);const cards=[...seen.slice(0,12),...shuf(VOCAB.filter(w=>!S.vocab[w[0]]).map(w=>w[0])).slice(0,20-Math.min(12,seen.length))];cur={id:'quick',type:'quick',title:'Flashcard drill',step:0,elapsed:0,steps:[{k:'warm',title:'Flashcards',min:8,cards,ci:0,flipped:false,res:[]},{k:'wrap',title:'Done',min:1}]}}
  S.cur=cur;save();render()}
-function tick(){if(!S.cur)return;if(document.visibilityState!=='visible')return;const c=S.cur;c.elapsed++;const st=c.steps[c.step];if(st.k==='test'){st.t=(st.t||0)+1;if(st.t>=st.limit){submitTest();return}}const el=$('#timer');if(el)el.textContent=st.k==='test'?mm(Math.max(0,st.limit-st.t)):mm(c.elapsed);if(c.elapsed%15===0)save()}
+function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
+ if(st.k==='test'){ // a timed section runs on the clock, even if the app is in the background
+   if(st.t0==null)st.t0=Date.now()-(st.t||0)*1000;
+   st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
+   if(st.t>=st.limit){submitTest();return}}
+ else{if(document.visibilityState!=='visible')return;c.elapsed++}const el=$('#timer');if(el)el.textContent=st.k==='test'?mm(Math.max(0,st.limit-st.t)):mm(c.elapsed);if(c.elapsed%15===0)save()}
 function nextStep(){const c=S.cur;c.step++;if(c.step>=c.steps.length)c.step=c.steps.length-1;save();render();window.scrollTo(0,0)}
 function submitTest(){const st=S.cur.steps[S.cur.step];st.qs.forEach((q,i)=>{const a=st.ans[i];const p=a?a.pick:null;st.ans[i]={pick:p,ok:p===q.a};if(q.topic)recordTopic(q.topic,p===q.a);if(q.word)recordVocab(q.word,p===q.a)});nextStep()}
-function finishSession(){const c=S.cur;if(c.type!=='quick'){let r=0,t=0;c.steps.filter(s=>s.qs).forEach(s=>s.ans.forEach(a=>{if(a){t++;if(a.ok)r++}}));S.done[c.id]={date:today(),score:pct(r,t),mins:Math.round(c.elapsed/60)};markDay()}S.cur=null;save();render()}
+function finishSession(){const c=S.cur;if(S.paused&&S.paused.id===c.id)S.paused=null;if(c.type!=='quick'){let r=0,t=0;c.steps.filter(s=>s.qs).forEach(s=>s.ans.forEach(a=>{if(a){t++;if(a.ok)r++}}));S.done[c.id]={date:today(),score:pct(r,t),mins:Math.round(c.elapsed/60)};markDay()}S.cur=null;save();render()}
 function wireSession(){const c=S.cur;const st=c.steps[c.step];
- document.querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{save();S.cur=c.type==='quick'?null:c;const keep=c.type!=='quick';S.cur=keep?c:null;S.view='home';save();render()});
+ document.querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{
+   // Keep the in-progress session so it can be resumed, but leave the session view.
+   if(c.type==='quick')S.cur=null;else{S.paused=c;S.cur=null}
+   S.view='home';save();render()});
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
  document.querySelectorAll('[data-relearn]').forEach(b=>b.onclick=()=>{const t=T[b.dataset.relearn];const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="card lesson modalcard"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-close>Back to cheat sheet</button></div></div>`;document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove()});
  if(st.k==='warm'){document.querySelectorAll('[data-flipcard]').forEach(b=>b.onclick=()=>{st.flipped=!st.flipped;render()});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const ok=b.dataset.card==='1';const w=st.cards[st.ci];recordVocab(w,ok);st.res.push({w,ok});st.ci++;st.flipped=false;markDay();if(st.ci>=st.cards.length)nextStep();else{save();render()}})}
@@ -1481,12 +1610,13 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
  if(!timerHandle)timerHandle=setInterval(tick,1000)}
 function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{const s=SESSIONS.find(x=>x.id===b.dataset.start);if(S.done[s.id]&&!confirm('You already finished this session. Do it again with fresh questions?'))return;startSession(s)});
  document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>quickSession(b.dataset.quick));
+ document.querySelectorAll('[data-resume]').forEach(b=>b.onclick=resumeSession);
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));
  const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim()||'Champ';S.test=$('#td').value||S.test;S.start=today();save();render()};
  const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
- const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=s;S.cur=null;save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
+ const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=s;S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
  const rs=$('#bk_reset');if(rs)rs.onclick=()=>{if(confirm('Erase ALL progress, words, and sessions? This cannot be undone.')){localStorage.removeItem(KEY);S=load();render()}}}
 function applyTheme(){const r=document.documentElement;if(S.theme==='dark')r.setAttribute('data-theme','dark');else if(S.theme==='light')r.setAttribute('data-theme','light');else r.removeAttribute('data-theme')}
 applyTheme();render();
