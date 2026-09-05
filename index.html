@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ISEE Launchpad</title>
-<meta name="description" content="A 12-week offline study program for the ISEE Lower Level: verbal reasoning, quantitative reasoning, and mathematics achievement.">
+<meta name="description" content="A 12-week offline study program for the ISEE Lower Level: verbal reasoning, quantitative reasoning, mathematics achievement, reading comprehension and the essay.">
 <meta name="theme-color" content="#D9531C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -159,6 +159,38 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:start center;padding:30px 12px;overflow:auto;z-index:20}.modalcard{max-width:760px;width:100%}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.strand{grid-template-columns:1fr 90px 40px}.tabs{width:100%}.tab{padding:.45em .6em;font-size:.9rem}.top{gap:10px}.qhead{flex-direction:column;gap:2px}.qhead span:last-child{text-align:left}}
 @media print{.top,.rail,.actions{display:none}}
+
+/* ---- reading passages ---- */
+.passage{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:14px 18px;margin:10px 0 16px;max-height:46vh;overflow-y:auto}
+.passage h4{margin:0 0 .5em;font-size:1.05rem}
+.passage p{margin:0 0 .7em;line-height:1.65;max-width:66ch}
+.passage p:last-child{margin-bottom:0}
+/* ---- essay ---- */
+.prompt{font-size:1.15rem;font-weight:600;background:var(--paper);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:8px 0 14px}
+label.plan{display:block;margin:12px 0;font-weight:600}
+label.plan input,label.plan textarea{display:block;width:100%;margin-top:4px;font-weight:400;font-family:inherit;font-size:1rem}
+.essaybox{width:100%;font-family:inherit;font-size:1.02rem;line-height:1.6;padding:14px;min-height:280px;resize:vertical}
+.essaybar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
+.timer.big{font-size:1.35rem;padding:.3em .8em}
+.timer.low{background:var(--badbg);color:var(--bad);border-color:var(--bad)}
+.planback{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.planback summary{font-weight:600;cursor:pointer}.planback ul{margin:.5em 0 0;padding-left:1.2em}
+.essayread{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0;white-space:pre-wrap}
+.essayread p{margin:0 0 .7em;max-width:66ch}
+.checks{display:grid;gap:8px;margin:8px 0}
+.checks label{display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.checks input{margin-top:3px;width:18px;height:18px;accent-color:var(--good);flex:none}
+.essaylist details{border-top:1px solid var(--line);padding:10px 0}
+.essaylist details:first-child{border-top:0}
+.essaylist summary{cursor:pointer}
+/* ---- welcome screen ---- */
+.setup{max-width:720px;margin:28px auto}
+.setup .lead{font-size:1.12rem;color:var(--muted)}
+.setrow2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0}
+.setrow2 label{display:flex;flex-direction:column;gap:4px;font-weight:600}
+.setrow2 input{width:100%}
+.fineprint{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted);max-width:66ch}
+.tipcard{border-color:var(--teal)}
 
 </style>
 </head>
@@ -1405,8 +1437,311 @@ ${table(['Section','Questions','Time','What it covers'],[['Verbal Reasoning','34
 <p>There is <b>no penalty for wrong answers</b>, so answer every question. Scores are reported as stanines (1–9) compared with other students in the same grade.</p>
 <p>This program covers the Verbal Reasoning, Quantitative Reasoning, and Mathematics Achievement sections. Reading is best practiced by reading a little every day and talking about the main idea, and the essay by writing one practice essay a week on a fun prompt (for example: "Who do you look up to most, and why?").</p>`;
 
+// ===== READING COMPREHENSION =====
+// Hand-written passages at ISEE Lower Level reading level (grades 4-5), each with
+// a fixed question set. Question kinds mirror the real section: main idea,
+// supporting detail, vocabulary in context, inference, purpose/tone, organization.
+const PASSAGES=[
+{t:'The Cleverest Arm in the Sea',g:'Science',
+p:['An octopus has no bones. Its whole body can squeeze through any opening larger than its beak, which is the only hard part it owns. A sixty-pound octopus can pour itself through a hole the size of a lemon.',
+'That flexibility comes at a price. Without a skeleton, an octopus cannot rely on joints the way you do when you bend an elbow. So it does something stranger. When an octopus reaches for food, it stiffens two spots along one arm, making a temporary "elbow" out of muscle. The arm behaves like a jointed limb for a moment, then melts back into rope.',
+'Its arms are also unusually independent. About two-thirds of an octopus\'s nerve cells sit in the arms rather than the brain. A severed arm will still reach toward food. Scientists think the brain gives a general order, such as "get that crab," and each arm works out the details on its own.',
+'This makes an octopus hard to study. When a scientist watches an octopus solve a puzzle box, it is not clear who solved it: the animal, or eight busy assistants.'],
+q:[{q:'What is the main idea of this passage?',a:'An octopus\'s boneless body works in unusual ways that make it hard to study.',d:['Octopuses are the smartest animals in the ocean.','Scientists should stop giving octopuses puzzle boxes.','An octopus is dangerous because it can escape from tanks.'],e:'Every paragraph returns to how a boneless, arm-driven body behaves strangely, ending with the difficulty that creates for scientists.',k:'main idea'},
+{q:'According to the passage, what is the only hard part of an octopus?',a:'Its beak',d:['Its skull','Its shell','Its suckers'],e:'The first paragraph says the beak "is the only hard part it owns."',k:'detail'},
+{q:'As used in paragraph 2, the word <em>temporary</em> most nearly means:',a:'lasting only a short time',d:['very strong','made of bone','painful'],e:'The arm makes an "elbow" for a moment and then "melts back into rope," so the elbow lasts only briefly.',k:'vocabulary'},
+{q:'Why does the author mention that a severed arm still reaches toward food?',a:'To show that the arms can act without the brain',d:['To prove that octopuses feel no pain','To explain why octopuses lose arms often','To argue that octopuses should not be studied'],e:'The detail supports the paragraph\'s point that most of an octopus\'s nerve cells are in its arms, so the arms act on their own.',k:'purpose'},
+{q:'The last paragraph suggests that the author finds octopuses:',a:'puzzling in an interesting way',d:['frightening','disappointing','ordinary'],e:'Ending on the joke about "eight busy assistants" is playful and curious, not fearful or bored.',k:'tone'}]},
+
+{t:'The Girl Who Named a Planet',g:'History',
+p:['In March 1930, an eleven-year-old girl named Venetia Burney was eating breakfast in Oxford, England, when her grandfather read aloud from the newspaper. Astronomers had found a ninth planet at the edge of the solar system, and nobody had decided what to call it.',
+'Venetia had been studying Greek and Roman myths at school. She suggested Pluto, the god of the underworld, because the new world was so far from the sun that it must be cold and dark.',
+'Her grandfather had once run a famous library, and he knew people at the observatory in Oxford. He passed the name along. It travelled by telegram to Arizona, where the discovery had been made. The astronomers there voted, and every one of them chose Pluto.',
+'Venetia never asked for anything in return. She became a teacher, married, and rarely mentioned the story. Decades later, when a spacecraft was sent toward Pluto, engineers named a dust-measuring instrument on board after her. She was ninety.'],
+q:[{q:'What is this passage mostly about?',a:'How a young girl\'s suggestion became the name of a planet',d:['How astronomers discovered a ninth planet','Why Pluto is cold and dark','The history of Greek and Roman myths'],e:'The passage follows Venetia\'s idea from the breakfast table to the observatory vote and its later recognition.',k:'main idea'},
+{q:'Why did Venetia suggest the name Pluto?',a:'The planet was far from the sun, so she thought of the god of the dark underworld',d:['Pluto was her favorite character in a book','Her grandfather asked her to pick a Roman name','The astronomers had already suggested it'],e:'Paragraph 2 gives her reasoning directly: the distant world "must be cold and dark."',k:'detail'},
+{q:'What can you infer about Venetia\'s grandfather?',a:'He knew people who could pass her idea to astronomers',d:['He was an astronomer himself','He did not believe her idea was any good','He named the planet and gave her the credit'],e:'The passage says he had run a famous library and knew people at the observatory, and that he passed the name along.',k:'inference'},
+{q:'As used in paragraph 3, the word <em>observatory</em> most nearly means:',a:'a place where scientists study the sky',d:['a school for young children','a newspaper office','a library of old books'],e:'The word appears among astronomers and telegrams about a new planet, and it is contrasted with the library her grandfather ran.',k:'vocabulary'},
+{q:'Which sentence best supports the idea that Venetia was modest about what she had done?',a:'"She became a teacher, married, and rarely mentioned the story."',d:['"Venetia had been studying Greek and Roman myths at school."','"The astronomers there voted, and every one of them chose Pluto."','"She was ninety."'],e:'Rarely mentioning a remarkable achievement is evidence of modesty.',k:'detail'}]},
+
+{t:'A River of Molasses',g:'History',
+p:['On January 15, 1919, the weather in Boston turned unusually warm. Near the harbor stood a steel tank fifty feet tall, filled with more than two million gallons of molasses waiting to be made into rum.',
+'The tank had leaked since the day it was built. Neighbors collected the drips in pails for their baking. The company\'s answer was to paint the tank brown so the leaks would not show.',
+'Just after noon, the tank tore open. A wave of molasses two stories high moved through the North End faster than a person could run. It crushed a firehouse, lifted a train off its rails, and buried whole streets. Twenty-one people died.',
+'Molasses is thick and slow when it is cool, which is why the phrase "slow as molasses" exists. But it had been stored warm, and warm molasses flows. Once it spread out and cooled in the January air, it turned stiff, trapping everything it had swallowed.',
+'Cleanup took months. For years afterward, people said the harbor still smelled sweet on hot days.'],
+q:[{q:'What is the main idea of this passage?',a:'A poorly built molasses tank burst and caused a deadly disaster',d:['Molasses is used to make rum','Boston has unusual winter weather','The phrase "slow as molasses" is inaccurate'],e:'The passage builds from the faulty tank to the flood, the deaths, and the cleanup.',k:'main idea'},
+{q:'How did the company respond to the leaks before the disaster?',a:'It painted the tank brown so the leaks would be less noticeable',d:['It repaired the steel walls','It emptied the tank each winter','It warned the neighbors to move away'],e:'Paragraph 2 states the company\'s answer was to paint the tank brown.',k:'detail'},
+{q:'Why does the author explain that the molasses had been stored warm?',a:'To explain how something usually slow could move so fast',d:['To show that the workers were careless','To describe how rum is made','To prove the weather caused the tank to burst'],e:'The paragraph contrasts the saying "slow as molasses" with the fact that warm molasses flows quickly.',k:'purpose'},
+{q:'As used in paragraph 4, the word <em>stiff</em> most nearly means:',a:'hard and difficult to move through',d:['formal and polite','freezing cold','sticky and sweet'],e:'The molasses cooled and trapped everything, so it became hard rather than runny.',k:'vocabulary'},
+{q:'What can you infer from the detail that neighbors collected the drips in pails?',a:'The leaking had gone on long enough to become normal',d:['The neighbors caused the tank to fail','Molasses was too expensive for most families','The company gave molasses away for free'],e:'People only build a habit of catching drips if the leaking has been happening for a long time without repair.',k:'inference'}]},
+
+{t:'How Bees Decide',g:'Science',
+p:['When a beehive grows too crowded, half the colony leaves with the old queen and gathers on a branch in a buzzing ball. The bees now face a hard problem: they must choose a new home, and they must all choose the same one.',
+'A few hundred scouts fly out to search. A scout who finds a promising hole in a tree returns and performs a waggle dance on the surface of the swarm. The direction of her dance points toward the site. The length of it says how good she thinks the site is.',
+'Other bees watch, fly out, and inspect the site themselves. If they agree, they come back and dance for it too. If they are unimpressed, they simply stop dancing. Nobody argues, and no bee is in charge.',
+'Slowly, the dances for the weaker sites fade, while the dances for the best site spread. When enough scouts have gathered at one site, the swarm lifts off together and flies straight to it. The colony has made a decision without a single leader deciding anything.'],
+q:[{q:'Which sentence best states the main idea?',a:'A swarm of bees chooses a new home through a process in which no single bee is in charge',d:['Bees leave the hive when it becomes too crowded','The waggle dance shows the direction of food','Scout bees are the strongest bees in the colony'],e:'The passage describes the whole decision-making process and closes by stressing that no leader decides.',k:'main idea'},
+{q:'According to the passage, what does the length of a scout\'s dance show?',a:'How good she believes the site is',d:['How far away the site is','How long the trip took her','How many bees are already there'],e:'Paragraph 2 says the length "says how good she thinks the site is."',k:'detail'},
+{q:'What happens when a scout inspects a site and is unimpressed?',a:'She stops dancing for it',d:['She dances against it','She attacks the bee who suggested it','She leaves the swarm'],e:'Paragraph 3 says unimpressed bees "simply stop dancing."',k:'detail'},
+{q:'How is this passage mainly organized?',a:'As the steps of a process in the order they happen',d:['As a comparison between bees and people','As an argument for protecting bees','As a list of facts about insects'],e:'The paragraphs move in sequence: crowding, scouting, inspecting, agreeing, flying off.',k:'organization'},
+{q:'The author would most likely agree that:',a:'a group can reach a good decision without a leader',d:['bees are smarter than people','the queen bee makes all important choices','swarms usually pick the wrong home'],e:'The final sentence highlights that the colony decided "without a single leader deciding anything."',k:'inference'}]},
+
+{t:'The Cube Makers',g:'Science',
+p:['Wombats are stout, burrowing animals from Australia, about the size of a large house cat. They are known for one very strange habit: their droppings come out in cubes.',
+'For a long time nobody knew why. Some people guessed the wombat shaped each cube afterward, which is not the sort of guess that survives close inspection. The real answer is in the intestine.',
+'Most animals have intestines of roughly even stretchiness. A wombat\'s last stretch of intestine is not even at all. Two narrow bands are stiff, and the walls between them are soft and springy. As waste is squeezed slowly along, the soft parts bulge and the stiff parts hold, pressing flat sides into it. The wombat does not sculpt anything. Its plumbing does.',
+'The shape is useful. Wombats mark their territory by leaving droppings on rocks and logs, and a cube will sit where a round pellet would roll away. Engineers have taken an interest too, since making a cube out of soft material without cutting it is a trick factories would like to copy.'],
+q:[{q:'What is the passage mainly about?',a:'Why wombat droppings are cube-shaped and why that shape matters',d:['How wombats dig their burrows','Why Australian animals are unusual','How factories manufacture cubes'],e:'The passage asks why the droppings are cubes, explains the cause, and then explains the uses of the shape.',k:'main idea'},
+{q:'According to the passage, what makes the cube shape?',a:'Uneven stiffness in the walls of the intestine',d:['The wombat shapes each one with its paws','The dry Australian climate','A special muscle near the tail'],e:'Paragraph 3 describes stiff bands and soft, springy walls pressing flat sides into the waste.',k:'detail'},
+{q:'The author writes that a guess "is not the sort of guess that survives close inspection." This means the guess:',a:'falls apart when you examine it carefully',d:['was made by a famous scientist','took a long time to test','is still believed by most people'],e:'To not survive inspection is to be shown wrong once looked at closely.',k:'vocabulary'},
+{q:'Why is a cube useful to a wombat?',a:'It stays in place on a rock or log instead of rolling off',d:['It is easier for the wombat to carry','It keeps other animals from smelling it','It takes up less room in the burrow'],e:'The last paragraph explains that wombats mark territory on rocks and logs, and a cube will not roll away.',k:'detail'},
+{q:'What is the author\'s tone in this passage?',a:'Amused but factual',d:['Angry','Sad','Worried'],e:'The writing is accurate but enjoys the oddity, as in the joke about guesses that do not survive inspection.',k:'tone'}]},
+
+{t:'Seventy-Two Days',g:'Biography',
+p:['In 1889 a reporter named Nellie Bly proposed to race around the world in fewer than eighty days, beating the imaginary journey in a popular novel. Her editor said that such a trip was work for a man, since a woman would need too much luggage.',
+'Bly answered that she would take one bag. She left New York in November with a single leather case, one dress, and the coat she was wearing.',
+'She travelled by steamship and train through England, France, Italy, Egypt, Ceylon, Singapore, Hong Kong, and Japan. She bought a monkey in Singapore and carried it the rest of the way. When storms slowed her ship across the Pacific, newspapers at home printed guesses about whether she would fail.',
+'She reached New Jersey seventy-two days after she left. Crowds met the train at every station. Bly had already been famous for going undercover to expose cruelty in a hospital, but it was the race that put her face on board games and playing cards.',
+'She had made one point twice over: that the world was smaller than people thought, and that she was the one who had proved it.'],
+q:[{q:'What is the main idea of this passage?',a:'Nellie Bly proved her editor wrong by racing around the world in seventy-two days',d:['Travel in the 1800s was slow and uncomfortable','Novels of the time were often inaccurate','Reporters should not take dangerous assignments'],e:'The passage sets up the editor\'s doubt, follows the trip, and ends with what Bly proved.',k:'main idea'},
+{q:'What reason did Bly\'s editor give for saying the trip was work for a man?',a:'He believed a woman would need too much luggage',d:['He thought women could not read maps','He said the ships would not allow women aboard','He worried she would be too slow'],e:'Paragraph 1 gives exactly this reason, and paragraph 2 shows her answering it with a single bag.',k:'detail'},
+{q:'As used in paragraph 4, the word <em>expose</em> most nearly means:',a:'to reveal something hidden',d:['to photograph','to argue against','to survive'],e:'Bly went undercover, so she uncovered cruelty that had been hidden.',k:'vocabulary'},
+{q:'Why does the author mention the monkey Bly bought in Singapore?',a:'To add a memorable, human detail to the account of the journey',d:['To explain why she was delayed','To prove she had extra luggage after all','To show she was cruel to animals'],e:'The detail is colorful and personal; nothing in the passage links it to a delay or to her luggage argument.',k:'purpose'},
+{q:'What can you infer about how the public felt about Bly\'s race?',a:'They followed it closely and celebrated her',d:['They thought it was a waste of money','They barely noticed it','They believed she had cheated'],e:'Newspapers printed guesses about her, crowds met the train at every station, and her face appeared on games and cards.',k:'inference'}]},
+
+{t:'Marbles',g:'Fiction',
+p:['Theo kept his marbles in a cocoa tin that had lost its lid. There were forty-one. He knew because he counted them on the first day of every month, sitting cross-legged on the floor with the radiator ticking beside him.',
+'The best one was a cat\'s eye with a green ribbon curled inside the glass. He had won it from a boy named Marcus in the fall, in a game played on the packed dirt behind the school, and Marcus had wanted it back ever since.',
+'"Trade you," Marcus said, most Fridays. He would hold out something: a whistle, a pocketknife with one blade missing, a photograph of a race car. Theo always shook his head, and Marcus always shrugged as if he had expected nothing else, and they walked home the same way anyhow.',
+'In April, Marcus\'s family moved to another state. On the last day, Theo waited by the fence with the cocoa tin. He did not say anything clever. He just took out the cat\'s eye and put it in Marcus\'s hand and closed the fingers over it.',
+'Walking home alone, he counted them again out of habit. Forty. It felt about right.'],
+q:[{q:'What is the main idea of this story?',a:'A boy gives away his most valued possession as a way of saying goodbye',d:['A boy learns to be a better marble player','Two boys argue over a game and stop being friends','A boy loses his marble collection'],e:'The whole story builds toward Theo handing Marcus the cat\'s eye when Marcus moves away.',k:'main idea'},
+{q:'Why did Marcus want the cat\'s eye back?',a:'Theo had won it from him in a game',d:['It had belonged to Marcus\'s father','It was worth a great deal of money','Theo had taken it without asking'],e:'Paragraph 2 says Theo won it from Marcus in the fall and Marcus had wanted it back ever since.',k:'detail'},
+{q:'What does the last line, "Forty. It felt about right," suggest about Theo?',a:'He is at peace with giving the marble away',d:['He regrets his decision immediately','He plans to win the marble back','He has miscounted his marbles'],e:'Having one fewer marble "felt about right," which shows contentment rather than regret.',k:'inference'},
+{q:'The detail that Marcus "always shrugged as if he had expected nothing else" suggests that:',a:'the trading offer had become a friendly routine between them',d:['Marcus was angry with Theo','Marcus did not really want the marble','Theo was unkind to Marcus'],e:'Marcus expects the refusal, offers again each Friday, and they still walk home together, so it reads as a habit between friends.',k:'inference'},
+{q:'Which detail best shows that the marbles mattered to Theo?',a:'He counted them on the first day of every month',d:['He kept them in a cocoa tin','He walked home the same way as Marcus','He waited by the fence in April'],e:'A monthly ritual of counting shows steady care and attention.',k:'detail'}]},
+
+{t:'The First Vending Machine',g:'History',
+p:['Around two thousand years ago, a Greek inventor named Hero lived in the Egyptian city of Alexandria. He wrote books describing machines that opened temple doors by themselves, puppets that moved on their own, and a spinning ball driven by steam.',
+'One of his machines solved a problem in the temples. Worshippers were supposed to take a small amount of holy water to wash with, but some people took far more than their share.',
+'Hero\'s answer was a bronze box with a slot in the top. A worshipper dropped in a coin. The coin landed on one end of a small lever and its weight tipped the lever down, which lifted a plug and let water run out. As the lever tipped further, the coin slid off the end and fell away. The lever swung back, the plug dropped, and the water stopped.',
+'Nobody had to watch. Nobody had to be trusted. The amount of water depended only on how long the coin took to slide off, which was the same every time.',
+'The idea then waited a very long time. The next coin-operated machines that most people would recognize did not appear until the 1880s, selling postcards and chewing gum in London.'],
+q:[{q:'What is the passage mainly about?',a:'An ancient machine that dispensed holy water when a coin was dropped in',d:['The history of Greek temples','How steam engines were invented','Why chewing gum became popular'],e:'The central subject is Hero\'s coin-operated water machine, how it worked, and why it was needed.',k:'main idea'},
+{q:'What problem was Hero\'s machine designed to solve?',a:'Some worshippers took more holy water than they should',d:['The temple doors were too heavy','Coins were being stolen from the temple','There was not enough water in Alexandria'],e:'Paragraph 2 states the problem directly.',k:'detail'},
+{q:'What made the water stop running?',a:'The coin slid off the lever, which let the plug drop back',d:['A worker turned a handle','The bowl underneath filled up','The worshipper pulled the lever back'],e:'Paragraph 3 traces the sequence: the coin slides off, the lever swings back, the plug drops, the water stops.',k:'detail'},
+{q:'Why does the author include the sentence "Nobody had to watch. Nobody had to be trusted."?',a:'To emphasize that the machine solved the problem without a person supervising',d:['To suggest the temple had no workers','To argue that people are dishonest','To explain why the machine was expensive'],e:'The short sentences stress the machine\'s advantage: fairness without supervision.',k:'purpose'},
+{q:'What can you conclude from the final paragraph?',a:'Hero\'s idea was far ahead of its time',d:['Hero\'s machine did not really work','London invented the first vending machine','Chewing gum was popular in ancient Egypt'],e:'A gap of roughly 1,800 years before similar machines reappeared shows the idea arrived long before it was taken up.',k:'inference'}]},
+
+{t:'Why Leaves Turn',g:'Science',
+p:['A green leaf is green because of chlorophyll, the substance a plant uses to turn sunlight into food. Chlorophyll is so strongly colored that it hides everything else in the leaf.',
+'It is not the only color there. Yellow and orange pigments sit in the leaf all summer long, doing quiet work: they catch kinds of light that chlorophyll misses and pass the energy along. You simply cannot see them.',
+'In autumn the nights grow longer and the air grows cool. A tree that loses its leaves begins to shut the leaves down, sealing off the tubes that carry water in and food out. Without water, the tree stops making new chlorophyll, and the chlorophyll already there breaks apart. The green fades, and the yellows and oranges that were always present finally show.',
+'Red is a different story. Most red pigment is not left over at all. The tree makes it in the fall, out of sugars trapped in the dying leaf. Scientists still argue about why a tree would spend energy on a color it is about to drop. One idea is that red acts like sunscreen, protecting the leaf long enough for the tree to pull the last useful material back into its branches.'],
+q:[{q:'Which sentence best states the main idea?',a:'Autumn colors appear because chlorophyll breaks down and other pigments become visible or are newly made',d:['Trees lose their leaves because the nights get longer','Chlorophyll is the most important substance in a plant','Scientists do not understand why leaves change color'],e:'The passage explains the disappearance of green, the revealing of yellow and orange, and the making of red.',k:'main idea'},
+{q:'According to the passage, when are yellow and orange pigments present in a leaf?',a:'All summer long, hidden by the green',d:['Only in autumn','Only in trees that lose their leaves','Only at night'],e:'Paragraph 2 says they "sit in the leaf all summer long" but cannot be seen.',k:'detail'},
+{q:'How is red different from yellow and orange in a fall leaf?',a:'Red is usually made in the fall rather than revealed',d:['Red appears earlier in the season','Red comes from chlorophyll','Red is found only in evergreen trees'],e:'Paragraph 4 says most red pigment is made in the fall from trapped sugars, not left over.',k:'detail'},
+{q:'As used in paragraph 3, the word <em>sealing</em> most nearly means:',a:'closing off',d:['painting','watering','breaking open'],e:'The tree closes the tubes that carry water and food, which is why the leaf stops receiving water.',k:'vocabulary'},
+{q:'What does the passage suggest about scientific knowledge?',a:'Some questions remain open even when much is already understood',d:['Scientists rarely agree about anything','Plant science is finished','Only one explanation for red is possible'],e:'The passage explains a great deal confidently but says scientists "still argue" about red and offers one idea among others.',k:'inference'}]}
+];
+
+PASSAGES.push(
+{t:'The Lighthouse and the Storm',g:'Fiction',
+p:['The lamp had to be wound every four hours, and on the night of the storm it fell to Ida to do it, because her father had gone to the mainland for supplies and the water had risen too high for him to come back.',
+'She was twelve. She had watched him climb the spiral stairs a thousand times, counting the steps under his breath the way other people hum. Sixty-three. She climbed them now with a candle in a jar, and the wind found her through the stones and pushed at the flame.',
+'The mechanism was a weight on a chain that turned the lamp as it fell. When the weight reached the bottom, the light stopped turning, and a light that does not turn is just a glow, and a glow is not a warning. She cranked the weight back to the top. Her arms shook. She counted the turns.',
+'Twice more before dawn she climbed. The third time she did not bother with the candle, because by then she knew the stairs.',
+'In the morning the sea lay flat and innocent. Her father rowed back at eight and found her asleep at the top of the tower with her hand still on the crank, and he did not wake her for a long while.'],
+q:[{q:'What is the main idea of this story?',a:'A girl keeps the lighthouse working alone through a dangerous night',d:['A girl learns to count the stairs of a lighthouse','A father abandons his daughter during a storm','A storm destroys a lighthouse'],e:'The story follows Ida taking over her father\'s job and completing it through the night.',k:'main idea'},
+{q:'Why was Ida the one who had to wind the lamp?',a:'Her father could not return because the water had risen',d:['Her father was ill','She was stronger than her father','Her father had asked her to practice'],e:'The first paragraph explains he had gone to the mainland and the water was too high for him to come back.',k:'detail'},
+{q:'Why does the author write that "a light that does not turn is just a glow, and a glow is not a warning"?',a:'To show why winding the lamp mattered so much',d:['To explain how lighthouses are built','To suggest the lamp was broken','To show that Ida was afraid of the dark'],e:'The sentence explains the stakes: without turning, the lamp cannot warn ships.',k:'purpose'},
+{q:'The detail that Ida climbed the third time without a candle shows that she:',a:'had grown familiar and confident with the climb',d:['had run out of candles','was no longer afraid of her father','wanted to save the light for the lamp'],e:'The passage says plainly that "by then she knew the stairs."',k:'inference'},
+{q:'As used in the last paragraph, the word <em>innocent</em> most nearly means:',a:'calm, as if it had done nothing wrong',d:['young','beautiful','shallow'],e:'The sea is described after a violent storm, so calling it innocent means it looks harmless now.',k:'vocabulary'}]},
+
+{t:'The Man Who Drew Machines',g:'Biography',
+p:['Rube Goldberg trained as an engineer. His first job was mapping sewer pipes for the city of San Francisco, and he lasted about six months before quitting to draw cartoons for a newspaper.',
+'The cartoons that made him famous showed inventions. A napkin would be raised to a diner\'s mouth by a spoon, which pulled a string, which jerked a ladle, which threw a cracker past a parrot, which jumped after it onto a perch, which tipped seed into a pail, which pulled a cord, and so on for thirteen steps.',
+'Every step worked by real physics. That was the joke. Goldberg was not mocking machines that fail; he was mocking machines that succeed at absurd cost, doing in thirteen steps what a hand could do in one.',
+'He had seen the century fill with devices that promised to save effort and mostly added complication. His drawings gave people a word for that feeling. Today an engineer who calls a design "a real Rube Goldberg" is not paying a compliment, and schools hold contests to build the most gloriously overcomplicated machines they can.'],
+q:[{q:'What is the main idea of this passage?',a:'Rube Goldberg\'s cartoons made fun of needlessly complicated machines',d:['Rube Goldberg was a failed engineer','Cartoons are more popular than engineering','Machines in the last century rarely worked'],e:'The passage explains what the cartoons showed, what the joke was, and the word it left behind.',k:'main idea'},
+{q:'What was Goldberg\'s first job?',a:'Mapping sewer pipes for San Francisco',d:['Drawing cartoons for a newspaper','Teaching engineering','Building machines for contests'],e:'The first paragraph names the job and says he lasted about six months.',k:'detail'},
+{q:'According to the passage, what was the joke in Goldberg\'s inventions?',a:'They worked, but at absurd cost in steps',d:['They always broke down','They could never really be built','They were copied from real inventors'],e:'Paragraph 3 says every step worked by real physics and that the target was success at absurd cost.',k:'detail'},
+{q:'As used in the last paragraph, the phrase <em>is not paying a compliment</em> means the engineer is:',a:'criticizing the design',d:['praising the design','asking for money','refusing to be paid'],e:'To not pay a compliment is to say something unflattering.',k:'vocabulary'},
+{q:'What can you infer about why Goldberg\'s cartoons became so popular?',a:'They named a frustration many people already felt',d:['They taught readers how to build machines','They were the only cartoons in newspapers','They showed inventions that had never been tried'],e:'The passage says people had seen devices add complication, and the drawings "gave people a word for that feeling."',k:'inference'}]},
+
+{t:'The Vault in the Mountain',g:'Science',
+p:['On a frozen island between Norway and the North Pole, a tunnel runs one hundred and thirty metres into a sandstone mountain. At the end of it are three rooms holding boxes of seeds.',
+'The idea is simple. Farmers around the world grow thousands of varieties of wheat, rice, beans, and potatoes, and every country keeps its own collection so that a variety is never lost. But collections can be destroyed by fire, flood, war, or a broken freezer. The vault in the mountain is a backup of the backups.',
+'The location was chosen carefully. The island is remote and politically stable. The rock is dry. Above all, the ground is permanently frozen, so even if the machines that chill the rooms failed completely, the seeds would stay cold for a long time on their own.',
+'No one at the vault owns the seeds. Each country deposits its own boxes and keeps the only key to them, the way a bank holds a safe-deposit box without knowing what is inside. In 2015 a group of scientists withdrew seeds for the first time. Their collection in Syria had been damaged by war, and they wanted their wheat back.'],
+q:[{q:'What is the main purpose of the seed vault described in the passage?',a:'To store backup copies of the world\'s crop seeds in case other collections are lost',d:['To grow new kinds of wheat and rice','To keep seeds away from farmers','To study how cold affects plants'],e:'Paragraph 2 explains the vault is "a backup of the backups" for national collections.',k:'main idea'},
+{q:'Why was a location with permanently frozen ground chosen?',a:'The seeds would stay cold even if the cooling machines failed',d:['Frozen ground is easier to dig','Cold ground keeps thieves away','Plants grow better in cold places'],e:'Paragraph 3 gives this reason directly.',k:'detail'},
+{q:'The comparison to a safe-deposit box helps the reader understand that:',a:'countries keep control of their own seeds even though the vault stores them',d:['the seeds are extremely valuable','the vault is inside a bank','only rich countries may use the vault'],e:'The comparison illustrates the arrangement: the vault holds the boxes, the depositor keeps the key.',k:'purpose'},
+{q:'As used in paragraph 3, the word <em>remote</em> most nearly means:',a:'far away from other places',d:['dangerous','expensive','modern'],e:'The island lies between Norway and the North Pole, and remoteness is listed as an advantage for safety.',k:'vocabulary'},
+{q:'The example from 2015 is included to show that:',a:'the vault is not just a precaution but has actually been needed',d:['the vault is poorly guarded','scientists in Syria built the vault','wheat is the only crop stored there'],e:'The first withdrawal demonstrates the vault serving its purpose in a real emergency.',k:'inference'}]},
+
+{t:'The Longest Inning',g:'Fiction',
+p:['By the fourteenth inning the concession stand had run out of everything but ice, and the scoreboard operator had started writing the runs on a piece of cardboard because the numbers only went to twelve.',
+'Priya had been on the bench all season. She was the kind of player coaches call dependable, which is a word that means you will not lose the game for us and does not mean much else. In the sixteenth, the coach ran out of outfielders and pointed at her.',
+'She jogged out to right field, where nothing ever happens, and stood in the wet grass under the lights while moths beat themselves against the bulbs.',
+'In the eighteenth, a batter got under a pitch and lifted it high and lazy toward her. Priya had two thoughts. The first was that she had never caught a ball in a real game. The second was that the ball was going to land whether she was thinking or not.',
+'She caught it. It was not graceful. She trapped it against her ribs with both hands and sat down hard in the grass and held it up, and the sound the crowd made was not for a great catch but for a long night ending, and she took it anyway.'],
+q:[{q:'What is the main idea of this story?',a:'A player who never gets to play finally makes a catch that ends a long game',d:['A team wins a championship','A coach makes a serious mistake','A player is injured in the outfield'],e:'The story sets up Priya\'s inexperience and ends with her catch closing the game.',k:'main idea'},
+{q:'Why was the scoreboard operator writing on cardboard?',a:'The scoreboard could not show numbers past twelve',d:['The scoreboard had broken','He wanted a souvenir','The lights had gone out'],e:'The first paragraph explains "the numbers only went to twelve."',k:'detail'},
+{q:'What does the narrator suggest by defining "dependable" as a word that "does not mean much else"?',a:'Priya was seen as safe but not especially valued',d:['Priya was the best player on the team','The coach disliked Priya','Priya was often late to practice'],e:'The definition is deflating: it praises her only for not causing harm.',k:'inference'},
+{q:'As used in paragraph 4, the word <em>lazy</em> describes a ball that is:',a:'moving high and slowly',d:['hit very hard','rolling on the ground','thrown by a tired pitcher'],e:'The ball is "high and lazy," which describes an easy, slow arc through the air.',k:'vocabulary'},
+{q:'Why does the narrator say the crowd\'s sound "was not for a great catch"?',a:'The crowd was mostly relieved the long game was over',d:['The crowd had not seen the catch','The catch did not count','The crowd was cheering the other team'],e:'The sentence contrasts a cheer for skill with a cheer "for a long night ending."',k:'inference'}]},
+
+{t:'The Letter Under the Floor',g:'Fiction',
+p:['The house was old enough that the floorboards in the back bedroom had gone soft in one corner, and when the workmen pulled them up they found a tin box, and inside the box a letter, and inside the letter a list.',
+'The list was of names. Twenty-two of them, written in a careful hand, with dates beside each one running from 1852 to 1861. The letter said only this: "If the house should ever be sold, whoever finds this should know that these people passed through and reached safety."',
+'The town historian was called. She explained that the house sat two miles from a river crossing, on a road that had been used by people escaping slavery. Hiding a list had been dangerous. Keeping one at all had been dangerous. Someone had decided the names mattered more than the risk.',
+'The family that owned the house had planned to replace the floor entirely. Instead they cut a small window into it, covered it with glass, and left the empty tin where it had lain. Visitors kneel to look at it. There is nothing to see but a box and the dark underneath, which the historian says is exactly the point.'],
+q:[{q:'What is the main idea of this passage?',a:'A hidden list of names reveals the house\'s role in helping people escape slavery',d:['Old houses often have soft floorboards','A historian solves a crime','A family argues about repairing a floor'],e:'The discovery, its meaning, and the family\'s response all center on the list and what it records.',k:'main idea'},
+{q:'What did the letter ask the finder to know?',a:'That the people on the list had passed through and reached safety',d:['That the house should never be sold','That the box was very valuable','That the names should be kept secret forever'],e:'Paragraph 2 quotes the letter directly.',k:'detail'},
+{q:'Why does the historian say keeping the list was dangerous?',a:'Helping people escape slavery was against the law at the time',d:['The paper could easily catch fire','The floorboards were rotten','Thieves were looking for the tin box'],e:'The passage explains the house sat on a road used by people escaping slavery, and stresses the risk of writing anything down.',k:'inference'},
+{q:'Why did the family put a glass window in the floor?',a:'To preserve the hiding place so visitors could see where it was',d:['To make the room brighter','To keep the floor from rotting again','To store the letter safely'],e:'They left the empty tin in place and covered the spot with glass so people could look.',k:'purpose'},
+{q:'What does the historian mean by saying the empty space is "exactly the point"?',a:'The emptiness makes visitors think about people whose stories were never recorded',d:['The tin box was worthless','Visitors should not be allowed inside','The list was probably a forgery'],e:'There is nothing to see but darkness, which turns attention to the hidden lives the list only barely records.',k:'inference'}]},
+
+{t:'The Sound of a Word',g:'Science',
+p:['Try saying the words <em>bouba</em> and <em>kiki</em> out loud. Now imagine two shapes: one round and soft, like a cloud; the other spiky, like a star made of broken glass. Which shape is bouba?',
+'Almost everyone picks the round one. Researchers have asked this question of children and adults, of English speakers and speakers of languages written in entirely different alphabets, and the answer comes back the same roughly nine times in ten.',
+'Nobody is certain why. One explanation involves the mouth. To say <em>bouba</em>, the lips make a rounded shape and the sound rolls; to say <em>kiki</em>, the tongue makes sharp contact and stops the sound twice. The shape of the mouth may match the shape we imagine.',
+'The result matters because people once assumed that the sound of a word had nothing at all to do with its meaning, that <em>dog</em> could just as easily have been <em>glorp</em>. That is mostly true. But the bouba-kiki effect suggests it is not entirely true, and languages around the world do show small patterns of this kind.'],
+q:[{q:'What is the main idea of this passage?',a:'The sounds of words may connect to meaning more than people once assumed',d:['English is easier to learn than other languages','Children choose shapes differently from adults','Round shapes are more popular than spiky ones'],e:'The final paragraph states the point: the old assumption is "not entirely true."',k:'main idea'},
+{q:'According to the passage, how consistent is the bouba-kiki result?',a:'About nine out of ten people choose the same way',d:['Only English speakers agree','Adults and children disagree','Results change with each new study'],e:'Paragraph 2 gives the figure of roughly nine times in ten across languages and ages.',k:'detail'},
+{q:'What explanation does the passage offer for the effect?',a:'The shape the mouth makes may match the shape we picture',d:['People have seen the shapes before','Round objects are more common in nature','The words come from an ancient language'],e:'Paragraph 3 describes rounded lips for bouba and sharp tongue contact for kiki.',k:'detail'},
+{q:'Why does the author mention that <em>dog</em> could have been <em>glorp</em>?',a:'To explain the older idea that sound and meaning are unrelated',d:['To suggest that English words are poorly chosen','To show that animals have many names','To argue that new words should be invented'],e:'It illustrates the assumption the bouba-kiki effect partly challenges.',k:'purpose'},
+{q:'The author\'s attitude toward the older assumption is best described as:',a:'mostly accepting it while noting an exception',d:['completely rejecting it','indifferent to it','confused by it'],e:'The passage says the assumption is "mostly true" but "not entirely true."',k:'tone'}]},
+
+{t:'Ice on the Road',g:'Science',
+p:['Salt on a winter road does not melt ice by making it warm. Salt has no heat to give. What it does is change the temperature at which water freezes.',
+'Pure water freezes at zero degrees Celsius. At that temperature, water molecules are constantly joining the ice and leaving it, in balance. Scatter salt on the surface and the salt dissolves into the thin film of liquid always present on ice. Now the water molecules trying to rejoin the ice have to find their way past salt particles in the way. Fewer molecules freeze, more melt, and the balance tips toward liquid.',
+'The colder it gets, the less this helps. Ordinary road salt stops working near minus nine degrees Celsius, because below that the ice wins the race no matter how crowded the surface is. Some places switch to other chemicals, or to sand, which does not melt anything but gives tires something to grip.',
+'There is a cost. Salt washes into streams and soil, where it harms plants and fish, and it rusts the underside of every car that drives over it. Cities now weigh how much to use, and some spray a thin brine before a storm instead of dumping salt after one, which uses far less.'],
+q:[{q:'What is the main idea of this passage?',a:'Salt melts road ice by lowering water\'s freezing point, but it has limits and costs',d:['Salt warms up ice until it melts','Sand is better than salt on winter roads','Cars rust because of winter weather'],e:'The passage explains the mechanism, then the temperature limit, then the environmental cost.',k:'main idea'},
+{q:'According to the passage, what does salt actually do?',a:'It changes the temperature at which water freezes',d:['It produces heat','It absorbs water','It makes ice heavier'],e:'The first paragraph states this and specifically rules out warming.',k:'detail'},
+{q:'Why does road salt stop working in very cold weather?',a:'Below about minus nine degrees, water freezes faster than salt can prevent',d:['The salt freezes solid','Snow covers the salt','Salt dissolves too quickly'],e:'Paragraph 3 says "the ice wins the race no matter how crowded the surface is."',k:'detail'},
+{q:'How does sand help on an icy road?',a:'It gives tires something to grip',d:['It melts ice faster than salt','It lowers the freezing point further','It keeps salt from washing away'],e:'Paragraph 3 says sand "does not melt anything but gives tires something to grip."',k:'detail'},
+{q:'Why do some cities spray brine before a storm?',a:'It works with far less salt than treating the road afterward',d:['Brine is warmer than salt','Brine is safer for fish than fresh water','It makes the snow fall more slowly'],e:'The last sentence says the practice "uses far less" salt.',k:'inference'}]},
+
+{t:'The Museum of Broken Things',g:'Fiction',
+p:['Grandpa Ansel kept a museum in his garage. He had made the labels himself on index cards, in capital letters, and taped them to the shelf below each object.',
+'BICYCLE BELL. RANG ONCE PER MORNING FOR ELEVEN YEARS. SPRING FAILED 1998.',
+'CUP. DROPPED BY YOUR MOTHER, AGE SIX. NOT HER FAULT. THE HANDLE WAS BADLY MADE.',
+'RADIO. WORKED PERFECTLY. REPLACED ANYWAY, WHICH WAS MY MISTAKE.',
+'Nadia used to think the museum was a joke, the sort of thing grandfathers do to be funny. Then she noticed there was nothing in it that had simply been thrown away. Every object had a card, and every card had a reason, and some of the reasons were apologies.',
+'The summer she turned thirteen she asked if she could add something. He handed her a blank card without a word. She wrote: PHONE. SCREEN CRACKED IN THE PARKING LOT. I WAS RUNNING BECAUSE I WAS LATE, AND I AM ALMOST ALWAYS LATE.',
+'He read it twice, taped it to the shelf, and moved the cup over to make room.'],
+q:[{q:'What is the main idea of this story?',a:'A grandfather\'s collection of broken objects turns out to be a way of remembering and admitting things',d:['A grandfather cannot bear to throw anything away','A girl breaks her grandfather\'s belongings','A family opens a museum to make money'],e:'Nadia realizes every object carries a reason, including apologies, and she is invited to add her own.',k:'main idea'},
+{q:'What made Nadia stop thinking the museum was a joke?',a:'She noticed nothing there had simply been thrown away',d:['Her grandfather told her it was serious','Her mother explained the cup','The labels were written in capital letters'],e:'The fifth paragraph gives exactly this turning point.',k:'detail'},
+{q:'The card that reads "NOT HER FAULT. THE HANDLE WAS BADLY MADE" suggests that Grandpa Ansel:',a:'wanted to protect his daughter from blame',d:['was angry about the broken cup','did not know who broke the cup','believed all cups are poorly made'],e:'He records the accident but takes care to clear her of fault.',k:'inference'},
+{q:'Why is it significant that Grandpa Ansel "moved the cup over to make room"?',a:'It shows he accepted Nadia\'s object as belonging in the museum',d:['It shows he wanted to hide the cup','It shows the shelf was too small','It shows he was disappointed in her'],e:'Making space for her card places her contribution alongside the family\'s history.',k:'inference'},
+{q:'What does Nadia\'s card reveal about her?',a:'She is willing to admit her own part in what happened',d:['She blames the parking lot','She is proud of breaking the phone','She does not care about the museum'],e:'She names her own habit of lateness rather than treating the crack as bad luck.',k:'inference'}]},
+
+{t:'What the Nose Knows',g:'Science',
+p:['A dog\'s sense of smell is often described as a thousand times better than a person\'s. The number is a guess, and the comparison hides something more interesting: dogs do not merely smell more, they smell differently.',
+'When you inhale, one stream of air carries both the smells you detect and the oxygen you need. A dog\'s nose splits the stream. Most of the air goes to the lungs; a smaller share is routed to a maze of bony shelves covered in scent receptors, where it is held rather than passed through.',
+'Dogs also exhale through slits at the sides of the nose, so the outgoing breath does not blow away the scent they are sampling. This is why a tracking dog can breathe rapidly without losing the trail.',
+'And a dog smells in stereo. Each nostril samples separately, and the brain compares them, so a dog can tell not only that a scent is present but which direction it is strongest in. A person turning their head to find a smell is doing slowly and badly what a dog does in a single sniff.'],
+q:[{q:'Which sentence best states the main idea?',a:'A dog\'s nose is built differently from a person\'s, not just more sensitive',d:['Dogs smell a thousand times better than people','Tracking dogs breathe faster than other dogs','People cannot find smells at all'],e:'The first paragraph sets up the point and the rest describes structural differences.',k:'main idea'},
+{q:'What happens to the air a dog inhales?',a:'It splits, with some going to the lungs and some to scent receptors',d:['All of it goes to the scent receptors','It is warmed before reaching the lungs','It is exhaled through the mouth'],e:'Paragraph 2 describes the split stream.',k:'detail'},
+{q:'Why do dogs exhale through slits at the sides of the nose?',a:'So the outgoing breath does not blow the scent away',d:['To cool themselves down','To make a barking sound','To keep dust out of the lungs'],e:'Paragraph 3 states this reason and links it to tracking.',k:'detail'},
+{q:'What does the author mean by saying a dog smells "in stereo"?',a:'Each nostril samples separately so the dog can tell direction',d:['A dog can smell two different things at once','A dog\'s hearing and smell work together','A dog smells twice as fast as a person'],e:'The paragraph explains that comparing the two nostrils reveals which direction the scent is strongest in.',k:'vocabulary'},
+{q:'The author says the common "thousand times better" comparison "hides something more interesting." This suggests the author believes:',a:'the structure of the nose is a better story than the number',d:['the number is far too small','dogs are not good at smelling','scientists should stop measuring smell'],e:'The passage sets the number aside and spends the rest of its length on how the nose is built.',k:'purpose'}]}
+);
+
+// ---- reading questions: the passage travels with the question ----
+const passageHTML=p=>`<div class="passage"><h4>${p.t}</h4>${p.p.map(x=>`<p>${x}</p>`).join('')}</div>`;
+function passageSet(pi){const p=PASSAGES[pi%PASSAGES.length];const html=passageHTML(p);
+  return shuf(p.q).map(item=>{const q=mc(item.q,item.a,item.d,item.e);if(!q)return null;
+    q.pas=html;q.topic='rd_'+item.k.replace(/[^a-z]/g,'');q.rkind=item.k;return q}).filter(Boolean)}
+// A single mixed question, for the Practice tab and for drills.
+function readingQ(){for(let i=0;i<50;i++){const pi=R(0,PASSAGES.length-1);const set=passageSet(pi);if(set.length)return pick(set)}return null}
+
+const RD_SKILLS={main:'Main Idea & Supporting Details',infer:'Inference & Author\'s Purpose',vocab:'Vocabulary in Context',tone:'Tone, Style & Organization'};
+T.rd_main={t:'Main Idea & Supporting Details',cat:'read',lesson:`
+<p>The <b>topic</b> is what a passage is about, in one or two words: <em>cheetahs</em>. The <b>main idea</b> is the whole point the author makes about that topic, in a sentence: <em>cheetahs are the fastest land animals but can only run fast for short distances</em>.</p>
+<p><b>Supporting details</b> are the facts, examples and stories that back up the main idea. They answer <em>who, what, where, when, why</em> and <em>how</em>.</p>
+${ex('Finding the main idea','Read the first and last sentences of the passage, then ask: "What is the one thing every paragraph is helping to say?" If a choice is true but only covers one paragraph, it is a detail, not the main idea.')}
+<p><b>Three traps in the answer choices</b>:</p>
+<ul><li><b>Too narrow</b> — true, but it only describes one detail.</li><li><b>Too broad</b> — bigger than the passage; the passage never proves it.</li><li><b>Not stated</b> — sounds sensible, but the passage never says it.</li></ul>
+<p>For a detail question, go back and <b>find the line</b>. Never answer from memory. The right answer is almost always a restatement of one sentence in the passage.</p>
+${tip('Cover the answers, say the main idea in your own words, and then look for the choice closest to what you said. This stops a tempting wrong answer from pulling you off course.')}`,
+gen(){return readingQ()}};
+
+T.rd_infer={t:'Inference & Author\'s Purpose',cat:'read',lesson:`
+<p>An <b>inference</b> is a conclusion you reach using clues in the text plus what you already know. It is not stated outright, but it must be <em>supported</em> by the passage. Being a good detective, not a good guesser.</p>
+${ex('"She trapped it against her ribs with both hands and sat down hard."','You can infer the catch was awkward, because of <em>trapped</em>, <em>both hands</em> and <em>sat down hard</em>. You cannot infer that she was a bad player: the passage never says so.')}
+<p><b>Author's purpose</b> is why the author wrote the passage. The three big ones:</p>
+${table(['Purpose','Signs of it'],[['To inform','facts, dates, explanations, neutral language'],['To persuade','opinions, reasons, words like <em>should</em> or <em>best</em>'],['To entertain','story, characters, humor, description']])}
+<p>You will also be asked why the author included <b>one particular detail</b>. The answer is almost always: to support the point being made in that paragraph.</p>
+${tip('For any inference question, put your finger on the line in the passage that proves your answer. If you cannot find one, it is the wrong answer, no matter how reasonable it sounds.')}`,
+gen(){return readingQ()}};
+
+T.rd_vocab={t:'Vocabulary in Context',cat:'read',lesson:`
+<p>These questions ask what a word means <b>in this passage</b>, which is not always its most common meaning. A word like <em>fair</em> can mean just, light-colored, or a carnival.</p>
+<p><b>The method</b>:</p>
+<ol><li>Go back and read the sentence, plus the one before and after.</li><li>Cover the word and say your own word in the blank.</li><li>Pick the choice closest to your word.</li><li>Read your choice back into the sentence to check.</li></ol>
+${ex('"The sea lay flat and <em>innocent</em>."','Cover <em>innocent</em>. The sea has just finished a violent storm and is now calm. Your word might be "harmless." That points to "calm, as if it had done nothing wrong," not "young" or "beautiful."')}
+<p><b>Clue types</b> to look for: a <b>contrast</b> (but, although, however), a <b>restatement</b> (that is, in other words), an <b>example</b> (such as, like), or the general <b>tone</b> of the sentence.</p>
+${tip('The most common meaning of the word is often a trap answer. Trust the sentence, not your memory of the word.')}`,
+gen(){return readingQ()}};
+
+T.rd_tone={t:'Tone, Style & Organization',cat:'read',lesson:`
+<p><b>Tone</b> is the author's attitude toward the subject. You find it in word choice. Compare "my grandfather is a robust, elderly man" with "my grandfather is a chubby, old man": the same facts, a different feeling.</p>
+${table(['Tone word','What it feels like'],[['Amused / playful','enjoys the subject, makes small jokes'],['Admiring','praises the subject'],['Curious','asks questions, explores'],['Critical','points out faults'],['Neutral / informative','just the facts'],['Nostalgic','fond memory of the past']])}
+<p><b>Organization</b> is how the passage is built. Common text structures:</p>
+${table(['Structure','Signal words'],[['Sequence / process','first, next, then, finally'],['Cause and effect','because, so, as a result, therefore'],['Compare and contrast','however, unlike, both, on the other hand'],['Problem and solution','problem, answer, solved, instead'],['Description','for example, such as, another']])}
+<p><b>Figurative language</b>: a <b>simile</b> compares using <em>like</em> or <em>as</em> ("spiky, like a star made of broken glass"); a <b>metaphor</b> compares without them; <b>personification</b> gives human qualities to a thing ("the sea lay innocent").</p>
+${tip('Tone answers are rarely extreme. On a passage about a science discovery, "angry" and "heartbroken" are almost never right; "curious" or "amused" usually is.')}`,
+gen(){return readingQ()}};
+
+// ===== THE ESSAY =====
+const ESSAY_PROMPTS=[
+ 'Who is someone you look up to the most in this world? Explain why.',
+ 'If you could move anywhere in the world, where would it be and why?',
+ 'If you could have dinner with anyone, alive or from history, who would it be and why?',
+ 'Describe a time you worked hard at something difficult. What happened?',
+ 'What is the best gift you have ever given someone? Explain why you chose it.',
+ 'If you could add one new subject to your school, what would it be and why?',
+ 'Describe a place where you feel completely comfortable. What makes it that way?',
+ 'Tell about a time you changed your mind about something.',
+ 'What is one rule you would change, and why?',
+ 'Describe a person who taught you something without meaning to.',
+ 'If you could keep only three of your belongings, which would you keep and why?',
+ 'Tell about a day that did not go as planned.',
+ 'What is something you are better at now than you were a year ago?',
+ 'If you could ask one question and get a true answer, what would you ask?',
+ 'Describe a tradition your family or your friends have. Why does it matter?',
+ 'Tell about a time you helped someone, or someone helped you.',
+ 'What would you like to invent, and what problem would it solve?',
+ 'Describe the best day you can remember. What made it good?'];
+
+T.wr_essay={t:'Writing the Essay',cat:'write',lesson:`
+<p>The ISEE ends with one essay, written by hand in <b>30 minutes</b>. It is <b>not scored</b>, but a copy is sent to every school you apply to, so a real person will read it. Schools use it to hear your voice and to see that you can organize an idea.</p>
+<h4>The plan: 5 minutes, 20 minutes, 5 minutes</h4>
+<ol><li><b>Plan (5 min).</b> Pick your position and jot three reasons or three moments. Do not write sentences yet, just words.</li><li><b>Write (20 min).</b> Four or five paragraphs.</li><li><b>Check (5 min).</b> Reread for missing words, capital letters and periods.</li></ol>
+<h4>The shape</h4>
+${table(['Paragraph','What goes in it'],[['Opening','Answer the question directly in one sentence, then say what you will show.'],['Body 1','Your first reason, with a specific example.'],['Body 2','Your second reason, with a specific example.'],['Body 3 (optional)','A third reason, or a moment that shows the point.'],['Closing','Say what it all adds up to. Do not introduce anything new.']])}
+${ex('Opening a "someone you look up to" essay','Weak: "There are many people I look up to in this world." (Says nothing.)<br>Strong: "I look up to my grandmother, because she taught me that being patient is a kind of bravery."')}
+<h4>Five rules that matter most</h4>
+<ul><li><b>Answer the actual question.</b> A beautiful essay about the wrong prompt does not help you.</li><li><b>Be specific.</b> One real moment beats three general statements. Not "she is kind," but "she waited with me at the bus stop in the rain for forty minutes."</li><li><b>Use your own words.</b> Do not reach for big vocabulary you are unsure of. The right word beats the fanciest word.</li><li><b>Write neatly.</b> A reader who cannot read your handwriting cannot be impressed by it.</li><li><b>Leave time to reread.</b> Almost everyone finds one missing word.</li></ul>
+${tip('You cannot fail this section, so do not freeze. Pick a position in the first minute, even if it is not your deepest opinion, and spend your energy on examples rather than on choosing.')}`,
+gen(){const forms=[
+ {q:'How long do you have to write the ISEE essay?',a:'30 minutes',w:['15 minutes','45 minutes','60 minutes'],e:'The essay section is 30 minutes long, which is why the 5-20-5 plan works well.'},
+ {q:'Is the ISEE essay given a score?',a:'No, but a copy is sent to the schools you apply to',w:['Yes, it is worth a quarter of your total score','Yes, and it decides whether you are admitted','No, and nobody ever reads it'],e:'The essay is unscored, but schools receive a copy, so a real person reads it.'},
+ {q:'Which is the strongest opening sentence for the prompt "Who do you look up to?"',a:'I look up to my grandmother, because she taught me that being patient is a kind of bravery.',w:['There are many people in this world who are worth looking up to.','This is a very interesting question that I have thought about often.','I will now explain who I look up to and give my reasons.'],e:'It answers the question directly and previews the reason. The others delay without saying anything.'},
+ {q:'Which detail is the most convincing evidence that a person is kind?',a:'She waited with me at the bus stop in the rain for forty minutes.',w:['She is a very kind person in many ways.','Everyone agrees that she is kind.','Kindness is her most important quality.'],e:'A specific moment shows kindness; the others only assert it.'},
+ {q:'You have five minutes left and you notice a paragraph is missing a good example. What is the best use of that time?',a:'Reread the whole essay for missing words and punctuation',w:['Start a new paragraph with the example','Erase the paragraph and rewrite it','Add a longer conclusion'],e:'With five minutes left, checking protects the whole essay. Starting new work risks leaving a sentence unfinished.'},
+ {q:'What should the closing paragraph do?',a:'Say what the examples add up to, without adding anything new',w:['Introduce your strongest new reason','Apologize for anything you left out','Repeat the opening sentence word for word'],e:'A closing pulls the essay together. New ideas belong in the body paragraphs.'},
+ {q:'The prompt asks where you would move if you could live anywhere. You write a wonderful essay about your favorite vacation. What is the problem?',a:'It does not answer the question that was asked',w:['Vacations are not an interesting topic','The essay is probably too long','You should never write about travel'],e:'Answering the actual prompt is the first rule. Good writing on the wrong question does not help you.'},
+ {q:'Which is the best plan for the first five minutes?',a:'Choose your position and jot down three reasons or moments',w:['Write the opening paragraph slowly and carefully','Think quietly until the perfect idea arrives','Write a full outline in complete sentences'],e:'A quick list of three specifics gives the essay its shape and leaves 20 minutes for writing.'}];
+ const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}};
+
 // ================= PLAN =================
-const CATS={num:'Numbers & Operations',frac:'Fractions',dec:'Decimals, Percents & Ratios',alg:'Algebraic Concepts',geo:'Geometry',meas:'Measurement',data:'Data Analysis',prob:'Probability',qr:'Quantitative Reasoning',verbal:'Verbal Reasoning'};
+const CATS={num:'Numbers & Operations',frac:'Fractions',dec:'Decimals, Percents & Ratios',alg:'Algebraic Concepts',geo:'Geometry',meas:'Measurement',data:'Data Analysis',prob:'Probability',qr:'Quantitative Reasoning',verbal:'Verbal Reasoning',read:'Reading Comprehension',write:'Writing'};
 const MATHCATS=['num','frac','dec','alg','geo','meas','data','prob','qr'];
 const PLAN=[
  {w:1,title:'Numbers & Operations',s:[['n_place'],['n_order'],['n_factors'],['n_wordops']]},
@@ -1422,8 +1757,14 @@ const PLAN=[
  {w:11,title:'Math Review',s:[{type:'review',title:'Review: Numbers, Fractions & Decimals',topics:['n_place','n_order','n_factors','n_wordops','f_equiv','f_addsub','f_muldiv','f_mixed','d_ops','d_convert','d_percent','r_ratio']},{type:'review',title:'Review: Algebra & Geometry',topics:['a_pattern','a_expr','a_eq1','a_eq2','g_angles','g_shapes','g_perim','g_coord']},{type:'review',title:'Review: Measurement, Data & Probability',topics:['m_units','m_time','m_volume','m_est','s_center','s_graphs','s_plots','s_interpret','p_basic','p_compound','p_count','p_predict','q_sense','q_logic','q_multi','q_inverse']},{type:'test',kind:'math',n:30,min:30,title:'Math Achievement mini-test'}]},
  {w:12,title:'Final Stretch',s:[{type:'weak',title:'Target your weak spots'},{type:'test',kind:'verbal',n:34,min:20,title:'Verbal Reasoning practice test'},{type:'test',kind:'math',n:38,min:35,title:'Quantitative Reasoning practice test'},{type:'final',title:'Test-day game plan'}]}
 ];
+// Weeks 4, 8 and 12 close with a timed essay; every other week closes with a
+// reading session built from two passages.
+PLAN.forEach((wk,i)=>{
+  if((i+1)%4===0)wk.s.push({type:'essay',title:'Essay practice',prompt:i});
+  else wk.s.push({type:'read',title:'Reading: two passages',pi:i});
+});
 const SESSIONS=[];PLAN.forEach(wk=>wk.s.forEach((s,i)=>{const o=Array.isArray(s)?{type:'lesson',topic:s[0]}:Object.assign({},s);o.id=`${wk.w}-${i+1}`;o.week=wk.w;o.idx=SESSIONS.length;o.title=o.title||T[o.topic].t;SESSIONS.push(o)}));
-const ALLMATH=Object.keys(T).filter(k=>T[k].cat!=='verbal');
+const ALLMATH=Object.keys(T).filter(k=>['num','frac','dec','alg','geo','meas','data','prob','qr'].includes(T[k].cat));
 const FINAL_TIPS=`
 <p>You have done the work. Here is how to make it count on test day.</p>
 <h4>The night before</h4><ul><li>Pack: admission ticket or confirmation, two #2 pencils, an eraser, a water bottle, and a snack for the break. No calculator is allowed, so do not bring one.</li><li>Lights out at your normal time. A rested brain is faster than a crammed one.</li></ul>
@@ -1448,9 +1789,9 @@ function streak(){let n=0,d=today();if(!S.days[d])d=addDays(d,-1);while(S.days[d
 const doneCount=()=>Object.keys(S.done).length;
 function nextSession(){return SESSIONS.find(s=>!S.done[s.id])||null}
 function resumeSession(){if(!S.paused)return;S.cur=S.paused;S.paused=null;save();render()}
-function expectedDone(){const total=daysBetween(S.start,S.test);const el=daysBetween(S.start,today());if(total<=0)return 48;return Math.max(0,Math.min(48,Math.floor(el/total*48)))}
+function expectedDone(){const N=SESSIONS.length;const total=daysBetween(S.start,S.test);const el=daysBetween(S.start,today());if(total<=0)return N;return Math.max(0,Math.min(N,Math.floor(el/total*N)))}
 // Spread every word across the 48 sessions, so none is ever met cold in a quiz.
-const NSESS=48;
+const NSESS=SESSIONS.length;
 const wordEnd=idx=>Math.round((idx+1)*VOCAB.length/NSESS);
 function newWordsFor(idx){return VOCAB.slice(idx?wordEnd(idx-1):0,wordEnd(idx))}
 function introducedWords(idx){return VOCAB.slice(0,wordEnd(idx))}
@@ -1485,6 +1826,15 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
  else if(sess.type==='review'){cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Cheat sheet',min:6,topics:sess.topics},{k:'quiz',title:'Mixed practice',min:18,qs:mixedMath(shuf(sess.topics),12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='weak'){const weak=weakTopics(3);const topics=weak.length?weak:shuf(ALLMATH).slice(0,3);cur.data.weak=topics;cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Your weak spots',min:6,topics},{k:'quiz',title:'Targeted practice',min:18,qs:mixedMath(topics,12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='test'){const qs=sess.kind==='verbal'?verbalSet(sess.n,null):mathTest(sess.n,sess.kind);cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'test',title:sess.title,min:sess.min,qs,limit:sess.min*60,kind:sess.kind},{k:'wrap',title:'Results',min:5}]}
+ else if(sess.type==='read'){const a=sess.pi*2,b=sess.pi*2+1;
+  const skills=['rd_main','rd_infer','rd_vocab','rd_tone'];const skill=skills[sess.pi%skills.length];
+  cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Reading skill',min:7,topic:skill},
+   {k:'quiz',title:'Passage 1',min:11,qs:passageSet(a)},{k:'quiz',title:'Passage 2',min:11,qs:passageSet(b)},
+   {k:'wrap',title:'Wrap-up',min:4}]}
+ else if(sess.type==='essay'){
+  cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'lesson',title:'How to write it',min:6,topic:'wr_essay'},
+   {k:'essay',title:'Write your essay',min:30,prompt:ESSAY_PROMPTS[sess.prompt%ESSAY_PROMPTS.length],limit:30*60,phase:'plan'},
+   {k:'quiz',title:'Essay know-how',min:5,qs:topicQs('wr_essay',5)},{k:'wrap',title:'Wrap-up',min:3}]}
  else if(sess.type==='final'){cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'final',title:'Test-day game plan',min:8},{k:'quiz',title:'Confidence mix',min:12,qs:mixedMath(shuf(ALLMATH),8)},{k:'quiz',title:'Verbal victory lap',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'You did it!',min:3}]}
  cur.steps.forEach(st=>{if(st.qs){st.i=0;st.ans=[];st.picked=null}if(st.cards){st.ci=0;st.flipped=false;st.res=[]}});
  return cur}
@@ -1507,21 +1857,29 @@ function render(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wi
 function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test);const exp=expectedDone(),dn=doneCount();const behind=exp-dn;const st=streak();
  const name=S.name?`, ${esc(S.name)}`:'';const greet=new Date().getHours()<12?'Good morning':new Date().getHours()<17?'Good afternoon':'Good evening';
  let pace=behind<=0?`<span class="pill good">On track</span>`:behind<=2?`<span class="pill warn">${behind} session${behind>1?'s':''} behind</span>`:`<span class="pill bad">${behind} sessions behind</span>`;
- if(!S.name)return `<section class="hero card setup"><h1>Welcome to ISEE Launchpad</h1><p>A 12-week, self-guided path to the ISEE Lower Level. Each session takes 30 to 45 minutes and covers vocabulary, a math or verbal lesson, practice with instant explanations, and a review.</p>
- <label>What's your first name?<input id="nm" placeholder="Your name" maxlength="20"></label><label>Test date<input id="td" type="date" value="${S.test}"></label><button class="btn primary" id="go">Let's go</button>
- <details class="about"><summary>About the ISEE Lower Level</summary>${TEST_INFO}</details></section>`;
- return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of 48`:'All 48 sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
+ if(!S.name)return `<section class="card setup"><h1>Welcome to ISEE Launchpad</h1>
+ <p class="lead">A 12-week path to the ISEE Lower Level, built to be used on your own. Each session takes 30 to 45 minutes.</p>
+ <p>You get all four scored sections: <b>Verbal Reasoning</b>, <b>Quantitative Reasoning</b>, <b>Mathematics Achievement</b> and <b>Reading Comprehension</b>, plus timed <b>essay</b> practice.</p>
+ <div class="setrow2"><label>First name <span class="muted small">(optional)</span><input id="nm" placeholder="Leave blank to stay anonymous" maxlength="20"></label>
+ <label>Test date <span class="muted small">(change it any time in Settings)</span><input id="td" type="date" value="${S.test}"></label></div>
+ <button class="btn primary big" id="go">Let's go</button>
+ <details class="about"><summary>About this test</summary>${TEST_INFO}</details>
+ <details class="about"><summary>Keeping your work safe</summary><p>Everything stays on this device. Nothing is uploaded and no account is needed.</p><p><b>On an iPad or phone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>. That installs it, keeps it working with no internet, and stops the browser from clearing your progress.</p><p>Under <b>Progress → Settings</b> there is a backup box for moving your work to another device.</p></details>
+ <p class="fineprint">Independent practice material. Not affiliated with, endorsed by, or connected to ERB, the makers of the ISEE. Questions are written for practice and may occasionally contain mistakes.</p></section>`;
+ return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All 48 sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
  <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
- <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/48*100),56)}<div class="statl">plan done</div></div></div></section>
- <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/48*100)}%"></div><span class="marker" style="left:${Math.round(exp/48*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
+ <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/SESSIONS.length*100),56)}<div class="statl">plan done</div></div></div></section>
+ <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/SESSIONS.length*100)}%"></div><span class="marker" style="left:${Math.round(exp/SESSIONS.length*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
  <div class="card"><div class="cardhead"><h3>This week</h3></div>${nxt?weekList(nxt.week):weekList(12)}</div></section>
+ ${(!S.installTipDone&&doneCount()>=1&&/iPad|iPhone|Macintosh/.test(navigator.userAgent||'')&&!window.matchMedia('(display-mode: standalone)').matches)?`<section class="card tipcard"><div class="cardhead"><h3>Keep your progress safe</h3><button class="btn small ghost" data-tipdone>Got it</button></div><p>You have work saved here now. On an iPad or iPhone, tap <b>Share</b> and then <b>Add to Home Screen</b>. That keeps the app working without internet and stops Safari from clearing your progress.</p></section>`:''}
  <section class="card"><div class="cardhead"><h3>Strength by strand</h3><button class="btn small ghost" data-view="progress">Details</button></div><div class="strands">${Object.keys(CATS).map(c=>{const a=catAcc(c);return `<div class="strand"><div class="strandl">${CATS[c]}</div><div class="bar thin ${c==='verbal'?'teal':''}"><div style="width:${a.n?pct(a.r,a.n):0}%"></div></div><div class="strandn">${a.n?pct(a.r,a.n)+'%':'—'}</div></div>`}).join('')}</div></section>`}
 function weekList(w){const wk=PLAN[w-1];return `<div class="eyebrow">Week ${w} · ${esc(wk.title)}</div><ul class="slist">${SESSIONS.filter(s=>s.week===w).map(s=>{const d=S.done[s.id];return `<li class="${d?'done':''}"><span class="chk">${d?'✓':''}</span><button class="linkbtn" data-start="${s.id}">${esc(s.title)}</button>${d?`<span class="score">${d.score}%</span>`:''}</li>`}).join('')}</ul>`}
 
-function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Four sessions a week, 30 to 45 minutes each. Every session starts with new vocabulary and ends with a verbal drill, so words build all the way through. Tap any session to start it or redo it.</p>
- <div class="weeks">${PLAN.map(wk=>{const ss=SESSIONS.filter(s=>s.week===wk.w);const dn=ss.filter(s=>S.done[s.id]).length;return `<div class="card week ${dn===4?'complete':''}"><div class="cardhead"><h3><span class="wk">W${wk.w}</span> ${esc(wk.title)}</h3>${dn===4?'<span class="badge">★ Complete</span>':`<span class="muted">${dn}/4</span>`}</div><ul class="slist">${ss.map(s=>{const d=S.done[s.id];const ic=s.type==='test'?'⏱':s.type==='review'||s.type==='weak'?'↻':s.type==='final'?'★':'';return `<li class="${d?'done':''}"><span class="chk">${d?'✓':ic}</span><button class="linkbtn" data-start="${s.id}">${esc(s.title)}</button>${d?`<span class="score">${d.score}%</span>`:''}</li>`}).join('')}</ul></div>`}).join('')}</div>`}
+function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Five sessions a week, 30 to 45 minutes each: four on verbal and math, and a fifth on reading (or, every fourth week, a timed essay). Every session starts with new vocabulary and ends with a verbal drill, so words build all the way through. Tap any session to start it or redo it.</p>
+ <div class="weeks">${PLAN.map(wk=>{const ss=SESSIONS.filter(s=>s.week===wk.w);const dn=ss.filter(s=>S.done[s.id]).length;return `<div class="card week ${dn===ss.length?'complete':''}"><div class="cardhead"><h3><span class="wk">W${wk.w}</span> ${esc(wk.title)}</h3>${dn===ss.length?'<span class="badge">★ Complete</span>':`<span class="muted">${dn}/${ss.length}</span>`}</div><ul class="slist">${ss.map(s=>{const d=S.done[s.id];const ic=s.type==='test'?'⏱':s.type==='review'||s.type==='weak'?'↻':s.type==='final'?'★':s.type==='read'?'❝':s.type==='essay'?'✎':'';return `<li class="${d?'done':''}"><span class="chk">${d?'✓':ic}</span><button class="linkbtn" data-start="${s.id}">${esc(s.title)}</button>${d?`<span class="score">${d.score}%</span>`:''}</li>`}).join('')}</ul></div>`}).join('')}</div>`}
 
 function viewPractice(){return `<h2>Practice anything</h2><p class="muted">Ten questions on any topic, with explanations after each one. Or take a timed section to build stamina.</p>
+ <div class="card"><h3>Reading &amp; writing</h3><div class="testbtns"><button class="btn" data-quick="read">Read a passage · 5 questions</button><button class="btn" data-quick="read2">Two passages · 10 questions</button><button class="btn" data-quick="essay">Write an essay · 30 min</button></div></div>
  <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:math:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
  ${Object.keys(CATS).map(c=>`<div class="card"><h3>${CATS[c]}</h3><div class="topicgrid">${Object.keys(T).filter(k=>T[k].cat===c).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;return `<button class="topicbtn" data-quick="topic:${k}"><span>${esc(T[k].t)}</span><span class="tacc ${n?(pct(s.r,n)>=80?'good':pct(s.r,n)>=60?'warn':'bad'):''}">${n?pct(s.r,n)+'%':'new'}</span></button>`}).join('')}</div></div>`).join('')}`}
 
@@ -1535,17 +1893,18 @@ function viewWords(){const f=S.wordFilter||'all';const lvl=w=>S.vocab[w]?S.vocab
 function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<b[1].date?1:-1).slice(0,12);const tv=Object.values(S.vocab);
  const days=[];for(let i=83;i>=0;i--){const d=addDays(today(),-i);days.push([d,S.days[d]||0])}
  return `<h2>Progress</h2>
- <section class="grid2"><div class="card"><h3>Study days (last 12 weeks)</h3><div class="heat">${days.map(([d,n])=>`<span class="${n?'hit':''}" title="${d}: ${n} activit${n===1?'y':'ies'}"></span>`).join('')}</div><p class="muted">Current streak: <b>${streak()}</b> day${streak()===1?'':'s'}. Sessions done: <b>${doneCount()}</b> of 48.</p></div>
+ <section class="grid2"><div class="card"><h3>Study days (last 12 weeks)</h3><div class="heat">${days.map(([d,n])=>`<span class="${n?'hit':''}" title="${d}: ${n} activit${n===1?'y':'ies'}"></span>`).join('')}</div><p class="muted">Current streak: <b>${streak()}</b> day${streak()===1?'':'s'}. Sessions done: <b>${doneCount()}</b> of ${SESSIONS.length}.</p></div>
  <div class="card"><h3>Vocabulary</h3><div class="vrow"><span>Mastered</span><b>${tv.filter(v=>v.lvl>=3).length}</b></div><div class="vrow"><span>Still learning</span><b>${tv.filter(v=>v.lvl<3).length}</b></div><div class="vrow"><span>Not yet seen</span><b>${VOCAB.length-tv.length}</b></div><div class="vrow"><span>Synonym/completion accuracy</span><b>${(()=>{let r=0,w=0;tv.forEach(v=>{r+=v.r;w+=v.w});return r+w?pct(r,r+w)+'%':'—'})()}</b></div></div></section>
  <section class="card"><h3>Accuracy by topic</h3><div class="tblwrap"><table class="tbl"><thead><tr><th>Topic</th><th>Strand</th><th>Answered</th><th>Accuracy</th></tr></thead><tbody>${Object.keys(T).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;const p=n?pct(s.r,n):null;return `<tr><td>${esc(T[k].t)}</td><td class="muted">${CATS[T[k].cat]}</td><td>${n}</td><td>${p===null?'—':`<span class="pill ${p>=80?'good':p>=60?'warn':'bad'}">${p}%</span>`}</td></tr>`}).join('')}</tbody></table></div></section>
  <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s?s.title:'Session '+id)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
+ ${(S.essays&&S.essays.length)?`<section class="card"><h3>Essays you have written</h3><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words in ${e.mins} min</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div></details>`).join('')}</div></section>`:''}
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
  <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
 // ================= SESSION RENDER =================
 function renderSession(){const c=S.cur;const st=c.steps[c.step];const totalMin=c.steps.reduce((a,s)=>a+s.min,0);
  const rail=c.steps.map((s,i)=>`<div class="rstep ${i<c.step?'done':i===c.step?'on':''}"><span class="rdot">${i<c.step?'✓':i+1}</span><span class="rlbl">${esc(s.title)}</span></div>`).join('');
- let body='';if(st.k==='warm')body=renderWarm(st);else if(st.k==='lesson')body=renderLesson(st);else if(st.k==='sheet')body=renderSheet(st);else if(st.k==='final')body=`<div class="card lesson"><h2>${esc(st.title)}</h2>${FINAL_TIPS}<div class="actions"><button class="btn primary" data-next>I'm ready. Let's practice</button></div></div>`;else if(st.k==='quiz')body=renderQuiz(st,false);else if(st.k==='test')body=renderQuiz(st,true);else body=renderWrap();
+ let body='';if(st.k==='warm')body=renderWarm(st);else if(st.k==='lesson')body=renderLesson(st);else if(st.k==='sheet')body=renderSheet(st);else if(st.k==='final')body=`<div class="card lesson"><h2>${esc(st.title)}</h2>${FINAL_TIPS}<div class="actions"><button class="btn primary" data-next>I'm ready. Let's practice</button></div></div>`;else if(st.k==='essay')body=renderEssay(st);else if(st.k==='quiz')body=renderQuiz(st,false);else if(st.k==='test')body=renderQuiz(st,true);else body=renderWrap();
  return `<header class="top session"><button class="btn ghost small" data-exit>‹ Save & exit</button><div class="stitle"><b>${esc(c.title)}</b><span class="muted">Step ${c.step+1} of ${c.steps.length} · ${esc(st.title)}${st.k==='test'?'':' · about '+st.min+' min'}</span></div><div class="timer" id="timer">${st.k==='test'?mm(Math.max(0,st.limit-(st.t||0))):mm(c.elapsed)}</div></header>
  <div class="rail">${rail}</div><main class="wrap narrow">${body}</main>`}
 
@@ -1558,15 +1917,38 @@ function renderLesson(st){const t=T[st.topic];return `<div class="card lesson"><
 function renderSheet(st){const tips=st.topics.map(id=>{const t=T[id];const m=t.lesson.match(/<div class="tip"><b>Test tip<\/b>([\s\S]*?)<\/div>/);const s=S.topics[id];const n=s?s.r+s.w:0;return `<div class="sheetrow"><div><b>${esc(t.t)}</b> <span class="muted small">${n?pct(s.r,n)+'% so far':''}</span><div class="muted">${m?m[1]:''}</div></div><button class="btn small ghost" data-relearn="${id}">Re-read lesson</button></div>`}).join('');
  return `<div class="card lesson"><h2>${esc(st.title)}</h2><p class="muted">One key tip from each topic. Re-read any lesson you feel shaky on, then practice.</p>${tips}<div class="actions"><button class="btn primary" data-next>Start practice</button></div></div>`}
 function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=st.picked;const done=picked!=null;const letters='ABCD';const topicName=q.kind==='syn'?'Synonyms':q.kind==='sc'?'Sentence completion':T[q.topic]?T[q.topic].t:'';
- const dirs=q.kind==='syn'?'<p class="dirs">Select the word whose meaning is closest to the word in capital letters.</p>':q.kind==='sc'?'<p class="dirs">Select the word that best completes the sentence.</p>':'';
+ const dirs=q.kind==='syn'?'<p class="dirs">Select the word whose meaning is closest to the word in capital letters.</p>':q.kind==='sc'?'<p class="dirs">Select the word that best completes the sentence.</p>':q.pas?'<p class="dirs">Read the passage, then answer the question below it.</p>':'';
  const choices=q.ch.map((c,i)=>{let cls='';if(done&&!isTest){if(i===q.a)cls='right';else if(i===picked)cls='wrong'}else if(isTest&&picked===i)cls='sel';return `<button class="choice ${cls}" data-choice="${i}" ${done&&!isTest?'disabled':''}><span class="ltr">${letters[i]}</span><span class="ctext">${c}</span></button>`}).join('');
  const right=st.ans.filter(a=>a.ok).length;
  const head=isTest?`<div class="qhead"><span>Question ${st.i+1} of ${st.qs.length}</span><span class="muted">${topicName}</span></div>`:`<div class="qhead"><span>Question ${st.i+1} of ${st.qs.length}</span><span class="muted">${topicName} · ${right} correct</span></div>`;
  const fb=done&&!isTest?`<div class="feedback ${picked===q.a?'ok':'no'}" role="status" aria-live="polite"><b>${picked===q.a?pick(['Correct!','Nice work!','Yes!','Exactly right.','You got it.']):'Not quite.'}</b> ${q.exp}</div><div class="actions"><button class="btn primary" data-next-q autofocus>${st.i+1<st.qs.length?'Next question':'Finish this step'}</button></div>`:isTest?`<div class="actions between"><button class="btn ghost" data-prev-q ${st.i===0?'disabled':''}>‹ Back</button><span class="muted small">${st.ans.filter(a=>a&&a.pick!=null).length} of ${st.qs.length} answered</span>${st.i+1<st.qs.length?`<button class="btn" data-next-q>Next ›</button>`:`<button class="btn primary" data-submit>Submit test</button>`}</div>`:'';
- return `<div class="card quiz">${head}${dirs}<div class="qtext">${q.q}</div><div class="choices">${choices}</div>${fb}</div>${isTest?`<p class="muted small center">Timed section: no feedback until you submit. Skip and come back if you get stuck.</p>`:''}`}
+ return `<div class="card quiz">${head}${dirs}${q.pas||''}<div class="qtext">${q.q}</div><div class="choices">${choices}</div>${fb}</div>${isTest?`<p class="muted small center">Timed section: no feedback until you submit. Skip and come back if you get stuck.</p>`:''}`}
+function renderEssay(st){
+ const words=(st.text||'').trim()?(st.text||'').trim().split(/\s+/).length:0;
+ const left=Math.max(0,st.limit-(st.t||0));
+ if(st.phase==='plan')return `<div class="card lesson"><div class="eyebrow">Step 1 · plan for about 5 minutes</div><h2>Your prompt</h2>
+  <p class="prompt">${esc(st.prompt)}</p>
+  <p class="muted">Jot notes, not sentences. You will have 30 minutes to write once you start, the same as the real test.</p>
+  <label class="plan">My answer in one sentence<textarea id="pl0" rows="2" placeholder="I look up to ... because ...">${esc(st.p0||'')}</textarea></label>
+  <label class="plan">Reason or moment 1<input id="pl1" value="${esc(st.p1||'')}" placeholder="a specific moment, not a general idea"></label>
+  <label class="plan">Reason or moment 2<input id="pl2" value="${esc(st.p2||'')}"></label>
+  <label class="plan">Reason or moment 3 (optional)<input id="pl3" value="${esc(st.p3||'')}"></label>
+  <div class="actions"><button class="btn primary" data-essay-start>Start writing · 30 minutes</button></div></div>`;
+ if(st.phase==='write')return `<div class="card lesson"><div class="cardhead"><div><div class="eyebrow">Step 2 · writing</div><p class="prompt">${esc(st.prompt)}</p></div><div class="timer big ${left<300?'low':''}">${mm(left)}</div></div>
+  ${st.p1||st.p0?`<details class="planback" open><summary>Your plan</summary><ul>${[st.p0,st.p1,st.p2,st.p3].filter(Boolean).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`:''}
+  <textarea id="essay" class="essaybox" rows="16" placeholder="Start with a sentence that answers the question directly...">${esc(st.text||'')}</textarea>
+  <div class="essaybar"><span class="muted small">${words} word${words===1?'':'s'}</span><button class="btn primary" data-essay-done>I'm finished</button></div></div>`;
+ const checks=['I answered the question that was actually asked.','My opening sentence says my answer directly.','Every reason has a specific example or moment.','My closing says what it all adds up to.','I reread it for missing words, capital letters and periods.'];
+ return `<div class="card lesson"><div class="eyebrow">Step 3 · check your work</div><h2>Read it back</h2>
+  <p class="prompt">${esc(st.prompt)}</p>
+  <div class="essayread">${(st.text||'').split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(nothing written)</p>'}</div>
+  <p class="muted small">${words} words in ${mm(st.t||0)}. Your draft is saved on this device under Progress.</p>
+  <h4>Check yourself honestly</h4>
+  <div class="checks">${checks.map((c,i)=>`<label><input type="checkbox" data-chk="${i}" ${st.chk&&st.chk[i]?'checked':''}> ${c}</label>`).join('')}</div>
+  <div class="actions"><button class="btn primary" data-next>Finish this step</button></div></div>`}
 function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'||s.k==='test');let r=0,t=0;const missed=[];quizzes.forEach(s=>{s.ans.forEach((a,i)=>{if(!a)return;t++;if(a.ok)r++;else missed.push({q:s.qs[i],pick:a.pick})})});
  const warm=c.steps.find(s=>s.k==='warm');const learned=warm?warm.res.filter(x=>x.ok).length:0;const test=c.steps.find(s=>s.k==='test');
- const cardsOnly=!t&&warm;const seenCards=warm?warm.res.length:0;
+ const essayStep=c.steps.find(x=>x.k==='essay');const cardsOnly=!t&&warm&&!essayStep;const seenCards=warm?warm.res.length:0;
  const score=cardsOnly?pct(learned,seenCards):pct(r,t);
  const words=cardsOnly?(score>=80?'Great recall!':'Good practice. The words you missed come back sooner.')
    :score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
@@ -1581,9 +1963,22 @@ function startSession(sess){if(S.paused&&S.paused.id===sess.id)S.paused=null;S.c
 function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
  if(kind==='topic'){cur={id:'quick',type:'quick',title:T[a].t,step:0,elapsed:0,steps:[{k:'quiz',title:'Practice',min:10,qs:topicQs(a,10),i:0,ans:[],picked:null},{k:'wrap',title:'Results',min:2}]}}
  else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':'Math',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):mathTest(n),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
+ else if(kind==='read'||kind==='read2'){const n=kind==='read2'?2:1;const start=R(0,PASSAGES.length-1);
+  const steps=[];for(let i=0;i<n;i++)steps.push({k:'quiz',title:`Passage ${i+1}`,min:11,qs:passageSet(start+i),i:0,ans:[],picked:null});
+  cur={id:'quick',type:'quick',title:'Reading practice',step:0,elapsed:0,steps:[...steps,{k:'wrap',title:'Results',min:3}]}}
+ else if(kind==='essay'){cur={id:'quick',type:'quick',title:'Essay practice',step:0,elapsed:0,steps:[
+   {k:'essay',title:'Write your essay',min:30,prompt:pick(ESSAY_PROMPTS),limit:30*60,phase:'plan'},{k:'wrap',title:'Done',min:2}]}}
  else if(kind==='flash'){const seen=VOCAB.filter(w=>S.vocab[w[0]]).map(w=>w[0]).sort((x,y)=>vstat(x).lvl-vstat(y).lvl);const cards=[...seen.slice(0,12),...shuf(VOCAB.filter(w=>!S.vocab[w[0]]).map(w=>w[0])).slice(0,20-Math.min(12,seen.length))];cur={id:'quick',type:'quick',title:'Flashcard drill',step:0,elapsed:0,steps:[{k:'warm',title:'Flashcards',min:8,cards,ci:0,flipped:false,res:[]},{k:'wrap',title:'Done',min:1}]}}
  S.cur=cur;save();render()}
 function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
+ if(st.k==='essay'&&st.phase==='write'){ // the essay is timed like the real thing
+   if(st.t0==null)st.t0=Date.now()-(st.t||0)*1000;
+   st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
+   const el=document.querySelector('.timer.big');if(el){el.textContent=mm(Math.max(0,st.limit-st.t));if(st.limit-st.t<300)el.classList.add('low')}
+   if(st.t>=st.limit){const e=$('#essay');if(e)st.text=e.value;st.phase='check';
+     S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,text:st.text||'',mins:Math.round(st.t/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});
+     markDay();save();render();return}
+   return}
  if(st.k==='test'){ // a timed section runs on the clock, even if the app is in the background
    if(st.t0==null)st.t0=Date.now()-(st.t||0)*1000;
    st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
@@ -1600,6 +1995,14 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
  document.querySelectorAll('[data-relearn]').forEach(b=>b.onclick=()=>{const t=T[b.dataset.relearn];const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="card lesson modalcard"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-close>Back to cheat sheet</button></div></div>`;document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove()});
  if(st.k==='warm'){document.querySelectorAll('[data-flipcard]').forEach(b=>b.onclick=()=>{st.flipped=!st.flipped;render()});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const ok=b.dataset.card==='1';const w=st.cards[st.ci];recordVocab(w,ok);st.res.push({w,ok});st.ci++;st.flipped=false;markDay();if(st.ci>=st.cards.length)nextStep();else{save();render()}})}
+ if(st.k==='essay'){
+  const g=id=>{const e=$('#'+id);return e?e.value:''};
+  document.querySelectorAll('[data-essay-start]').forEach(b=>b.onclick=()=>{st.p0=g('pl0');st.p1=g('pl1');st.p2=g('pl2');st.p3=g('pl3');st.phase='write';st.t=0;st.t0=Date.now();save();render()});
+  const box=$('#essay');if(box){box.oninput=()=>{st.text=box.value;save();const c=document.querySelector('.essaybar .muted');if(c){const n=box.value.trim()?box.value.trim().split(/\s+/).length:0;c.textContent=n+' word'+(n===1?'':'s')}};box.focus()}
+  document.querySelectorAll('[data-essay-done]').forEach(b=>b.onclick=()=>{const e=$('#essay');if(e)st.text=e.value;st.phase='check';
+    S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,text:st.text||'',mins:Math.round((st.t||0)/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});S.essays=S.essays.slice(0,20);
+    markDay();save();render()});
+  document.querySelectorAll('[data-chk]').forEach(b=>b.onchange=()=>{st.chk=st.chk||[];st.chk[+b.dataset.chk]=b.checked;save()})}
  if(st.k==='quiz'){document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{if(st.picked!=null)return;const i=+b.dataset.choice;const q=st.qs[st.i];st.picked=i;st.ans[st.i]={pick:i,ok:i===q.a};if(q.topic)recordTopic(q.topic,i===q.a);if(q.word)recordVocab(q.word,i===q.a);save();render();const fb=$('.feedback');if(fb)fb.scrollIntoView({behavior:'smooth',block:'nearest'})});
   document.querySelectorAll('[data-next-q]').forEach(b=>b.onclick=()=>{st.i++;st.picked=null;if(st.i>=st.qs.length){st.i=st.qs.length-1;nextStep()}else{save();render();window.scrollTo(0,0)}})}
  if(st.k==='test'){document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=+b.dataset.choice;st.picked=i;st.ans[st.i]={pick:i,ok:false};save();render()});
@@ -1611,13 +2014,19 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
 function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{const s=SESSIONS.find(x=>x.id===b.dataset.start);if(S.done[s.id]&&!confirm('You already finished this session. Do it again with fresh questions?'))return;startSession(s)});
  document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>quickSession(b.dataset.quick));
  document.querySelectorAll('[data-resume]').forEach(b=>b.onclick=resumeSession);
+ document.querySelectorAll('[data-tipdone]').forEach(b=>b.onclick=()=>{S.installTipDone=true;save();render()});
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));
- const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim()||'Champ';S.test=$('#td').value||S.test;S.start=today();save();render()};
+ const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim()||'friend';S.test=$('#td').value||S.test;S.start=today();save();render()};
  const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
  const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=s;S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
- const rs=$('#bk_reset');if(rs)rs.onclick=()=>{if(confirm('Erase ALL progress, words, and sessions? This cannot be undone.')){localStorage.removeItem(KEY);S=load();render()}}}
+ const rs=$('#bk_reset');if(rs)rs.onclick=()=>{
+  if(!confirm('Erase ALL progress, words, sessions and essays? This cannot be undone.'))return;
+  const a=R(11,19),b=R(3,9);const ans=prompt(`This is meant for a grown-up.\n\nTo confirm, answer: what is ${a} × ${b}?`);
+  if(ans===null)return;
+  if(parseInt(ans,10)!==a*b){alert('That is not the answer, so nothing was erased.');return}
+  localStorage.removeItem(KEY);S=load();applyTheme();render()}}
 function applyTheme(){const r=document.documentElement;if(S.theme==='dark')r.setAttribute('data-theme','dark');else if(S.theme==='light')r.setAttribute('data-theme','light');else r.removeAttribute('data-theme')}
 applyTheme();render();
 

@@ -5,13 +5,17 @@ A single-file, fully offline study program for the **ISEE Lower Level** (grades 
 **Live app:** https://protoss1232001.github.io/isee-launchpad/
 
 ## What it covers
+All four scored sections, plus the essay.
 - **Verbal Reasoning** — a 244-word vocabulary bank (5 new words every session), synonym questions, sentence completions, and prefixes, roots and suffixes.
 - **Quantitative Reasoning & Mathematics Achievement** — numbers and operations, fractions, decimals/percents/ratios, algebraic concepts, geometry, measurement, data analysis, probability, and quantitative-reasoning strategy. 36 math topics, each with a lesson and an endless randomized question generator with worked explanations.
+- **Reading Comprehension** — 18 original passages (science, history, biography and fiction) with 90 questions covering main idea, supporting detail, vocabulary in context, inference, author's purpose, tone and organization, plus four reading-strategy lessons.
+- **The Essay** — a timed 30-minute writing workspace with a planning organizer, live word count, a self-check rubric, and 18 prompts in the style of the real test. Drafts are kept on the device.
 
 ## How it works
-- **12 weeks × 4 sessions = 48 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss.
+- **12 weeks × 5 sessions = 60 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss.
+- Four sessions a week cover verbal and math. The fifth is reading — or, every fourth week, a timed essay.
 - Weeks 10–12 add timed mini-tests, mixed reviews, an automatic weak-spot session, and a test-day game plan.
-- The **Practice** tab gives 10-question drills on any topic plus timed sections matching the real test lengths (Verbal 34 Q / 20 min, Quantitative Reasoning 38 Q / 35 min, Math Achievement 30 Q / 30 min).
+- The **Practice** tab gives 10-question drills on any topic, reading passages on demand, a 30-minute essay, and timed sections matching the real test lengths (Verbal 34 Q / 20 min, Quantitative Reasoning 38 Q / 35 min, Math Achievement 30 Q / 30 min).
 - Progress (sessions, per-topic accuracy, word mastery, study streak) is stored in the browser. **Progress → Settings** has a backup box to copy progress to another device.
 
 ## Install it on an iPad or phone
@@ -33,3 +37,6 @@ On a laptop, downloading `index.html` and opening it directly also works — the
 | `icon-*.png` | App icons |
 
 There is no build step. Edit `index.html` directly; its content sections are marked with `// ===== ... =====` inside the script.
+
+## Independence
+This is independent practice material. It is not affiliated with, endorsed by, or connected to ERB, the makers of the ISEE. Questions are written for practice and may occasionally contain mistakes.

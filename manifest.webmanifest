@@ -1,8 +1,8 @@
 {
   "name": "ISEE Launchpad",
-  "short_name": "ISEE",
+  "short_name": "Launchpad",
   "description": "A 12-week offline study program for the ISEE Lower Level.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
