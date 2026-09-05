@@ -185,6 +185,8 @@ label.plan input,label.plan textarea{display:block;width:100%;margin-top:4px;fon
 .essaylist summary{cursor:pointer}
 /* ---- welcome screen ---- */
 .setup{max-width:720px;margin:28px auto}
+.setup .btn.primary{width:100%;margin-top:4px}
+@media (min-width:620px){.setup .btn.primary{width:auto;min-width:220px}}
 .setup .lead{font-size:1.12rem;color:var(--muted)}
 .setrow2{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0}
 .setrow2 label{display:flex;flex-direction:column;gap:4px;font-weight:600}
@@ -1454,7 +1456,8 @@ const TEST_INFO=`
 <p>The <b>ISEE Lower Level</b> is for students in grades 4 and 5 applying to grades 5 and 6. It has five parts, always in this order:</p>
 ${table(['Section','Questions','Time','What it covers'],[['Verbal Reasoning','34','20 min','synonyms + sentence completions'],['Quantitative Reasoning','38','35 min','math thinking: estimation, patterns, logic, word problems'],['Reading Comprehension','25','25 min','5 passages with questions'],['Mathematics Achievement','30','30 min','math skills: computation, geometry, measurement, data'],['Essay','1 prompt','30 min','not scored; sent to schools']])}
 <p>There is <b>no penalty for wrong answers</b>, so answer every question. Scores are reported as stanines (1–9) compared with other students in the same grade.</p>
-<p>This program covers the Verbal Reasoning, Quantitative Reasoning, and Mathematics Achievement sections. Reading is best practiced by reading a little every day and talking about the main idea, and the essay by writing one practice essay a week on a fun prompt (for example: "Who do you look up to most, and why?").</p>`;
+<p><b>This app covers all five parts.</b> Verbal Reasoning, Quantitative Reasoning and Mathematics Achievement each have their own lessons and endless practice questions. Reading Comprehension has 18 passages with 90 questions and four strategy lessons. The essay has a timed 30-minute workspace, model essays to compare against, and a review page for a grown-up to read it with her.</p>
+<p>The 12-week plan runs five sessions a week: four on verbal and math, and a fifth on reading — or, every fourth week, a timed essay. Week 11 closes with a full-length timed Reading section.</p>`;
 
 // ===== READING COMPREHENSION =====
 // Hand-written passages at ISEE Lower Level reading level (grades 4-5), each with
@@ -1865,7 +1868,9 @@ const PLAN=[
 // Weeks 4, 8 and 12 close with a timed essay; every other week closes with a
 // reading session built from two passages.
 PLAN.forEach((wk,i)=>{
-  if((i+1)%4===0)wk.s.push({type:'essay',title:'Essay practice',prompt:i});
+  const w=i+1;
+  if(w===11)wk.s.push({type:'test',kind:'read',n:25,min:25,title:'Reading practice test'});
+  else if(w%4===0)wk.s.push({type:'essay',title:'Essay practice',prompt:i});
   else wk.s.push({type:'read',title:'Reading: two passages',pi:i});
 });
 const SESSIONS=[];PLAN.forEach(wk=>wk.s.forEach((s,i)=>{const o=Array.isArray(s)?{type:'lesson',topic:s[0]}:Object.assign({},s);o.id=`${wk.w}-${i+1}`;o.week=wk.w;o.idx=SESSIONS.length;o.title=o.title||T[o.topic].t;SESSIONS.push(o)}));
@@ -1883,7 +1888,7 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMon
 const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
 let S=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1)return s}catch(e){}return {v:1,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1){if(s.setup==null)s.setup=!!s.name;return s}}catch(e){}return {v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const tstat=id=>S.topics[id]||(S.topics[id]={r:0,w:0});
 const vstat=w=>S.vocab[w]||(S.vocab[w]={lvl:0,seen:0,r:0,w:0});
@@ -1919,6 +1924,10 @@ function verbalSet(n,idx){const out=[];const half=Math.ceil(n/2);
 // Achievement leans on computation. Weight the pools so the two tests differ.
 const QR_TOPICS=['q_sense','q_logic','q_multi','q_inverse','a_pattern','s_center','s_graphs','s_plots','s_interpret','p_basic','p_compound','p_count','p_predict','n_wordops','m_est','r_ratio'];
 const MA_TOPICS=ALLMATH.filter(id=>!['q_sense','q_logic','q_inverse'].includes(id));
+// 25 questions drawn from five different passages, like the real section.
+function readingTest(n){const idx=shuf(PASSAGES.map((_,i)=>i));const out=[];
+ for(const i of idx){if(out.length>=n)break;out.push(...passageSet(i))}
+ return out.slice(0,n)}
 function mathTest(n,kind){const pool=kind==='verbal'?ALLMATH:kind==='math'?MA_TOPICS:QR_TOPICS;return mixedMath(shuf(pool),n)}
 
 // ================= SESSION BUILDER =================
@@ -1930,7 +1939,7 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
   cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Learn',min:8,topic:sess.topic},{k:'quiz',title:'Practice',min:15,qs:isV?topicQs(sess.topic,10):topicQs(sess.topic,10)},{k:'quiz',title:isV?'Math mix':'Verbal drill',min:8,qs:isV?mixedMath(shuf(ALLMATH.filter(id=>SESSIONS.findIndex(s=>s.topic===id)<idx)).slice(0,5)||ALLMATH,8):verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='review'){cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Cheat sheet',min:6,topics:sess.topics},{k:'quiz',title:'Mixed practice',min:18,qs:mixedMath(shuf(sess.topics),12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='weak'){const weak=weakTopics(3);const topics=weak.length?weak:shuf(ALLMATH).slice(0,3);cur.data.weak=topics;cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Your weak spots',min:6,topics},{k:'quiz',title:'Targeted practice',min:18,qs:mixedMath(topics,12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
- else if(sess.type==='test'){const qs=sess.kind==='verbal'?verbalSet(sess.n,null):mathTest(sess.n,sess.kind);cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'test',title:sess.title,min:sess.min,qs,limit:sess.min*60,kind:sess.kind},{k:'wrap',title:'Results',min:5}]}
+ else if(sess.type==='test'){const qs=sess.kind==='verbal'?verbalSet(sess.n,null):sess.kind==='read'?readingTest(sess.n):mathTest(sess.n,sess.kind);cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'test',title:sess.title,min:sess.min,qs,limit:sess.min*60,kind:sess.kind},{k:'wrap',title:'Results',min:5}]}
  else if(sess.type==='read'){const a=sess.pi*2,b=sess.pi*2+1;
   const skills=['rd_main','rd_infer','rd_vocab','rd_tone'];const skill=skills[sess.pi%skills.length];
   cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Reading skill',min:7,topic:skill},
@@ -1954,15 +1963,15 @@ function ring(p,size=64,label){const r=(size-8)/2,c=2*Math.PI*r;return `<svg cla
 
 // ================= VIEWS =================
 function render(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
- let v=S.view||'home';if(!S.name)v='home';const navView=v==='review'?'progress':v;app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · Verbal + Math</div></div></div>
- ${S.name?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${navView===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
+ let v=S.view||'home';if(!S.setup)v='home';const navView=v==='review'?'progress':v;app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · all four sections + essay</div></div></div>
+ ${S.setup?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${navView===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
  <main class="wrap">${v==='home'?viewHome():v==='plan'?viewPlan():v==='practice'?viewPractice():v==='words'?viewWords():v==='review'?viewReview():viewProgress()}</main>`;
  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{S.view=b.dataset.view;save();render()});wireCommon()}
 
 function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test);const exp=expectedDone(),dn=doneCount();const behind=exp-dn;const st=streak();
- const name=S.name?`, ${esc(S.name)}`:'';const greet=new Date().getHours()<12?'Good morning':new Date().getHours()<17?'Good afternoon':'Good evening';
+ const name=(S.name||'').trim()?`, ${esc(S.name.trim())}`:'';const greet=new Date().getHours()<12?'Good morning':new Date().getHours()<17?'Good afternoon':'Good evening';
  let pace=behind<=0?`<span class="pill good">On track</span>`:behind<=2?`<span class="pill warn">${behind} session${behind>1?'s':''} behind</span>`:`<span class="pill bad">${behind} sessions behind</span>`;
- if(!S.name)return `<section class="card setup"><h1>Welcome to ISEE Launchpad</h1>
+ if(!S.setup)return `<section class="card setup"><h1>Welcome to ISEE Launchpad</h1>
  <p class="lead">A 12-week path to the ISEE Lower Level, built to be used on your own. Each session takes 30 to 45 minutes.</p>
  <p>You get all four scored sections: <b>Verbal Reasoning</b>, <b>Quantitative Reasoning</b>, <b>Mathematics Achievement</b> and <b>Reading Comprehension</b>, plus timed <b>essay</b> practice.</p>
  <div class="setrow2"><label>First name <span class="muted small">(optional)</span><input id="nm" placeholder="Leave blank to stay anonymous" maxlength="20"></label>
@@ -1971,7 +1980,7 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  <details class="about"><summary>About this test</summary>${TEST_INFO}</details>
  <details class="about"><summary>Keeping your work safe</summary><p>Everything stays on this device. Nothing is uploaded and no account is needed.</p><p><b>On an iPad or phone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>. That installs it, keeps it working with no internet, and stops the browser from clearing your progress.</p><p>Under <b>Progress → Settings</b> there is a backup box for moving your work to another device.</p></details>
  <p class="fineprint">Independent practice material. Not affiliated with, endorsed by, or connected to ERB, the makers of the ISEE. Questions are written for practice and may occasionally contain mistakes.</p></section>`;
- return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All 48 sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
+ return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All '+SESSIONS.length+' sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
  <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
  <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/SESSIONS.length*100),56)}<div class="statl">plan done</div></div></div></section>
  <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/SESSIONS.length*100)}%"></div><span class="marker" style="left:${Math.round(exp/SESSIONS.length*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
@@ -1985,7 +1994,7 @@ function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Five sessi
 
 function viewPractice(){return `<h2>Practice anything</h2><p class="muted">Ten questions on any topic, with explanations after each one. Or take a timed section to build stamina.</p>
  <div class="card"><h3>Reading &amp; writing</h3><div class="testbtns"><button class="btn" data-quick="read">Read a passage · 5 questions</button><button class="btn" data-quick="read2">Two passages · 10 questions</button><button class="btn" data-quick="essay">Write an essay · 30 min</button><button class="btn" data-models>Read model essays</button></div></div>
- <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:math:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
+ <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:read:25:25">Reading · 25 Q · 25 min</button><button class="btn" data-quick="test:math:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
  ${Object.keys(CATS).map(c=>`<div class="card"><h3>${CATS[c]}</h3><div class="topicgrid">${Object.keys(T).filter(k=>T[k].cat===c).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;return `<button class="topicbtn" data-quick="topic:${k}"><span>${esc(T[k].t)}</span><span class="tacc ${n?(pct(s.r,n)>=80?'good':pct(s.r,n)>=60?'warn':'bad'):''}">${n?pct(s.r,n)+'%':'new'}</span></button>`}).join('')}</div></div>`).join('')}`}
 
 function viewWords(){const f=S.wordFilter||'all';const lvl=w=>S.vocab[w]?S.vocab[w].lvl:0;const seen=w=>!!S.vocab[w];
@@ -2082,7 +2091,7 @@ function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'
  const score=cardsOnly?pct(learned,seenCards):pct(r,t);
  const words=cardsOnly?(score>=80?'Great recall!':'Good practice. The words you missed come back sooner.')
    :score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
- const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':'On the real test, Quantitative Reasoning is 38 questions in 35 minutes and Math Achievement is 30 in 30.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
+ const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':test.kind==='read'?'On the real test, Reading Comprehension is 25 questions in 25 minutes, across five passages.':'On the real test, Quantitative Reasoning is 38 questions in 35 minutes and Math Achievement is 30 in 30.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
  return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>${cardsOnly?'words known':'score'}</span></div>${cardsOnly?'':`<div><div class="statn">${r}/${t}</div><span>correct</span></div>`}<div><div class="statn">${learned}${cardsOnly?'/'+seenCards:''}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${testNote}
  ${cardsOnly?'':''}${missed.length?`<h3>Review what you missed</h3><div class="missed">${missed.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill bad">${m.pick==null?'You skipped this one':'You chose: '+m.q.ch[m.pick]}</span> <span class="pill good">Answer: ${m.q.ch[m.q.a]}</span></div><div class="muted">${m.q.exp}</div></div>`).join('')}</div>`:cardsOnly?`<p class="muted">You marked ${learned} of ${seenCards} cards as known. The rest will come back in your next warm-up.</p>`:'<p class="muted">No misses. Perfect round!</p>'}
  <div class="actions"><button class="btn primary big" data-finish>Finish session</button></div></div>`}
@@ -2092,7 +2101,7 @@ let timerHandle=null;
 function startSession(sess){if(S.paused&&S.paused.id===sess.id)S.paused=null;S.cur=buildSession(sess);S.view='home';save();render()}
 function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
  if(kind==='topic'){cur={id:'quick',type:'quick',title:T[a].t,step:0,elapsed:0,steps:[{k:'quiz',title:'Practice',min:10,qs:topicQs(a,10),i:0,ans:[],picked:null},{k:'wrap',title:'Results',min:2}]}}
- else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':'Math',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):mathTest(n),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
+ else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':a==='read'?'Reading Comprehension':'Math',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):a==='read'?readingTest(n):mathTest(n,a),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
  else if(kind==='read'||kind==='read2'){const n=kind==='read2'?2:1;const start=R(0,PASSAGES.length-1);
   const steps=[];for(let i=0;i<n;i++)steps.push({k:'quiz',title:`Passage ${i+1}`,min:11,qs:passageSet(start+i),i:0,ans:[],picked:null});
   cur={id:'quick',type:'quick',title:'Reading practice',step:0,elapsed:0,steps:[...steps,{k:'wrap',title:'Results',min:3}]}}
@@ -2158,7 +2167,7 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
  document.querySelectorAll('[data-tipdone]').forEach(b=>b.onclick=()=>{S.installTipDone=true;save();render()});
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));
- const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim()||'friend';S.test=$('#td').value||S.test;S.start=today();save();render()};
+ const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim();S.setup=true;S.test=$('#td').value||S.test;S.start=today();save();render()};
  const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
  const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=s;S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
