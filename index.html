@@ -239,6 +239,16 @@ label.plan input,label.plan textarea{display:block;width:100%;margin-top:4px;fon
 .focuscard{border-color:var(--teal)}
 .flist{list-style:none;padding:0;margin:8px 0 0}.flist li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:.92rem}.flist li:first-child{border-top:0}
 .slowright{margin-top:14px;text-align:left}.slowright summary{cursor:pointer;font-weight:600;color:var(--teal)}
+/* the score form stacks into one card per section on a phone */
+@media (max-width:600px){
+ .oform thead{display:none}
+ .oform,.oform tbody{display:block;width:100%}
+ .oform tr{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px 10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+ .oform td{display:flex;flex-direction:column;justify-content:flex-end;border:0;padding:0}
+ .oform td:first-child{grid-column:1/-1;font-weight:700}
+ .oform td[data-l]::before{content:attr(data-l);display:block;font-size:.72rem;color:var(--muted);font-weight:600;margin-bottom:2px}
+ .oform input{width:100%}
+}
 
 </style>
 </head>
@@ -736,7 +746,7 @@ const CLOSE=[
  ['idle','obsolete'],['sluggish','hectic'],['commotion','fiasco'],['rigorous','rigid'],['docile','benign'],['salvage','obtain'],
  ['candidly','solemnly'],['gregarious','bold'],
  ['reticent','cryptic'],['frivolous','peculiar'],['skeptical','cautious','prudent'],['tentatively','diligently','reluctantly'],['thoroughly','cautiously'],
- ['pensive','luminous','radiant','vivid']];
+ ['pensive','luminous','radiant','vivid'],['prominent','conspicuous']];
 
 // ---------- helpers ----------
 const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
@@ -2126,7 +2136,7 @@ p:['A coral reef looks like a garden of stone, but the builders are animals. Eac
 q:[{q:'What is the main idea of this passage?',a:'Corals depend on tiny algae living inside them, and warm water can break that partnership.',d:['Coral reefs are made of stone, not living things.','Coral reefs can be seen from space.','Scientists have found a way to stop all bleaching.'],e:'The passage centers on the coral-algae partnership, how heat breaks it, and why that matters.',k:'main idea'},
 {q:'According to the passage, what do the algae give the coral?',a:'Food made from sunlight, and much of its color',d:['A hard limestone cup','Protection from warm water','A way to move to cooler water'],e:'Paragraph 2: the algae "share much of" the food they make, and "also give corals much of their color."',k:'detail'},
 {q:'As used in paragraph 3, the word <em>bleaching</em> refers to:',a:'a coral turning pale after losing its algae',d:['a coral being cleaned by fish','a reef growing taller','scientists painting coral white'],e:'The coral pushes out the algae, its white skeleton shows through, and it turns pale. "Scientists call this bleaching."',k:'vocabulary'},
-{q:'According to the passage, a bleached coral is most likely to recover if:',a:'the water cools before the coral starves',d:['the water stays warm for a long time','the coral pushes out even more algae','the sun stops shining on the reef'],e:'Paragraph 4: if the water cools "soon enough, the algae can return and the coral can recover."',k:'detail'},
+{q:'Based on the passage, what would most likely happen to the fish on a reef if its corals died in a long ocean heat wave?',a:'Many would lose the place they depend on for food or shelter.',d:['Nothing would change, because fish do not use corals.','The fish would turn pale, just as the corals did.','The fish would make the water cool down again.'],e:'Paragraph 5 says about a quarter of all ocean species depend on reefs at some point in their lives, so losing the corals would take away something many fish need.',k:'inference'},
 {q:'Why does the author mention that about a quarter of ocean species depend on reefs?',a:'To show why the health of reefs matters so much',d:['To prove that reefs cover most of the ocean floor','To explain how corals build their skeletons','To describe what the algae eat'],e:'Reefs are small but support a huge share of ocean life, which explains why scientists work to protect them.',k:'purpose'},
 {q:'What is the relationship between paragraph 2 and paragraph 3?',a:'Paragraph 2 describes a partnership, and paragraph 3 explains how it can fail',d:['Paragraph 3 gives a second example of the same partnership','Paragraph 3 disagrees with the facts in paragraph 2','Paragraph 2 describes events that happen after paragraph 3'],e:'"This partnership has a weakness" links the two: paragraph 3 shows how heat breaks the arrangement paragraph 2 describes.',k:'organization'}]},
 
@@ -2246,7 +2256,7 @@ q:[{q:'What is the main idea of this story?',a:'Nina\'s practice carries her thr
 {q:'The author writes that Nina\'s hands "were two strangers." This means her hands:',a:'did not feel or act like her own',d:['belonged to someone else in the room','were covered by gloves','had never touched a piano before'],e:'The hands that had played perfectly all week now shook and went cold and sweaty. Nervousness made them feel like someone else\'s.',k:'figurative'},
 {q:'At the end, why does Nina feel that all her practice was worth it?',a:'Practice let her hands play the piece even when her mind froze.',d:['Her mother promised her a reward.','She wanted to beat the boy in the bow tie.','She was sure she had played it perfectly.'],e:'"Her hands had remembered when she could not." That is what all the practice gave her. (She was not sure she had played perfectly.)',k:'inference'},
 {q:'Which word best describes Nina\'s mood backstage in paragraph 2?',a:'nervous',d:['joyful','bored','angry'],e:'Shaking hands that go cold, then sweaty, then cold again show nerves.',k:'tone'},
-{q:'The stage is compared to "an empty parking lot at night: wide and bright and much too quiet." This comparison shows that the stage feels:',a:'huge and lonely to Nina',d:['dirty and crowded','dark and dangerous','small and cozy'],e:'An empty parking lot is wide open with no one in it. Nina feels exposed and alone.',k:'figurative'}]},
+{q:'The story begins by describing how well Nina\'s hands played all week. Why does the author start this way?',a:'To set up a contrast with how her hands behave backstage',d:['To show that Nina practiced too much','To explain how to play the piano','To introduce the boy in the bow tie'],e:'Paragraph 1 shows her hands playing perfectly, even in the dark. Paragraph 2 opens, "Now, backstage, they were two strangers." The calm start makes the change stand out.',k:'organization'}]},
 
 {t:'The Boat in the Garage',g:'Fiction',
 p:['For as long as Sam could remember, there had been a boat in Grandpa Joe\'s garage. It was not a real boat yet. It was a skeleton of curved wooden ribs, sanded smooth, resting on two sawhorses under a sheet that smelled of dust and varnish.',
@@ -2256,7 +2266,7 @@ p:['For as long as Sam could remember, there had been a boat in Grandpa Joe\'s g
 'In August they carried the boat to the lake behind the church. It sat low in the water and leaked a little at the front. Sam rowed while Grandpa sat in the back with his hat pulled down against the sun.',
 'Halfway across, Grandpa trailed his fingers in the water and said, "It was never going to be ready until you were." Sam kept rowing. He did not trust himself to say anything, so he pulled the oars and listened to the water running along the sides of the boat they had built.'],
 q:[{q:'What is the main idea of this story?',a:'A boy and his grandfather finish a boat together, and the work becomes a way of passing something on.',d:['Sam learns that boats are too hard for children to build.','Grandpa Joe is upset that the boat leaks.','Sam wants to sell the boat once it is finished.'],e:'Grandpa guides and Sam builds, and Grandpa\'s last line shows the boat was waiting for Sam all along.',k:'main idea'},
-{q:'Why did Grandpa hand Sam the sandpaper?',a:'His shaking hands could no longer hold the tools.',d:['He wanted Sam to clean the garage.','He was tired of Sam asking questions.','Sam had broken the chisel.'],e:'Paragraph 3: Grandpa\'s hands shook so that he "could still hold a cup of coffee, but not a chisel," so Sam had to do the work.',k:'inference'},
+{q:'According to paragraph 3, what could Grandpa still hold once his hands began to shake?',a:'A cup of coffee',d:['A chisel','The oars','A paintbrush'],e:'Paragraph 3: "He could still hold a cup of coffee, but not a chisel." That is why he handed the work to Sam.',k:'detail'},
 {q:'As used in paragraph 1, the word <em>skeleton</em> most nearly means:',a:'a frame without its outer parts',d:['the bones of an animal','a scary decoration','a finished boat'],e:'The boat was only "curved wooden ribs": the frame, without the planks that would cover it.',k:'vocabulary'},
 {q:'What does Grandpa mean when he says, "It was never going to be ready until you were"?',a:'He had been waiting for Sam to be old enough to help finish it.',d:['The boat needed more time to dry.','Sam had been too slow at rowing.','He did not think the boat would float.'],e:'His answer "when it\'s ready" was about Sam all along: the boat could be finished once Sam could build it with him.',k:'inference'},
 {q:'Which word best describes the tone of the last paragraph?',a:'tender',d:['funny','angry','fearful'],e:'Grandpa\'s quiet words and Sam, too moved to speak, rowing on: the ending is gentle and full of feeling.',k:'tone'},
@@ -2687,7 +2697,11 @@ function focusValid(k){const [kind,a,b,...rest]=String(k).split(':');if(rest.len
  if(kind==='r')return /^\d+$/.test(a)&&/^\d+$/.test(b)&&!!PASSAGES[+a]&&!!PASSAGES[+a].q[+b];
  if(kind==='t')return b===undefined&&Object.prototype.hasOwnProperty.call(T,a)&&typeof T[a].gen==='function'&&!['read','write'].includes(T[a].cat);
  return false}
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1)return norm(s)}catch(e){}return norm({v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'})}
+function load(){let raw=null;try{raw=localStorage.getItem(KEY);const s=JSON.parse(raw);if(s&&s.v===1)return norm(s)}catch(e){}
+ // Saved progress that exists but cannot be read is copied aside before the app
+ // starts fresh, so the next save cannot destroy it. Settings shows it for recovery.
+ if(raw){try{if(!localStorage.getItem(KEY+'-rescue'))localStorage.setItem(KEY+'-rescue',raw)}catch(e){}}
+ return norm({v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'})}
 // Saved progress from an older version lacks the newer fields; add them empty
 // rather than changing anything that is already there.
 function norm(s){if(s.setup==null)s.setup=!!s.name;for(const k of ['done','topics','vocab','days'])if(!s[k]||typeof s[k]!=='object')s[k]={};
@@ -2781,11 +2795,11 @@ function focusQs(n){const out=[],dead=new Set();const order=[...shuf(S.focus.sli
  if(dead.size)S.focus=S.focus.filter(f=>!dead.has(f.k));
  return out}
 function focusCard(where){const n=S.focus.length;
- if(!n)return where==='practice'?`<div class="card"><h3>Focus list</h3><p class="muted">Questions you miss land here, and each one leaves after you get it right twice in a row. Nothing here yet.</p></div>`:'';
+ if(!n)return where==='practice'?`<div class="card"><h3>Focus list</h3><p class="muted">Questions you miss land here, and each one leaves after you get it right twice in later practice. Nothing here yet.</p></div>`:'';
  if(where==='home'&&n<3)return '';
  const by={};S.focus.forEach(f=>by[f.tag]=(by[f.tag]||0)+1);
  return `<section class="card focuscard"><div class="cardhead"><h3>Focus list</h3><span class="muted small">${n} item${n===1?'':'s'}</span></div>
- <p class="muted">Things you missed recently. Each one leaves the list after you get it right twice in a row.</p>
+ <p class="muted">Things you missed recently. Each one leaves the list after you get it right twice in later practice.</p>
  <div class="chips">${Object.keys(TAGS).filter(t=>by[t]).map(t=>`<span class="chip static">${TAGS[t]} <span>${by[t]}</span></span>`).join('')}</div>
  ${where==='practice'?`<ul class="flist">${S.focus.slice(0,8).map(f=>`<li><span>${esc(focusLabel(f))}</span><span class="muted small">${TAGS[f.tag]}${f.miss>1?` · missed ${f.miss} times`:''}</span></li>`).join('')}</ul>`:''}
  <div class="actions"><button class="btn primary" data-quick="focus">Practice ${Math.min(8,n)} from my list</button></div></section>`}
@@ -2902,7 +2916,7 @@ function viewPractice(){return `<h2>Practice anything</h2><p class="muted">Ten q
 
 function chalPracticeCard(){const tag=(r,n)=>n?(pct(r,n)>=80?'good':pct(r,n)>=60?'warn':'bad'):'';
  return `<div class="card"><div class="cardhead"><h3>Challenge sets</h3><span class="muted small">${chOpen().length} of ${CH_IDS.length} open</span></div>
- <p class="muted">Harder, multi-step Quantitative Reasoning, like the toughest questions on the real test. A set opens once you have practiced each of its groundwork topics (✓) and reach 80% on them together. Once open, it stays open. Each set starts with a short strategy lesson, then 8 questions.</p>
+ <p class="muted">Harder, multi-step Quantitative Reasoning, like the toughest questions on the real test. A set opens once each of its groundwork topics has at least ${CH_MIN_EACH} answers (✓) and you reach 80% on them together. Once open, it stays open. Each set starts with a short strategy lesson, then 8 questions.</p>
  <div class="topicgrid">${CH_IDS.map(id=>{const s=chStatus(id);const t=S.topics[id];const n=t?t.r+t.w:0;const pre=CH_AREAS[id].pre.map(p=>{const x=S.topics[p];return (x&&x.r+x.w>=CH_MIN_EACH?'✓ ':'')+esc(T[p].t)}).join(', ');
   if(s.open)return `<button class="topicbtn" data-quick="chal:${id}"><span>${esc(chName(id))}</span><span class="tacc ${tag(t&&t.r,n)}">${n?pct(t.r,n)+'%':'new'}</span></button>`;
   return `<button class="topicbtn locked" disabled><span>🔒 ${esc(chName(id))}<small>Groundwork: ${pre}</small></span><span class="tacc">${!s.each?'Practice each topic':s.n<CH_MIN_N?`${s.n}/${CH_MIN_N} answered`:`${Math.round(s.acc*100)}%, needs 80%`}</span></button>`}).join('')}</div></div>`}
@@ -2948,7 +2962,7 @@ function offTile([k,label]){const all=offSorted().filter(o=>o.sec[k]);if(!all.le
   body=`<div class="statn">${P(last)}%</div><div class="muted small">${x.c} of ${x.t} correct · ${shortDate(last.date)}<br>${esc(last.src)}</div>`;
   if(same.length>1){const d=P(last)-P(same[0]);
    trend=`<div class="odelta">${d>0?`<span class="up">▲</span> ${d}`:d<0?`<span class="down">▼</span> ${-d}`:'No change'}${d?` percentage point${Math.abs(d)===1?'':'s'}`:''} since the first result from this source</div>`+spark(same.map(o=>({v:P(o),tip:`${shortDate(o.date)}: ${o.sec[k].c} of ${o.sec[k].t} (${P(o)}%)`})))}}
- return `<div class="otile"><div class="otl">${label}</div>${body}${rep?`<div class="small">Reported: ${offExtra(rep.sec[k])} <span class="muted">(${shortDate(rep.date)})</span></div>`:''}${trend}</div>`}
+ return `<div class="otile"><div class="otl">${label}</div>${body}${rep?`<div class="small">Reported: ${offExtra(rep.sec[k])} <span class="muted">(${esc(rep.src)}, ${shortDate(rep.date)})</span></div>`:''}${trend}</div>`}
 function viewOfficial(){const rows=offSorted().reverse();const blank=v=>v==null?'':v;
  return `<section class="card"><div class="cardhead"><h3>Official practice tests</h3>${rows.length?`<span class="muted small">${rows.length} logged</span>`:''}</div>
  ${rows.length?`<div class="otiles">${OFF_SECS.map(offTile).join('')}</div>
@@ -2958,7 +2972,7 @@ function viewOfficial(){const rows=offSorted().reverse();const blank=v=>v==null?
  <details class="oadd" ${rows.length?'':'open'}><summary>Add a result</summary>
  <div class="setrow"><label>Date taken<input id="o_date" type="date" value="${today()}"></label><label>Source<select id="o_src">${OFF_SRCS.map(s=>`<option>${esc(s)}</option>`).join('')}</select></label></div>
  <div class="tblwrap"><table class="tbl oform"><thead><tr><th>Section</th><th>Number correct</th><th>Out of</th><th>Scaled score</th><th>Percentile</th><th>Stanine</th></tr></thead><tbody>
- ${OFF_SECS.map(([k,l,n])=>`<tr><td>${l}</td>${[['c',''],['t',n],['ss',''],['pr',''],['st','']].map(([f,v])=>`<td><input id="o_${k}_${f}" inputmode="numeric" autocomplete="off" value="${blank(v)}" aria-label="${l}: ${({c:'number correct',t:'out of',ss:'scaled score',pr:'percentile',st:'stanine'})[f]}"></td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ ${OFF_SECS.map(([k,l,n])=>`<tr><td>${l}</td>${[['c',''],['t',n],['ss',''],['pr',''],['st','']].map(([f,v])=>`<td data-l="${({c:'Number correct',t:'Out of',ss:'Scaled score',pr:'Percentile',st:'Stanine'})[f]}"><input id="o_${k}_${f}" inputmode="numeric" autocomplete="off" value="${blank(v)}" aria-label="${l}: ${({c:'number correct',t:'out of',ss:'scaled score',pr:'percentile',st:'stanine'})[f]}"></td>`).join('')}</tr>`).join('')}</tbody></table></div>
  <p class="muted small">Leave a section's boxes empty if it was not taken. Fill in scaled score (760 to 940), percentile or stanine only when the test or score report gives them to you; number correct can then be left empty. For a score report, check the "Out of" number against the report.</p>
  <div class="oerr" id="o_err" role="alert"></div><div class="actions"><button class="btn primary" id="o_add">Save result</button></div></details>
  <p class="onote">This app only works out percent correct. It never turns a raw score into a scaled score, percentile or stanine: ERB does not publish that conversion, and each test form is scaled separately. A stanine compares you with other students applying for the same grade, so only an ERB score report can give you one. Tests from other publishers can run harder or easier than the real one, so each card's change and trend line only compare results from the same source.</p></section>`}
@@ -2983,10 +2997,11 @@ function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<
  <div class="card"><h3>Vocabulary</h3><div class="vrow"><span>Mastered</span><b>${tv.filter(v=>v.lvl>=3).length}</b></div><div class="vrow"><span>Still learning</span><b>${tv.filter(v=>v.lvl<3).length}</b></div><div class="vrow"><span>Not yet seen</span><b>${VOCAB.length-tv.length}</b></div><div class="vrow"><span>Synonym/completion accuracy</span><b>${(()=>{let r=0,w=0;tv.forEach(v=>{r+=v.r;w+=v.w});return r+w?pct(r,r+w)+'%':'—'})()}</b></div></div></section>
  <section class="card"><h3>Accuracy by topic</h3><div class="tblwrap"><table class="tbl"><thead><tr><th>Topic</th><th>Strand</th><th>Answered</th><th>Accuracy</th></tr></thead><tbody>${Object.keys(T).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;const p=n?pct(s.r,n):null;return `<tr><td>${esc(T[k].t)}</td><td class="muted">${CATS[T[k].cat]}</td><td>${n}</td><td>${p===null?'—':`<span class="pill ${p>=80?'good':p>=60?'warn':'bad'}">${p}%</span>`}</td></tr>`}).join('')}</tbody></table></div></section>
  <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s?s.title:'Session '+id)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
- ${(S.essays&&S.essays.length)?`<section class="card"><div class="cardhead"><h3>Essays you have written</h3><button class="btn small" data-rev="0">Review with a grown-up</button></div><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words, ${e.mins<1?'under a minute':e.mins+' min'}</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div><div class="actions"><button class="btn small ghost" data-model="${e.pi||0}">See a model</button><button class="btn small" data-rev="${i}">Review this one</button></div></details>`).join('')}</div></section>`:''}
+ ${(S.essays&&S.essays.length)?`<section class="card"><div class="cardhead"><h3>Essays you have written</h3><button class="btn small" data-rev="0">Review with a grown-up</button></div><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words, ${e.mins<1?'under a minute':e.mins+' min'}${e.unfinished?', unfinished':''}</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div><div class="actions"><button class="btn small ghost" data-model="${e.pi||0}">See a model</button><button class="btn small" data-rev="${i}">Review this one</button></div></details>`).join('')}</div></section>`:''}
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
  <div class="setrow"><label class="inline"><input type="checkbox" id="s_chal" ${S.chalAll?'checked':''}> Open every challenge set now, without waiting for the groundwork (takes effect right away)</label></div>
- <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
+ <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea>
+ ${(()=>{try{return localStorage.getItem(KEY+'-rescue')}catch(e){return null}})()?`<p class="small"><b>Some older saved progress could not be read, so it was kept safe instead of being erased.</b> <button class="btn small" id="bk_rescue">Put it in the box above</button> Then copy it and send it to whoever maintains the app.</p>`:''}<div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
 // ================= SESSION RENDER =================
 function renderSession(){const c=S.cur;const st=c.steps[c.step];const totalMin=c.steps.reduce((a,s)=>a+s.min,0);
@@ -3103,7 +3118,10 @@ function finishSession(){const c=S.cur;if(S.paused&&S.paused.id===c.id)S.paused=
 function wireSession(){const c=S.cur;const st=c.steps[c.step];
  document.querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{
    // Keep the in-progress session so it can be resumed, but leave the session view.
-   if(c.type==='quick')S.cur=null;else{S.paused=c;S.cur=null}
+   // A Practice-tab set is not kept, but an essay draft in progress is saved to Progress.
+   if(c.type==='quick'){const es=c.steps.find(s=>s.k==='essay'&&s.phase==='write'&&(s.text||'').trim());
+     if(es){S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:es.prompt,pi:es.promptIdx||0,text:es.text,mins:Math.round((es.t||0)/60),words:es.text.trim().split(/\s+/).length,unfinished:true});S.essays=S.essays.slice(0,20);markDay()}
+     S.cur=null}else{S.paused=c;S.cur=null}
    S.view='home';save();render()});
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
  document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
@@ -3153,6 +3171,7 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
  const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
  const ca=$('#s_chal');if(ca)ca.onchange=()=>{S.chalAll=ca.checked;save()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
+ const rb=$('#bk_rescue');if(rb)rb.onclick=()=>{try{$('#bk').value=localStorage.getItem(KEY+'-rescue')||''}catch(e){}};
  const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=norm(s);S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
  const rs=$('#bk_reset');if(rs)rs.onclick=()=>{
   if(!confirm('Erase ALL progress, words, sessions and essays? This cannot be undone.'))return;

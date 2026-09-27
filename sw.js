@@ -2,7 +2,7 @@
 // there is one, so a new version shows up the next time the app is opened; if
 // the network is missing or slow, the cached copy is used instead. Icons and the
 // manifest come from the cache and are refreshed in the background.
-const CACHE = 'isee-launchpad-v8';
+const CACHE = 'isee-launchpad-v9';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
