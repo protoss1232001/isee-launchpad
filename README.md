@@ -6,10 +6,10 @@ A single-file, fully offline study program for the **ISEE Lower Level** (grades 
 
 ## What it covers
 All four scored sections, plus the essay.
-- **Verbal Reasoning** — a 244-word vocabulary bank (5 new words every session), synonym questions, sentence completions, and prefixes, roots and suffixes.
+- **Verbal Reasoning** — a 421-word vocabulary bank: 244 core words plus 177 harder words for a top score, about 7 new words every session. Synonym questions, sentence completions, and prefixes, roots and suffixes. Wrong choices include the classic ISEE trap, the exact opposite of the answer, and sentence-completion explanations name the signal word (*although*, *because*) that decides the blank.
 - **Quantitative Reasoning & Mathematics Achievement** — numbers and operations, fractions, decimals/percents/ratios, algebraic concepts, geometry, measurement, data analysis, probability, and quantitative-reasoning strategy. 36 math topics, each with a lesson and an endless randomized question generator with worked explanations.
 - **Challenge tier (harder Quantitative Reasoning)** — seven sets of multi-step questions modeled on the hardest ISEE items: number sense and logic (including odd/even reasoning), proportional reasoning, patterns, multi-step word problems, composite figures and angles, tables/graphs/Venn logic, and multi-step probability. Every wrong answer comes from one specific, common mistake, and each explanation names the trap. See *Challenge tier* below.
-- **Reading Comprehension** — 18 original passages (science, history, biography and fiction) with 90 questions covering main idea, supporting detail, vocabulary in context, inference, author's purpose, tone and organization, plus four reading-strategy lessons.
+- **Reading Comprehension** — 34 original passages (science, history, biography, fiction and a persuasive essay) with 204 questions: every passage has six, one of each kind the real section asks (main idea, supporting detail, vocabulary in context, inference, purpose or tone, and organization or figurative language). Plus four reading-strategy lessons. The timed Reading section uses five questions per passage, like the real test.
 - **The Essay** — a timed 30-minute writing workspace with a planning organizer, live word count, a self-check rubric, and 18 prompts in the style of the real test. Drafts are kept on the device.
 
 ## Writing feedback
