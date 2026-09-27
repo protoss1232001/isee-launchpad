@@ -213,6 +213,26 @@ label.plan input,label.plan textarea{display:block;width:100%;margin-top:4px;fon
   a[href]::after{content:""}
 }
 
+/* ---- challenge tier ---- */
+.ft.halo{fill:#fff;stroke:#1B2437;stroke-width:3px;paint-order:stroke;font-weight:800}
+.topicbtn small{display:block;font-weight:500;font-size:.75rem;color:var(--muted);margin-top:2px}
+.topicbtn.locked{background:var(--card);border-style:dashed;cursor:default}.topicbtn.locked:hover{border-color:var(--line)}
+.chalcard{border-color:var(--plum)}.pill.chal{background:var(--plum);color:#fff;border-color:transparent}
+.settings label.inline{flex-direction:row;align-items:center;gap:8px;font-weight:500}
+.settings label.inline input{width:18px;height:18px;accent-color:var(--accent)}
+/* ---- official practice-test scores ---- */
+.otiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+.otile{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.otl{font-size:.8rem;font-weight:700;color:var(--muted)}
+.otile .statn{margin-top:2px}
+.odelta{font-size:.8rem;font-weight:700;color:var(--ink)}.odelta .up{color:var(--good)}.odelta .down{color:var(--bad)}
+.spark{display:block;margin-top:8px;width:100%;max-width:220px;height:auto;overflow:visible}
+.oadd{margin-top:10px}.oadd summary{cursor:pointer;font-weight:600;color:var(--teal)}
+.oform input{width:4.6em;padding:.35em .5em}
+.oerr{color:var(--bad);font-weight:600;margin:8px 0}.oerr:empty{display:none}
+.onote{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+.otbl{min-width:560px}.otbl td:first-child{min-width:150px}
+
 </style>
 </head>
 <body>
@@ -513,7 +533,7 @@ function mc(q,ans,wrongs,exp,extra){
     if(seen.has(k))continue;seen.add(k);W.push(t);if(W.length===need-1)break}
   if(W.length<need-1)return null;
   const ch=shuf([A,...W]);const out={q,ch,a:ch.indexOf(A),exp};
-  if(opt.kind)out.kind=opt.kind;if(opt.word)out.word=opt.word;
+  if(opt.kind)out.kind=opt.kind;if(opt.word)out.word=opt.word;if(opt.chk)out.chk=opt.chk;
   return out;
 }
 // Ordinal words, so we never print "23th".
@@ -1848,8 +1868,272 @@ const PARENT_HOWTO=`
 <p><b>Do not correct spelling out loud line by line.</b> The essay is unscored and schools know it was handwritten in 30 minutes under pressure. Organization and specific detail matter far more than a misspelled word.</p>
 <p><b>Ask before you tell.</b> The three questions above usually get her to find the weak paragraph herself, which sticks better than being told.</p>`;
 
+// ===== CHALLENGE TIER (harder Quantitative Reasoning) =====
+// Grade-level content, harder reasoning: every item needs two or more steps, and
+// every wrong answer is the result of one specific, common mistake. Explanations
+// name that mistake. Each question carries `chk` (its raw inputs and marked answer)
+// so an independent checker can recompute it.
+const pos=v=>typeof v==='number'?v>0:true;
+const posList=a=>a.filter(v=>typeof v!=='number'||v>0);
+const watch=s=>`<br><b>Watch out:</b> ${s}`;
+const clock=m=>{m=((m%1440)+1440)%1440;const h24=Math.floor(m/60),mm=m%60;const ap=h24<12?'a.m.':'p.m.';const h=h24%12===0?12:h24%12;return `${h}:${String(mm).padStart(2,'0')} ${ap}`};
+const hm=m=>m<60?`${m} minutes`:`${Math.floor(m/60)} hour${Math.floor(m/60)>1?'s':''}${m%60?' '+(m%60)+' minutes':''}`;
+
+// ---- figures ----
+function svgLShape(W,H,w,h,lab){ // notch cut from the top-right corner
+  const sc=Math.min(190/W,120/H),ox=48,oy=26,X=v=>ox+v*sc,Y=v=>oy+v*sc;
+  const pts=[[0,0],[W-w,0],[W-w,h],[W,h],[W,H],[0,H]];
+  let s=`<polygon points="${pts.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="var(--figfill)" stroke="var(--ink)" stroke-width="2"/>`;
+  const t=(x,y,txt,anc)=>s+=`<text x="${x}" y="${y}" text-anchor="${anc||'middle'}" class="ft">${txt}</text>`;
+  if(lab.top)t(X((W-w)/2),Y(0)-8,lab.top);
+  if(lab.nv)t(X(W-w)+6,Y(h/2)+4,lab.nv,'start');
+  if(lab.nh)t(X(W-w/2),Y(h)-8,lab.nh);
+  if(lab.right)t(X(W)+6,Y(h+(H-h)/2)+4,lab.right,'start');
+  if(lab.bottom)t(X(W/2),Y(H)+20,lab.bottom);
+  if(lab.left)t(X(0)-6,Y(H/2)+4,lab.left,'end');
+  return SVG(Math.ceil(X(W)+70),Math.ceil(Y(H)+34),s,'A figure shaped like the letter L, with some side lengths labeled');
+}
+function svgExtAngle(g,e){ // triangle ABC, base extended past C
+  const s=`<polygon points="30,150 205,150 115,40" fill="var(--figfill)" stroke="var(--ink)" stroke-width="2"/>
+  <line x1="205" y1="150" x2="300" y2="150" stroke="var(--ink)" stroke-width="2"/>
+  <text x="22" y="168" class="ft small">A</text><text x="109" y="32" class="ft small">B</text><text x="200" y="168" class="ft small">C</text>
+  <text x="58" y="143" class="ft">${g}°</text><text x="110" y="70" class="ft">?</text><text x="226" y="140" class="ft">${e}°</text>
+  <text x="165" y="186" text-anchor="middle" class="ft tiny">Not drawn to scale</text>`;
+  return SVG(310,192,s,`Triangle ABC with angle A of ${g} degrees and an outside angle at C of ${e} degrees`);
+}
+function svgSpin(fracs,letters){ // unequal sections, drawn to scale
+  const cx=80,cy=80,r=70;let a=-Math.PI/2,s='';const cols=['var(--bar1)','var(--bar2)','var(--bar3)','var(--bar4)','var(--bar5)'];
+  fracs.forEach(([n,d],i)=>{const sweep=2*Math.PI*n/d,b=a+sweep;const x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b);const m=(a+b)/2;
+    s+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${sweep>Math.PI?1:0} 1 ${x2},${y2} Z" fill="${cols[i%5]}" stroke="var(--card)" stroke-width="2"/>`;
+    s+=`<text x="${cx+r*0.62*Math.cos(m)}" y="${cy+r*0.62*Math.sin(m)+5}" text-anchor="middle" class="ft halo">${letters[i]}</text>`;a=b});
+  return SVG(162,162,s+`<circle cx="${cx}" cy="${cy}" r="4" fill="var(--ink)"/>`,`Spinner with ${fracs.length} unequal sections labeled ${letters.join(', ')}`);
+}
+
+// ---- areas: which lessons unlock each one ----
+// pre: groundwork topics, each of which must be practiced before the area opens.
+// also: later lessons that get stretch questions from the area once it is open.
+const CH_AREAS={
+ ch_number:{pre:['n_place','n_factors','n_wordops'],also:['q_sense','q_logic']},
+ ch_ratio:{pre:['f_muldiv','r_ratio','d_percent'],also:['q_inverse']},
+ ch_pattern:{pre:['a_pattern'],also:['q_logic']},
+ ch_word:{pre:['n_wordops','a_eq2','m_time','s_center'],also:['q_multi','q_inverse']},
+ ch_geo:{pre:['g_angles','g_perim'],also:['g_shapes']},
+ ch_data:{pre:['s_center','s_graphs','s_interpret'],also:['s_plots']},
+ ch_prob:{pre:['p_basic','p_compound','p_count'],also:['p_predict']}};
+const CH_IDS=Object.keys(CH_AREAS);
+const chLesson=(intro,moves,traps)=>`<p>${intro}</p><h4>How to attack these</h4><ul>${moves.map(m=>`<li>${m}</li>`).join('')}</ul><h4>The traps</h4><ul>${traps.map(m=>`<li>${m}</li>`).join('')}</ul>${tip('Harder questions are built so that a fast answer is usually a trap answer. If a choice appears after one step, check whether the question needed two.')}`;
+
+// ================= NUMBER SENSE & LOGIC =================
+T.ch_number={t:'Challenge: Number Sense & Logic',cat:'chal',lesson:chLesson(
+ 'These questions use ordinary numbers but ask you to reason about them: consecutive numbers, remainders, divisibility, odd and even numbers, and the largest number you can build from digits.',
+ ['<b>Pick a real number to test.</b> If a number leaves remainder 4 when divided by 6, try 10. Then just do the arithmetic.','<b>Use the middle.</b> Three consecutive numbers that add to 48: the middle one is 48 ÷ 3 = 16.','<b>Odd and even follow rules.</b> Odd + even = odd. Odd + odd = even. Anything times an even number is even. Check with small numbers like 3 and 4.'],
+ ['Answering with the middle number when the question asks for the largest.','Adding remainders without wrapping past the divisor.','Thinking a product is odd because one of the numbers is odd.']),
+gen(){const t=R(1,5);
+ if(t===1){const even=R(0,1)===1;let m=R(8,40);if(even&&m%2)m++;const st=even?2:1;const sum=3*m,big=m+st;
+  return mc(`The sum of three consecutive ${even?'<b>even</b> ':''}whole numbers is ${sum}. What is the <b>largest</b> of the three numbers?`,big,[m,m-st,big+st,even?m+1:m+3],
+   `The middle number is the sum divided by 3: ${sum} ÷ 3 = ${m}. The numbers are ${m-st}, ${m} and ${m+st}. Check: ${m-st} + ${m} + ${m+st} = ${sum}. The largest is <b>${big}</b>.${watch(`${m} is the middle number, not the largest.`)}`,{chk:{t:'consec',p:{m,even},a:big}})}
+ if(t===2){const d=R(5,9),r=R(1,d-1);const k=R(d-r,d-r+d-2);const ans=(r+k)%d;const N=d+r;
+  return mc(`When a whole number is divided by ${d}, the remainder is ${r}. What is the remainder when <b>that number plus ${k}</b> is divided by ${d}?`,ans,[r+k,r,k,(ans+1)%d||d-1],
+   `Pick a number that works: ${N} ÷ ${d} = 1 remainder ${r}. Add ${k}: ${N+k} ÷ ${d} = ${Math.floor((N+k)/d)} remainder <b>${ans}</b>. Any number that fits gives the same remainder.${watch(`${r} + ${k} = ${r+k}, but a remainder must be smaller than ${d}, so it wraps around.`)}`,{chk:{t:'rem',p:{d,r,k},a:ans}})}
+ if(t===3){const sets=[[4,6,8],[3,4,8],[2,9,4],[5,6,4],[3,8,16]];const [a,b,c]=pick(sets);const L=lcm(a,b);
+  const good=[],inBoth=[],onlyA=[],onlyB=[];for(let v=L;v<=170;v+=L)(v%c?good:inBoth).push(v);
+  for(let v=a;v<=120;v+=a)if(v%b&&v>10)onlyA.push(v);for(let v=b;v<=120;v+=b)if(v%a&&v>10)onlyB.push(v);
+  const ans=pick(good);
+  return mc(`Which number is divisible by both ${a} and ${b}, but <b>not</b> by ${c}?`,ans,shuf([...shuf(inBoth).slice(0,2),pick(onlyA),pick(onlyB)]),
+   `A number divisible by both ${a} and ${b} is a multiple of ${L}. ${ans} = ${L} × ${ans/L}, and ${ans} ÷ ${c} leaves a remainder, so it works.${watch(`Some choices divide by ${a} and ${b} but also by ${c}; others divide by only one of ${a} and ${b}. Check all three conditions.`)}`,{chk:{t:'div3',p:{a,b,c},a:ans}})}
+ if(t===4){let dg;for(;;){dg=shuf([1,2,3,4,5,6,7,8,9]).slice(0,4);const mn=Math.min(...dg);if(mn%2===1&&dg.some(x=>x%2===0))break}
+  const perms=[];const go=(p,rest)=>{if(!rest.length){perms.push(+p.join(''));return}rest.forEach((x,i)=>go([...p,x],rest.filter((_,j)=>j!==i)))};go([],dg);
+  const all=[...new Set(perms)].sort((x,y)=>y-x);const ev=all.filter(v=>v%2===0);const ans=ev[0];
+  return mc(`Using each of the digits <b>${dg.join(', ')}</b> exactly once, what is the greatest <b>even</b> 4-digit number you can make?`,fmt(ans),[fmt(all[0]),fmt(ev[1]),fmt(ev[2]),fmt(all[1])],
+   `An even number must end in an even digit. To make the number as large as possible, put the largest digits first and save the smallest even digit for the ones place: <b>${fmt(ans)}</b>.${watch(`${fmt(all[0])} is the greatest number overall, but it is odd.`)}`,{chk:{t:'maxeven',p:{dg},a:ans}})}
+ // odd and even: exactly one choice is always the asked-for kind, whatever the numbers
+ const [o,e]=pick([['m','n'],['a','b'],['x','y'],['p','q']]);const wantOdd=R(0,1)===1;
+ const EX=[['O + E',1],['O × O',1],['E + 1',1],['3 × O',1],['O × O + E',1],['2 × O + 1',1],['O × E + 1',1],['O + 2 × E',1],
+  ['O × E',0],['O + O',0],['E + E',0],['E × E',0],['O + 1',0],['3 × E',0],['O + E + 1',0],['O × O + 1',0]].map(([x,v])=>[x.replace(/O/g,o).replace(/E/g,e),v]);
+ const want=wantOdd?1:0;const sub=x=>x.replace(/O/g,o).replace(/E/g,e);
+ // the named trap: an even product when odd is wanted, an odd product when even is wanted
+ const trap=(wantOdd?['O × E','E × E','3 × E']:['O × O','3 × O']).map(sub).map(x=>[x]);
+ const ansX=pick(EX.filter(x=>x[1]===want))[0];const t1=pick(trap)[0];const rest=shuf(EX.filter(x=>x[1]!==want&&x[0]!==t1)).slice(0,2).map(x=>x[0]);
+ const val=x=>Function('"use strict";return ('+x.replace(/×/g,'*').replace(new RegExp(o,'g'),'3').replace(new RegExp(e,'g'),'4')+')')();
+ const shown=[ansX,t1,...rest];
+ return mc(`If <i>${o}</i> is an odd number and <i>${e}</i> is an even number, which of these <b>must</b> be ${wantOdd?'odd':'even'}?`,ansX,[t1,...rest],
+  `Try ${o} = 3 and ${e} = 4: ${shown.map(x=>`${x} = ${val(x)}`).join('; ')}. Only <b>${ansX}</b> is ${wantOdd?'odd':'even'}, and the rules say it always will be: odd + even = odd, odd + odd = even, and anything times an even number is even.${watch(wantOdd?`${t1} is even. Multiplying by an even number always gives an even number, even when the other number is odd.`:`${t1} is odd. An odd number times an odd number is always odd.`)}`,{chk:{t:'parity',p:{o,e,want,ch:[ansX,t1,...rest]},a:ansX}})}};
+
+// ================= PROPORTIONAL REASONING =================
+T.ch_ratio={t:'Challenge: Proportional Reasoning',cat:'chal',lesson:chLesson(
+ 'Ratios, rates, fractions and percents, where one step is not enough: a ratio that changes, a recipe with fractions, two discounts in a row, two stores to compare, or money spent in fractions that you must work backwards from.',
+ ['<b>Turn a ratio into real amounts first.</b> Boys to girls 3:5 with 40 students means 8 parts of 5 students: 15 boys and 25 girls.','<b>Find the price of one</b> before comparing stores.','<b>Take discounts one at a time.</b> The second discount is taken from the new, lower price.','<b>Work backwards</b> from what is left, undoing one step at a time.'],
+ ['Using the ratio numbers (3 and 5) as if they were the real amounts.','Adding two percent discounts together.','Giving an answer in hours when the question asks for minutes.','Undoing only one of two fraction steps.']),
+gen(){const t=R(1,6);
+ if(t===1){let p=R(1,5),q=R(2,7);if(p>=q||gcd(p,q)!==1)return this.gen();const k=R(2,6);const T0=(p+q)*k,ans=(q-p)*k;
+  return mc(`In a class of ${T0} students, the ratio of boys to girls is ${p}:${q}. How many more boys would have to join the class so that the numbers of boys and girls are equal?`,ans,[q-p,q*k,p*k,ans+k],
+   `There are ${p}+${q} = ${p+q} parts, and ${T0} ÷ ${p+q} = ${k} students per part. Boys: ${p} × ${k} = ${p*k}. Girls: ${q} × ${k} = ${q*k}. Boys needed: ${q*k} − ${p*k} = <b>${ans}</b>.${watch(`${q-p} is the difference between the ratio numbers, not between the real numbers of students.`)}`,{chk:{t:'ratioeq',p:{p,q,k},a:ans}})}
+ if(t===2){const [num,den]=pick([[3,4],[2,3],[1,2],[5,8],[3,8],[1,3]]);const n0=pick([2,4,6]);let n1=pick([3,5,8,9,10,12]);if(n1===n0)n1+=1;
+  if(n1===2*n0||n0===2*n1)return this.gen(); // plain doubling or halving is not a challenge
+  const ans=mixed(num*n1,den*n0);const cups=num*n1>den*n0?'cups':'cup';
+  return mc(`A recipe for ${n0} people uses ${fr(num,den)} cup of flour. How much flour is needed for ${n1} people?`,ans,[mixed(num*n1,den),mixed(num*n0,den*n1),frS(num,den*n0),mixed(n1,n0),mixed(num*n1*2,den*n0)],
+   `Find the flour for one person: ${fr(num,den)} ÷ ${n0} = ${frS(num,den*n0)} cup. Multiply by ${n1}: ${frS(num,den*n0)} × ${n1} = <b>${ans}</b> ${cups}.${watch(`multiplying ${fr(num,den)} by ${n1} gives enough flour for ${n1} batches, not ${n1} people.`)}`,{chk:{t:'recipe',p:{num,den,n0,n1},a:num*n1/(den*n0)}})}
+ if(t===3){const qa=pick([2,3,4]);let qb=pick([3,4,5]);if(qb===qa)qb++;const ua=R(40,90),d=pick([5,10,15,20]);const ub=ua+d;const N=lcm(qa,qb)*R(1,3);
+  const pa=qa*ua,pb=qb*ub;const save=N*d;const item=pick(['pens','notebooks','erasers','markers']);
+  return mc(`Store A sells ${qa} ${item} for ${money(pa/100)}. Store B sells ${qb} ${item} for ${money(pb/100)}. How much less do ${N} ${item} cost at the cheaper store?`,money(save/100),[money(d/100),money(N*ua/100),money(N*ub/100),money(Math.abs(pb-pa)/100)],
+   `Price of one: Store A ${money(pa/100)} ÷ ${qa} = ${money(ua/100)}; Store B ${money(pb/100)} ÷ ${qb} = ${money(ub/100)}. Store A is cheaper by ${money(d/100)} per item. For ${N} items: ${N} × ${money(d/100)} = <b>${money(save/100)}</b>.${watch(`${money(d/100)} is the saving on one item, not on ${N}.`)}`,{chk:{t:'buy',p:{qa,qb,ua,ub,N},a:save/100}})}
+ if(t===4){const P=pick([20,40,60,80,100,120,160,200]);const d1=pick([10,20,25,50]),d2=pick([10,20,50]);if(d1+d2>=100)return this.gen();const fin=P*(100-d1)*(100-d2)/10000;
+  if(Math.round(fin*100)!==fin*100)return this.gen();const sale=P*(100-d1)/100;
+  return mc(`${P===80?'An':'A'} $${P} jacket is on sale for ${d1}% off. At the register, you get an extra ${d2}% off the <b>sale price</b>. What do you pay?`,money(fin),[money(P*(100-d1-d2)/100),money(sale),money(P*(100-d2)/100),money(P-fin)],
+   `First discount: ${d1}% of $${P} is $${P*d1/100}, so the sale price is ${money(sale)}. Second discount: ${d2}% of ${money(sale)} is ${money(sale*d2/100)}. You pay ${money(sale)} − ${money(sale*d2/100)} = <b>${money(fin)}</b>.${watch(`adding the discounts to get ${d1+d2}% off. The second one is taken from the lower sale price, so it saves less.`)}`,{chk:{t:'disc',p:{P,d1,d2},a:fin}})}
+ if(t===6){const a=pick([2,3,4]),b=pick([2,3,4]),tt=R(2,9);const S=a*b*tt,left=tt*(a-1)*(b-1);const n=nm();const mid=left/(b-1)*b;
+  return mc(`${n} spent ${fr(1,a)} of their money on a book, then spent ${fr(1,b)} of what was left on lunch. ${n} has $${left} left. How much money did ${n} start with?`,'$'+S,['$'+mid,'$'+left/(a-1)*a,'$'+left*a*b,'$'+left*b],
+   `Work backwards. Spending ${fr(1,b)} of the rest left ${fr(b-1,b)} of it, so before lunch ${n} had $${left}${b>2?` ÷ ${b-1}`:''} × ${b} = $${mid}. Spending ${fr(1,a)} of the start left ${fr(a-1,a)} of it, so the start was $${mid}${a>2?` ÷ ${a-1}`:''} × ${a} = <b>$${S}</b>.${watch(`$${mid} is what ${n} had before lunch. That undoes only the second step.`)}`,{chk:{t:'fracback',p:{a,b,t:tt},a:S}})}
+ const v=pick([30,40,45,48,50]),T0=R(2,4);const D=v*T0;let x=0;for(let i=0;i<50;i++){const c=R(5,v-1);if((60*c)%v===0&&c!==v/2){x=c;break}}if(!x)return this.gen();
+ const mins=60*x/v;
+ return mc(`A car travels ${D} miles in ${T0} hours. At the same speed, how many <b>minutes</b> will it take to travel ${x} miles?`,`${mins} minutes`,[`${Math.round(x/v*100)/100} minutes`,`${v} minutes`,`${x} minutes`,`${T0*60} minutes`,`${mins+10} minutes`],
+  `Speed: ${D} ÷ ${T0} = ${v} miles per hour, which is ${v} miles every 60 minutes. ${x} miles is ${frS(x,v)} of ${v} miles, so it takes ${frS(x,v)} of 60 minutes = <b>${mins} minutes</b>.${watch(`${x} ÷ ${v} ${Number.isInteger(x*100/v)?'=':'≈'} ${Math.round(x/v*100)/100} is the time in <em>hours</em>, not minutes.`)}`,{chk:{t:'speed',p:{v,T:T0,x},a:mins}})}};
+
+// ================= PATTERNS & SEQUENCES =================
+T.ch_pattern={t:'Challenge: Patterns & Sequences',cat:'chal',lesson:chLesson(
+ 'Patterns where the rule changes: operations that take turns, gaps that grow, two patterns mixed together, and questions about a term far down the list.',
+ ['<b>Write the change under each gap.</b> +3, ×3, +3, ×3 makes a rule you can see.','<b>If the gaps grow, look at the gaps themselves:</b> +2, +4, +6 means the next gap is +8.','<b>For a far-away term, count the jumps, not the terms.</b> The 20th term is 19 jumps after the first.'],
+ ['Assuming every step is the same operation.','Repeating the last gap when the gaps are growing.','Using 20 jumps for the 20th term instead of 19.']),
+gen(){const t=R(1,5);
+ if(t===1){const a=R(2,6),b=pick([2,3]);const t0=R(1,9);const startAdd=R(0,1)===1;const tm=[t0];
+  for(let i=1;i<6;i++){const add=(i%2===1)===startAdd;tm.push(add?tm[i-1]+a:tm[i-1]*b)}
+  const ans=tm[5],t4=tm[4],t3=tm[3];const addLast=(5%2===1)===startAdd;
+  return mc(`What is the next number? <b>${tm.slice(0,5).join(', ')}, …</b>`,ans,[addLast?t4*b:t4+a,t4+(t4-t3),ans+a,ans-1],
+   `The rule takes turns: ${startAdd?`add ${a}, then multiply by ${b}`:`multiply by ${b}, then add ${a}`}. The last step was ${addLast?`× ${b}`:`+ ${a}`}, so the next step is ${addLast?`+ ${a}`:`× ${b}`}: ${t4} ${addLast?'+ '+a:'× '+b} = <b>${ans}</b>.${watch('repeating the last step. This rule alternates.')}`,{chk:{t:'alt',p:{t0,a,b,startAdd},a:ans}})}
+ if(t===2){const t0=R(1,20),d=R(1,5),k=R(1,3);const tm=[t0];for(let i=1;i<6;i++)tm.push(tm[i-1]+d+(i-1)*k);const ans=tm[5];
+  const gaps=[1,2,3,4].map(i=>d+(i-1)*k);
+  return mc(`What is the next number? <b>${tm.slice(0,5).join(', ')}, …</b>`,ans,[tm[4]+gaps[3],tm[4]+d,ans+k,tm[4]+2*gaps[3]],
+   `Look at the gaps: ${gaps.map(g=>'+'+g).join(', ')}. Each gap is ${k} more than the one before, so the next gap is +${d+4*k}. ${tm[4]} + ${d+4*k} = <b>${ans}</b>.${watch(`repeating the last gap (+${gaps[3]}). The gaps are growing.`)}`,{chk:{t:'grow',p:{t0,d,k},a:ans}})}
+ if(t===3){const a0=R(1,9),sa=R(2,5),b0=R(30,50),sb=R(2,5);const seq=[a0,b0,a0+sa,b0-sb,a0+2*sa,b0-2*sb];const ans=a0+3*sa;
+  if(new Set([...seq,ans]).size!==7)return this.gen();
+  return mc(`What is the next number? <b>${seq.join(', ')}, …</b>`,ans,[b0-3*sb,a0+4*sa,seq[5]+(seq[5]-seq[4]),ans+1].filter(pos),
+   `Two patterns take turns. The 1st, 3rd and 5th numbers go ${a0}, ${a0+sa}, ${a0+2*sa} (adding ${sa}). The 2nd, 4th and 6th go ${b0}, ${b0-sb}, ${b0-2*sb} (subtracting ${sb}). The next number is the 7th, which belongs to the first pattern: <b>${ans}</b>.${watch(`${b0-3*sb} continues the second pattern, but the 7th number belongs to the first.`)}`,{chk:{t:'inter',p:{a0,sa,b0,sb},a:ans}})}
+ if(t===4){const f=R(4,8),s=R(2,5),N=R(8,15);const ans=f+s*(N-1);
+  return mc(`Figures are built from toothpicks. Figure 1 uses ${f}, Figure 2 uses ${f+s}, and Figure 3 uses ${f+2*s}. The pattern continues. How many toothpicks does <b>Figure ${N}</b> use?${table(['Figure','1','2','3','…',String(N)],[['Toothpicks',f,f+s,f+2*s,'…','?']])}`,ans,[s*N,f*N,f+s*N,f+s*(N-2)],
+   `Each new figure adds ${s}. From Figure 1 to Figure ${N} there are ${N-1} jumps. ${f} + ${s} × ${N-1} = <b>${ans}</b>.${watch(`using ${N} jumps instead of ${N-1}, or multiplying ${f} by ${N}.`)}`,{chk:{t:'fig',p:{f,s,N},a:ans}})}
+ const t1=R(2,12),d=R(3,9),N=pick([20,25,30,40,50]);const ans=t1+d*(N-1);
+ return mc(`What is the ${ord(N)} number in this pattern? <b>${t1}, ${t1+d}, ${t1+2*d}, ${t1+3*d}, …</b>`,ans,[t1+d*N,d*N,t1*N,d*(N-1)],
+  `Each number is ${d} more than the one before. The ${ord(N)} number is ${N-1} jumps after the first: ${t1} + ${d} × ${N-1} = <b>${ans}</b>.${watch(`${t1} + ${d} × ${N} = ${t1+d*N} counts one jump too many.`)}`,{chk:{t:'nth',p:{t1,d,N},a:ans}})}};
+
+// ================= MULTI-STEP WORD PROBLEMS =================
+T.ch_word={t:'Challenge: Multi-Step Word Problems',cat:'chal',lesson:chLesson(
+ 'Word problems with a hidden step: two amounts related to each other, ages in the future, an average that changes, or a trip with a stop in the middle.',
+ ['<b>Draw boxes.</b> "Ann has 3 times as many as Ben" is one box for Ben and three for Ann. Together that is 4 boxes.','<b>Underline the time the question asks about.</b> "How old is he now?" is not the same as "in 3 years."','<b>Averages hide totals.</b> Turn an average back into a total by multiplying.'],
+ ['Answering with the other person\'s amount.','Giving a future age when the question asks for now.','Forgetting a stop, or mixing up a.m. and p.m.']),
+gen(){const t=R(1,6);const n=nm();
+ if(t===1){const k=R(2,5),s=k*R(2,4);const big=k*s,tot=s*(k+1);const askBig=R(0,1)===1;const other=pick(NAMES.filter(x=>x!==n));const ans=askBig?big:s;
+  // named mistakes: the other person's share; dividing by k (forgetting one box); reading "k times" as "k more"; an equal split
+  return mc(`${n} has ${k} times as many stickers as ${other}. Together they have ${tot} stickers. How many stickers does <b>${askBig?n:other}</b> have?`,ans,[askBig?s:big,tot/k,askBig?(tot+k)/2:(tot-k)/2,tot/2].filter(v=>Number.isInteger(v)&&v>0),
+   `Think in boxes: ${other} is 1 box and ${n} is ${k} boxes, so there are ${k+1} boxes in all. ${tot} ÷ ${k+1} = ${s} in each box. ${askBig?`${n} has ${k} × ${s} = <b>${big}</b>.`:`${other} has <b>${s}</b>.`}${watch(`${tot} ÷ ${k} forgets that ${other}'s share is one of the boxes too.`)}`,{chk:{t:'times',p:{k,s,askBig},a:ans}})}
+ if(t===2){const Sm=R(8,30),D=2*R(1,7);const L=Sm+D,Tt=L+Sm;
+  return mc(`Two numbers add up to ${Tt}. One of them is ${D} more than the other. What is the <b>larger</b> number?`,L,[Tt/2,Sm,Tt-D,Tt/2+D],
+   `Take away the extra ${D}: ${Tt} − ${D} = ${Tt-D}, which is two equal numbers, so the smaller is ${Tt-D} ÷ 2 = ${Sm}. The larger is ${Sm} + ${D} = <b>${L}</b>. Check: ${Sm} + ${L} = ${Tt}.${watch(`${Tt} ÷ 2 = ${Tt/2} would only be right if the two numbers were equal.`)}`,{chk:{t:'sumdiff',p:{S:Sm,D},a:L}})}
+ if(t===3){const s=R(5,11),g=R(2,6),yrs=R(2,6);const sum=(s+yrs)+(s+g+yrs);const older=s+g;
+  return mc(`${n} is ${g} years older than ${n}'s cousin. In ${yrs} years, the two ages will add up to ${sum}. How old is ${n} <b>now</b>?`,older,[older+yrs,s,s+yrs,older+2*yrs],
+   `In ${yrs} years each is ${yrs} older, so right now their ages add up to ${sum} − ${2*yrs} = ${sum-2*yrs}. Take away the ${g}-year gap: ${sum-2*yrs} − ${g} = ${2*s}, so the cousin is ${s}. ${n} is ${s} + ${g} = <b>${older}</b>.${watch(`${older+yrs} is ${n}'s age in ${yrs} years, not now.`)}`,{chk:{t:'age',p:{s,g,n:yrs},a:older}})}
+ if(t===4){const c=R(4,6),A=R(8,20);let B=R(5,A+4);if(B===A)B++;const rem=c*A-(c-1)*B;if(rem<=0||rem>60)return this.gen();
+  return mc(`The average of ${c} numbers is ${A}. One number is removed, and the average of the other ${c-1} numbers is ${B}. What number was removed?`,rem,[Math.abs(A-B),A,B,c*Math.abs(A-B)],
+   `Turn averages into totals. ${c} numbers averaging ${A} total ${c} × ${A} = ${c*A}. ${c-1} numbers averaging ${B} total ${c-1} × ${B} = ${(c-1)*B}. The removed number is ${c*A} − ${(c-1)*B} = <b>${rem}</b>.${watch(`subtracting the averages (${A} and ${B}). Averages have to be turned back into totals first.`)}`,{chk:{t:'avgrem',p:{c,A,B},a:rem}})}
+ if(t===5){const s=R(7*60,10*60)+pick([0,15,30,45,10,40]);const l1=R(1,2)*60+pick([5,15,25,35,50]),st=pick([15,20,25,30,40]),l2=R(1,2)*60+pick([10,20,30,40,55]);const arr=s+l1+st+l2;if(arr>=22*60)return this.gen();
+  const flip=m=>clock(m+(Math.floor(((m%1440)+1440)%1440/60)<12?720:-720));const noon=s<720&&arr>=720;
+  // named mistakes: forgetting the stop; a.m./p.m. mix-up (only when the trip passes noon); dropping the minutes of the second part; an hour slip when carrying
+  return mc(`A train leaves at ${clock(s)} and travels for ${hm(l1)}. It stops at a station for ${st} minutes, then travels ${hm(l2)} more. What time does it arrive?`,clock(arr),[clock(arr-st),noon?flip(arr):clock(arr-l2%60),clock(arr-l2%60),clock(arr+60),clock(arr-60)],
+   `Add each part in order.<br>${clock(s)} + ${hm(l1)} → ${clock(s+l1)}<br>+ ${st}-minute stop → ${clock(s+l1+st)}<br>+ ${hm(l2)} → <b>${clock(arr)}</b>${watch(`${clock(arr-st)} forgets the ${st}-minute stop.${noon?' The trip passes noon, so the arrival time is p.m.':''}`)}`,{chk:{t:'trip',p:{s,l1,st,l2},a:clock(arr)}})}
+ const p1=pick([2,3,4]),c1=R(25,60),p2=pick([2,3,5]),c2=R(20,70);const m1=R(2,4),m2=R(1,3);const q1=p1*m1,q2=p2*m2;const tot=q1*c1+q2*c2;const pay=tot<1000?1000:2000;if(tot>=pay)return this.gen();
+ const i1=pick(['pencils','stickers','bookmarks']),i2=pick(['erasers','gel pens','keychains']);const ch=pay-tot;
+ return mc(`${i1[0].toUpperCase()+i1.slice(1)} cost ${p1} for ${money(p1*c1/100)} and ${i2} cost ${p2} for ${money(p2*c2/100)}. ${n} buys ${q1} ${i1} and ${q2} ${i2} and pays with a $${pay/100} bill. How much change does ${n} get?`,money(ch/100),[money(tot/100),money((pay-q1*c1)/100),money((pay-q2*c2)/100),money((ch+100)/100)],
+  `One of each: ${money(c1/100)} per ${i1.replace(/s$/,'')} and ${money(c2/100)} per ${i2.replace(/s$/,'')}. ${q1} ${i1}: ${q1} × ${money(c1/100)} = ${money(q1*c1/100)}. ${q2} ${i2}: ${q2} × ${money(c2/100)} = ${money(q2*c2/100)}. Total ${money(tot/100)}. Change: $${pay/100}.00 − ${money(tot/100)} = <b>${money(ch/100)}</b>.${watch(`${money(tot/100)} is the total cost, not the change. And both kinds of items have to be paid for: leaving one out gives ${money((pay-q1*c1)/100)} or ${money((pay-q2*c2)/100)}.`)}`,{chk:{t:'shop',p:{p1,c1,p2,c2,q1,q2,pay},a:ch/100}})}};
+
+// ================= COMPOSITE FIGURES & ANGLES =================
+T.ch_geo={t:'Challenge: Composite Figures & Angles',cat:'chal',lesson:chLesson(
+ 'Shapes made of rectangles with some sides missing, angles you must find in two steps, and rectangles described by a rule instead of their sides.',
+ ['<b>Find every missing side before adding.</b> In an L-shape, the two short sides together equal the long side opposite them.','<b>Split odd shapes into rectangles</b> and add their areas.','<b>An angle on a straight line and its neighbor add to 180°.</b> Angles around a point add to 360°.'],
+ ['Adding only the labeled sides to get a perimeter.','Using the whole rectangle\'s area and forgetting the cut-out corner.','Treating a picture as drawn to scale when it says it is not.']),
+gen(){const t=R(1,6);const u=pick(['cm','ft','m','in']);
+ if(t<=2){const W=R(8,14),H=R(6,12),w=R(2,W-4),h=R(2,H-3);
+  const lab={top:`${W-w} ${u}`,left:`${H} ${u}`,bottom:`${W} ${u}`,right:`${H-h} ${u}`};const fig=svgLShape(W,H,w,h,lab);
+  if(t===1){const ans=2*(W+H);const labeled=(W-w)+H+W+(H-h);
+   return mc(`What is the perimeter of this figure? All corners are right angles.${fig}`,`${ans} ${u}`,[`${labeled} ${u}`,`${labeled+h} ${u}`,`${labeled+w} ${u}`,`${W*H-w*h} ${u}`],
+    `Two sides have no labels. The missing horizontal side is ${W} − ${W-w} = ${w} ${u}, and the missing vertical side is ${H} − ${H-h} = ${h} ${u}. Add all six: ${W-w} + ${h} + ${w} + ${H-h} + ${W} + ${H} = <b>${ans} ${u}</b>.${watch(`adding only the four labeled sides gives ${labeled}, and adding just one of the missing sides gives ${labeled+h} or ${labeled+w}.`)}`,{chk:{t:'Lper',p:{W,H,w,h},a:ans}})}
+  const ans=W*H-w*h;
+  return mc(`What is the area of this figure? All corners are right angles.${fig}`,`${ans} ${u}²`,[`${W*H} ${u}²`,`${(W-w)*H} ${u}²`,`${2*(W+H)} ${u}²`,`${W*H+w*h} ${u}²`],
+   `Split it into two rectangles. Left part: ${W-w} × ${H} = ${(W-w)*H}. Lower-right part: ${w} × ${H-h} = ${w*(H-h)}. Total: <b>${ans} ${u}²</b>. (Or take the big ${W} × ${H} rectangle, ${W*H}, and subtract the missing ${w} × ${h} corner.)${watch(`${W} × ${H} = ${W*H} counts the empty corner.`)}`,{chk:{t:'Larea',p:{W,H,w,h},a:ans}})}
+ if(t===3){const e=R(100,150),g=R(30,Math.min(80,e-30));const ans=e-g;
+  return mc(`In triangle ABC, side AC is extended past C. Angle A measures ${g}° and the outside angle at C measures ${e}°. What is the measure of angle B?${svgExtAngle(g,e)}`,ans+'°',[(180-e)+'°',(180-g)+'°',(180-e-g>0?180-e-g:e)+'°',e+'°'],
+   `The inside angle at C and the ${e}° angle make a straight line, so angle C = 180° − ${e}° = ${180-e}°. The angles of a triangle add to 180°, so angle B = 180° − ${g}° − ${180-e}° = <b>${ans}°</b>.${watch(`the ${e}° angle is outside the triangle. The inside angle at C is ${180-e}°, and that is not angle B either.`)}`,{chk:{t:'ext',p:{e,g},a:ans}})}
+ if(t===4){const a=R(40,130),b=R(40,130);const x=360-90-a-b;if(x<20||a+b<110)return this.gen();
+  return mc(`Four angles meet at a point with no gaps. One is a right angle. The others measure ${a}°, ${b}° and x°. What is x?`,x+'°',[(360-a-b)+'°',(270-a)+'°',(270-b)+'°',...(180-a-b>0?[(180-a-b)+'°']:[])],
+   `Angles all the way around a point add to 360°. A right angle is 90°. x = 360° − 90° − ${a}° − ${b}° = <b>${x}°</b>.${watch(`forgetting the right angle gives ${360-a-b}°, and forgetting one of the other angles gives ${270-a}° or ${270-b}°. Use all four.`)}`,{chk:{t:'around',p:{a,b},a:x}})}
+ if(t===5){const w=R(2,9),k=pick([2,3]);const l=k*w,P=2*(l+w),A=l*w;if(A===P)return this.gen();
+  return mc(`A rectangle's length is ${k===2?'twice':'three times'} its width. Its perimeter is ${P} ${u}. What is its area?`,`${A} ${u}²`,[`${P} ${u}²`,`${l+w} ${u}²`,`${2*A} ${u}²`,`${Number.isInteger(P/4)?(P/4)*(P/4):A+w} ${u}²`],
+   `The perimeter is width + length + width + length. With length = ${k} widths, that is ${2*(k+1)} widths = ${P}, so the width is ${P} ÷ ${2*(k+1)} = ${w} and the length is ${l}. Area = ${l} × ${w} = <b>${A} ${u}²</b>.${watch('treating the rectangle as a square, or answering with the perimeter.')}`,{chk:{t:'rectratio',p:{w,k},a:A}})}
+ const s=pick([2,3,4]),m=R(2,6),nn=R(2,6);const ans=m*nn;
+ return mc(`How many square tiles, each ${s} ${u} on a side, are needed to cover a rectangle that is ${s*m} ${u} by ${s*nn} ${u} with no gaps or overlaps?`,ans,[s*m*nn,s*m*s*nn,m+nn,2*ans].filter(v=>v!==ans),
+  `Along one side, ${s*m} ÷ ${s} = ${m} tiles fit. Along the other, ${s*nn} ÷ ${s} = ${nn}. That is ${m} × ${nn} = <b>${ans}</b> tiles.${watch(`dividing the area (${s*m*s*nn}) by ${s}. Each tile covers ${s} × ${s} = ${s*s} square ${u}, not ${s}.`)}`,{chk:{t:'tiles',p:{s,m,n:nn},a:ans}})}};
+
+// ================= TABLES, GRAPHS & VENN LOGIC =================
+T.ch_data={t:'Challenge: Tables, Graphs & Venn Logic',cat:'chal',lesson:chLesson(
+ 'Data questions that need more than one lookup: a table with several blanks, a Venn problem where "both" is unknown, or a graph question that combines bars.',
+ ['<b>Fill a table in the order you can.</b> Find any row or column with only one blank, fill it, and repeat.','<b>For two overlapping groups:</b> group A + group B + neither − total = both.','<b>Write the value of each bar</b> before doing any adding.'],
+ ['Answering with the first number you calculate instead of the one asked for.','Counting the "both" people twice.','Mixing up the tallest bar with the combined total.']),
+gen(){const t=R(1,4);
+ if(t===1){const bp=R(5,18),bt=R(5,18),gp=R(5,18),gt=R(5,18);const R1=bp+bt,C2=bt+gt,R2=gp+gt;
+  if(new Set([bp,bt,gp,gt]).size<4)return this.gen();
+  const tb=table(['','Pizza','Tacos','Total'],[['Boys',bp,'',R1],['Girls','<b>?</b>','',R2],['Total','',C2,'']]);
+  return mc(`The table shows how many students chose each lunch, but some of the numbers are missing. How many <b>girls</b> chose pizza?${tb}`,gp,[gt,R2,bt,R2-bp,R2-C2].filter(v=>v>0),
+   `Step 1: boys who chose tacos = ${R1} − ${bp} = ${bt}.<br>Step 2: girls who chose tacos = ${C2} − ${bt} = ${gt}.<br>Step 3: girls who chose pizza = ${R2} − ${gt} = <b>${gp}</b>.${watch(`${gt} is the number of girls who chose tacos, found on the way.`)}`,{chk:{t:'twoway',p:{bp,bt,gp,gt},a:gp}})}
+ if(t===2){const both=R(2,9),oA=R(3,12),oB=R(3,12),N=R(1,both-1);const A=both+oA,B=both+oB,Tt=oA+oB+both+N;
+  return mc(`In a group of ${Tt} students, ${A} have a dog, ${B} have a cat, and ${N} ${N===1?'has':'have'} neither. How many students have <b>both</b> a dog and a cat?`,both,[A+B-Tt,Tt-N,A+B,both+N],
+   `${Tt} − ${N} = ${Tt-N} students have at least one pet. Dog owners plus cat owners is ${A} + ${B} = ${A+B}, which counts the "both" students twice. So both = ${A+B} − ${Tt-N} = <b>${both}</b>.${watch(`forgetting the ${N} student${N===1?'':'s'} with neither pet gives ${A+B-Tt}.`)}`,{chk:{t:'vennboth',p:{both,oA,oB,N},a:both}})}
+ if(t===3){const ds=pick([{t:'Books read this week',c:['Mon','Tue','Wed','Thu','Fri'],hi:'three busiest days',lo:'two quietest days',u:'books'},{t:'Favorite lunch',c:['Pizza','Tacos','Pasta','Salad','Soup'],hi:'three most popular lunches',lo:'two least popular lunches',u:'students'},{t:'Favorite sport',c:['Soccer','Tennis','Swim','Track','Golf'],hi:'three most popular sports',lo:'two least popular sports',u:'students'}]);
+  const vals=shuf([3,4,5,6,7,8,9,10,11,12,13,14,15,16]).slice(0,5);const srt=vals.slice().sort((a,b)=>b-a);const hi=srt[0]+srt[1]+srt[2],lo=srt[3]+srt[4];const ans=hi-lo;
+  return mc(`How many more ${ds.u} are counted in the ${ds.hi} combined than in the ${ds.lo} combined?${svgBar(ds.c,vals,ds.t)}`,ans,[srt[0]-srt[4],hi,hi+lo,ans+srt[4]],
+   `The three largest are ${srt[0]}, ${srt[1]} and ${srt[2]}, which add to ${hi}. The two smallest are ${srt[3]} and ${srt[4]}, which add to ${lo}. ${hi} − ${lo} = <b>${ans}</b>.${watch(`${srt[0]} − ${srt[4]} compares only the tallest and shortest bars.`)}`,{chk:{t:'bar32',p:{vals},a:ans}})}
+ const M=R(8,16);const v4=[R(4,20),R(4,20),R(4,20),R(4,20)];const miss=5*M-v4.reduce((a,b)=>a+b,0);if(miss<1||miss>30)return this.gen();
+ const tb=table(['Day','Mon','Tue','Wed','Thu','Fri'],[['Books read',...v4,'<b>?</b>']]);
+ return mc(`The average number of books read per day from Monday to Friday was ${M}. How many books were read on Friday?${tb}`,miss,[M,5*M,Math.round(v4.reduce((a,b)=>a+b,0)/4),miss+M].filter(v=>v!==miss),
+  `An average of ${M} over 5 days means a total of 5 × ${M} = ${5*M}. Monday to Thursday add to ${v4.join(' + ')} = ${v4.reduce((a,b)=>a+b,0)}. Friday: ${5*M} − ${v4.reduce((a,b)=>a+b,0)} = <b>${miss}</b>.${watch(`${M} is the average, not Friday's number.`)}`,{chk:{t:'meanmiss',p:{v4,M},a:miss}})}};
+
+// ================= MULTI-STEP PROBABILITY =================
+T.ch_prob={t:'Challenge: Multi-Step Probability',cat:'chal',lesson:chLesson(
+ 'Probability after something changes: marbles removed or added, spinners with unequal sections, bags to compare, and arrangements with a rule.',
+ ['<b>Update the whole bag.</b> After marbles come out, both the part and the total change.','<b>On a spinner, size matters, not the number of sections.</b> Add the fractions of the sections you want.','<b>Compare fractions, not counts.</b> 4 red out of 12 is a smaller chance than 3 red out of 8.'],
+ ['Using the old total after marbles are removed.','Counting spinner sections as if they were equal.','Picking the bag with more red marbles instead of the better fraction.']),
+gen(){const t=R(1,5);
+ if(t===1){let r=R(4,12),b=R(1,8);if(b>=r)return this.gen();const ans=r-b;
+  return mc(`A bag has ${r} red marbles and ${b} blue marbles. How many <b>blue</b> marbles must be added so that the probability of picking blue is ${fr(1,2)}?`,ans,[r,r+b,Number.isInteger(ans/2)?ans/2:ans+1,b],
+   `A probability of ${fr(1,2)} means blue and red are equal. There are ${r} red, so you need ${r} blue. You have ${b}, so add ${r} − ${b} = <b>${ans}</b>.${watch(`adding ${r} blue marbles would give ${r+b} blue, more than the ${r} red.`)}`,{chk:{t:'addhalf',p:{r,b},a:ans}})}
+ if(t===2){const r=R(4,9),b=R(2,8),g=R(2,6),k=R(1,3);const tot=r+b+g,nt=tot-k;const ans=frS(g,nt);
+  // named mistakes: the old total; taking the marbles from the green ones; adding instead of subtracting; green compared with not-green
+  return mc(`A bag has ${r} red, ${b} blue and ${g} green marbles. ${k===1?'One red marble is':`${k===2?'Two':'Three'} red marbles are`} taken out and not put back. What is the probability that the next marble picked is <b>green</b>?`,ans,[frS(g,tot),...(g>k?[frS(g-k,nt)]:[]),frS(g,tot+k),...(g<nt-g?[frS(g,nt-g)]:[])],
+   `After taking out ${k}, there are ${tot} − ${k} = ${nt} marbles left. The ${g} green ones are still there. Probability of green = ${fr(g,nt)}${ans!==fr(g,nt)?' = '+ans:''}.${watch(`${frS(g,tot)} uses the old total of ${tot} marbles.`)}`,{chk:{t:'remove',p:{r,b,g,k},a:g/nt}})}
+ if(t===3){ // the better bag is sometimes the one with fewer reds, sometimes more, and sometimes the chances are equal
+  const mode=pick(['fewer','fewer','more','same']);let x,y;
+  for(let i=0;i<500;i++){const r1=R(2,7),t1=R(r1+2,16),r2=R(2,9),t2=R(r2+2,16);if(r1===r2||t1===t2)continue;const d=r1*t2-r2*t1;
+   if(mode==='same'?d===0:d>0&&(mode==='fewer'?r1<r2:r1>r2)&&Math.abs(r1/t1-r2/t2)>0.02){x=[r1,t1];y=[r2,t2];break}}
+  if(!x)return this.gen();
+  const swap=R(0,1)===1;const [[nA,tA],[nB,tB]]=swap?[y,x]:[x,y];
+  const ans=mode==='same'?'They give the same chance':(nA*tB>nB*tA?'Bag A':'Bag B');const moreRed=nA>nB?'Bag A':'Bag B';
+  const L=lcm(tA,tB),eA=nA*L/tA,eB=nB*L/tB;
+  return mc(`Bag A has ${nA} red marbles out of ${tA}. Bag B has ${nB} red marbles out of ${tB}. You pick one marble without looking. Which bag gives a <b>better</b> chance of picking red?`,ans,['Bag A','Bag B','They give the same chance','It cannot be decided'].filter(c=>c!==ans),
+   `Compare the fractions, not the counts. Give them the same denominator: Bag A ${fr(nA,tA)} = ${fr(eA,L)} and Bag B ${fr(nB,tB)} = ${fr(eB,L)}. ${eA===eB?'They are equal, so <b>the chances are the same</b>.':`${fr(Math.max(eA,eB),L)} is bigger, so <b>${ans}</b> gives the better chance.`}${watch(mode==='same'?`${moreRed} has more red marbles, but it also has more marbles in all. The fractions are equal.`:ans===moreRed?`${ans} does have more red marbles, but that alone does not decide it. Always compare the fractions.`:`${moreRed} has more red marbles, but it also has many more marbles in all.`)}`,{chk:{t:'bags',p:{nA,tA,nB,tB},a:ans}})}
+ if(t===4){const sets=[[[1,2],[1,4],[1,8],[1,8]],[[1,2],[1,6],[1,6],[1,6]],[[1,3],[1,3],[1,6],[1,6]],[[1,4],[1,4],[1,4],[1,8],[1,8]],[[1,2],[1,4],[1,4]]];
+  // the sizes are described in words, so finding them is part of the problem
+  const DESC=['Section A covers half of the spinner. Section B covers half of what is left. Sections C and D are the same size.',
+   'Section A covers half of the spinner. Sections B, C and D are all the same size.',
+   'Sections A and B are the same size, and together they cover two thirds of the spinner. Sections C and D are the same size.',
+   'Sections A, B and C are the same size. Sections D and E are each half the size of section A.',
+   'Section A covers half of the spinner. Sections B and C are the same size.'];
+  const si=R(0,sets.length-1);const fr0=sets[si];const L=['A','B','C','D','E'].slice(0,fr0.length);let i=0,j=0;while(i===j){i=R(0,fr0.length-1);j=R(0,fr0.length-1)}if(i>j)[i,j]=[j,i];
+  const den=24;const num=fr0[i][0]*den/fr0[i][1]+fr0[j][0]*den/fr0[j][1];const ans=frS(num,den);
+  return mc(`${DESC[si]} What is the probability that the spinner lands on <b>${L[i]} or ${L[j]}</b>?${svgSpin(fr0,L)}`,ans,[frS(2,fr0.length),frS(den-num,den),frS(fr0[i][0]*den/fr0[i][1],den),frS(1,fr0.length)],
+   `First find the size of each section: ${fr0.map((f,q)=>`${L[q]} = ${fr(f[0],f[1])}`).join(', ')}. Check: they add up to 1. Then add the two sections you want: ${fr(fr0[i][0],fr0[i][1])} + ${fr(fr0[j][0],fr0[j][1])} = ${ans}.${watch(`${frS(2,fr0.length)} (2 out of ${fr0.length} sections) would only be right if every section were the same size.`)}`,{chk:{t:'spin',p:{fr:fr0,i,j},a:num/den}})}
+ const len=R(2,3);const nd=len===2?R(4,6):4;const dg=shuf([1,2,3,4,5,6,7,8,9]).slice(0,nd).sort();let ans=1;for(let q=0;q<len;q++)ans*=nd-q;
+ return mc(`How many different ${len===2?'two':'three'}-digit numbers can be made from the digits <b>${dg.join(', ')}</b> if no digit may be used twice in the same number?`,ans,[Math.pow(nd,len),len===2?ans/2:ans/6,nd*len,ans+nd],
+  `Choose the digits in order. ${len===2?`First digit: ${nd} choices. Second digit: ${nd-1} (one is used). ${nd} × ${nd-1} = <b>${ans}</b>.`:`First: ${nd}, second: ${nd-1}, third: ${nd-2}. ${nd} × ${nd-1} × ${nd-2} = <b>${ans}</b>.`}${watch(`${Math.pow(nd,len)} lets a digit repeat, which the question does not allow.`)}`,{chk:{t:'arr',p:{nd,len},a:ans}})}};
+
 // ================= PLAN =================
-const CATS={num:'Numbers & Operations',frac:'Fractions',dec:'Decimals, Percents & Ratios',alg:'Algebraic Concepts',geo:'Geometry',meas:'Measurement',data:'Data Analysis',prob:'Probability',qr:'Quantitative Reasoning',verbal:'Verbal Reasoning',read:'Reading Comprehension',write:'Writing'};
+const CATS={num:'Numbers & Operations',frac:'Fractions',dec:'Decimals, Percents & Ratios',alg:'Algebraic Concepts',geo:'Geometry',meas:'Measurement',data:'Data Analysis',prob:'Probability',qr:'Quantitative Reasoning',chal:'Challenge (harder QR)',verbal:'Verbal Reasoning',read:'Reading Comprehension',write:'Writing'};
 const MATHCATS=['num','frac','dec','alg','geo','meas','data','prob','qr'];
 const PLAN=[
  {w:1,title:'Numbers & Operations',s:[['n_place'],['n_order'],['n_factors'],['n_wordops']]},
@@ -1863,7 +2147,7 @@ const PLAN=[
  {w:9,title:'Quantitative Reasoning',s:[['q_sense'],['q_logic'],['q_multi'],['q_inverse']]},
  {w:10,title:'Word Power',s:[['v_roots'],['v_syn'],['v_sc'],{type:'test',kind:'verbal',n:30,min:18,title:'Verbal mini-test'}]},
  {w:11,title:'Math Review',s:[{type:'review',title:'Review: Numbers, Fractions & Decimals',topics:['n_place','n_order','n_factors','n_wordops','f_equiv','f_addsub','f_muldiv','f_mixed','d_ops','d_convert','d_percent','r_ratio']},{type:'review',title:'Review: Algebra & Geometry',topics:['a_pattern','a_expr','a_eq1','a_eq2','g_angles','g_shapes','g_perim','g_coord']},{type:'review',title:'Review: Measurement, Data & Probability',topics:['m_units','m_time','m_volume','m_est','s_center','s_graphs','s_plots','s_interpret','p_basic','p_compound','p_count','p_predict','q_sense','q_logic','q_multi','q_inverse']},{type:'test',kind:'math',n:30,min:30,title:'Math Achievement mini-test'}]},
- {w:12,title:'Final Stretch',s:[{type:'weak',title:'Target your weak spots'},{type:'test',kind:'verbal',n:34,min:20,title:'Verbal Reasoning practice test'},{type:'test',kind:'math',n:38,min:35,title:'Quantitative Reasoning practice test'},{type:'final',title:'Test-day game plan'}]}
+ {w:12,title:'Final Stretch',s:[{type:'weak',title:'Target your weak spots'},{type:'test',kind:'verbal',n:34,min:20,title:'Verbal Reasoning practice test'},{type:'test',kind:'qr',n:38,min:35,title:'Quantitative Reasoning practice test'},{type:'final',title:'Test-day game plan'}]}
 ];
 // Weeks 4, 8 and 12 close with a timed essay; every other week closes with a
 // reading session built from two passages.
@@ -1888,11 +2172,24 @@ const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMon
 const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
 let S=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1){if(s.setup==null)s.setup=!!s.name;return s}}catch(e){}return {v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.v===1)return norm(s)}catch(e){}return norm({v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'})}
+// Saved progress from an older version lacks the newer fields; add them empty
+// rather than changing anything that is already there.
+function norm(s){if(s.setup==null)s.setup=!!s.name;for(const k of ['done','topics','vocab','days'])if(!s[k]||typeof s[k]!=='object')s[k]={};
+ for(const k of ['chalSeen','chalOpen'])s[k]=Array.isArray(s[k])?s[k].filter(id=>CH_AREAS[id]):[];
+ // Keep only well-formed score entries, with numbers in range (a pasted backup could hold anything).
+ const int=v=>v!=null&&v!==''&&Number.isInteger(+v)?+v:null,inR=(v,lo,hi)=>v!=null&&v>=lo&&v<=hi;
+ s.official=(Array.isArray(s.official)?s.official:[]).filter(o=>o&&typeof o==='object'&&/^\d{4}-\d{2}-\d{2}$/.test(o.date)&&!isNaN(Date.parse(o.date+'T12:00:00'))&&o.sec&&typeof o.sec==='object').map((o,i)=>{const sec={};
+  for(const k of ['vr','qr','rc','ma']){const x=o.sec[k];if(!x||typeof x!=='object')continue;const y={};const c=int(x.c),t=int(x.t);
+   if(inR(t,1,100)&&inR(c,0,t)){y.c=c;y.t=t}
+   for(const [f,lo,hi] of [['ss',760,940],['pr',1,99],['st',1,9]])if(inR(int(x[f]),lo,hi))y[f]=int(x[f]);
+   if(Object.keys(y).length)sec[k]=y}
+  return {id:int(o.id)||i+1,date:o.date,src:String(o.src||''),sec}}).filter(o=>Object.keys(o.sec).length);
+ return s}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const tstat=id=>S.topics[id]||(S.topics[id]={r:0,w:0});
 const vstat=w=>S.vocab[w]||(S.vocab[w]={lvl:0,seen:0,r:0,w:0});
-function recordTopic(id,ok){const s=tstat(id);ok?s.r++:s.w++;markDay()}
+function recordTopic(id,ok){const s=tstat(id);ok?s.r++:s.w++;markDay();latchChal()}
 function recordVocab(w,ok){const s=vstat(w);s.seen++;ok?(s.r++,s.lvl=Math.min(4,s.lvl+1)):(s.w++,s.lvl=Math.max(0,s.lvl-1))}
 function markDay(){S.days[today()]=(S.days[today()]||0)+1}
 function streak(){let n=0,d=today();if(!S.days[d])d=addDays(d,-1);while(S.days[d]){n++;d=addDays(d,-1)}return n}
@@ -1900,11 +2197,23 @@ const doneCount=()=>Object.keys(S.done).length;
 function nextSession(){return SESSIONS.find(s=>!S.done[s.id])||null}
 function resumeSession(){if(!S.paused)return;S.cur=S.paused;S.paused=null;save();render()}
 function expectedDone(){const N=SESSIONS.length;const total=daysBetween(S.start,S.test);const el=daysBetween(S.start,today());if(total<=0)return N;return Math.max(0,Math.min(N,Math.floor(el/total*N)))}
-// Spread every word across the 48 sessions, so none is ever met cold in a quiz.
+// Spread every word across the sessions, so none is ever met cold in a quiz.
 const NSESS=SESSIONS.length;
 const wordEnd=idx=>Math.round((idx+1)*VOCAB.length/NSESS);
 function newWordsFor(idx){return VOCAB.slice(idx?wordEnd(idx-1):0,wordEnd(idx))}
 function introducedWords(idx){return VOCAB.slice(0,wordEnd(idx))}
+// ================= CHALLENGE TIER =================
+// A challenge area opens once every groundwork topic has been practiced (5+
+// answers each) and, taken together, they have 10+ answers at 80% or better.
+// Once open it stays open. A grown-up can open them all in Settings.
+const CH_MIN_N=10,CH_MIN_EACH=5,CH_MIN_ACC=0.8;
+function chMet(id){let r=0,w=0,each=true;CH_AREAS[id].pre.forEach(p=>{const s=S.topics[p];if(!s||s.r+s.w<CH_MIN_EACH)each=false;if(s){r+=s.r;w+=s.w}});const n=r+w;return {met:each&&n>=CH_MIN_N&&r/n>=CH_MIN_ACC,each,n,acc:n?r/n:0}}
+function chStatus(id){const m=chMet(id);m.open=!!S.chalAll||S.chalOpen.includes(id)||m.met;return m}
+function latchChal(){CH_IDS.forEach(id=>{if(!S.chalOpen.includes(id)&&chMet(id).met)S.chalOpen.push(id)})}
+const chOpen=()=>CH_IDS.filter(id=>chStatus(id).open);
+// Open challenge areas built on, or extending, any of these topics.
+const chFor=ids=>CH_IDS.filter(c=>[...CH_AREAS[c].pre,...(CH_AREAS[c].also||[])].some(p=>ids.includes(p))&&chStatus(c).open);
+const chName=id=>T[id].t.replace('Challenge: ','');
 function weakTopics(k){return ALLMATH.map(id=>{const s=S.topics[id];const n=s?s.r+s.w:0;return {id,n,acc:n?s.r/n:1}}).filter(x=>x.n>=4).sort((a,b)=>a.acc-b.acc).slice(0,k).map(x=>x.id)}
 
 // ================= QUESTION SOURCING =================
@@ -1928,7 +2237,12 @@ const MA_TOPICS=ALLMATH.filter(id=>!['q_sense','q_logic','q_inverse'].includes(i
 function readingTest(n){const idx=shuf(PASSAGES.map((_,i)=>i));const out=[];
  for(const i of idx){if(out.length>=n)break;out.push(...passageSet(i))}
  return out.slice(0,n)}
-function mathTest(n,kind){const pool=kind==='verbal'?ALLMATH:kind==='math'?MA_TOPICS:QR_TOPICS;return mixedMath(shuf(pool),n)}
+// The real Quantitative Reasoning section includes hard multi-step items, so a
+// third of the practice version comes from the challenge tier.
+function mathTest(n,kind){if(kind==='qr'){const k=Math.round(n/3);return shuf([...mixedMath(shuf(QR_TOPICS),n-k),...mixedMath(shuf(CH_IDS),k)])}
+ const pool=kind==='verbal'?ALLMATH:kind==='math'?MA_TOPICS:QR_TOPICS;return mixedMath(shuf(pool),n)}
+// Up to k challenge questions from open areas built on these topics.
+function stretchQs(ids,k){const o=chFor(ids);return o.length?mixedMath(shuf(o),k).map(q=>(q.stretch=true,q)):[]}
 
 // ================= SESSION BUILDER =================
 function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.type,title:sess.title,step:0,elapsed:0,started:Date.now(),steps:[],data:{}};
@@ -1936,8 +2250,8 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
  const review=seenPool.sort((a,b)=>vstat(a).lvl-vstat(b).lvl).slice(0,3);
  const cards=[...newW,...review];
  if(sess.type==='lesson'){const isV=T[sess.topic].cat==='verbal';
-  cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Learn',min:8,topic:sess.topic},{k:'quiz',title:'Practice',min:15,qs:isV?topicQs(sess.topic,10):topicQs(sess.topic,10)},{k:'quiz',title:isV?'Math mix':'Verbal drill',min:8,qs:isV?mixedMath(shuf(ALLMATH.filter(id=>SESSIONS.findIndex(s=>s.topic===id)<idx)).slice(0,5)||ALLMATH,8):verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
- else if(sess.type==='review'){cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Cheat sheet',min:6,topics:sess.topics},{k:'quiz',title:'Mixed practice',min:18,qs:mixedMath(shuf(sess.topics),12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
+  cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Learn',min:8,topic:sess.topic},{k:'quiz',title:'Practice',min:15,qs:isV?topicQs(sess.topic,10):[...topicQs(sess.topic,10),...stretchQs([sess.topic],2)]},{k:'quiz',title:isV?'Math mix':'Verbal drill',min:8,qs:isV?mixedMath(shuf(ALLMATH.filter(id=>SESSIONS.findIndex(s=>s.topic===id)<idx)).slice(0,5)||ALLMATH,8):verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
+ else if(sess.type==='review'){const cx=stretchQs(sess.topics,3);cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Cheat sheet',min:6,topics:sess.topics},{k:'quiz',title:'Mixed practice',min:18,qs:shuf([...mixedMath(shuf(sess.topics),12-cx.length),...cx])},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='weak'){const weak=weakTopics(3);const topics=weak.length?weak:shuf(ALLMATH).slice(0,3);cur.data.weak=topics;cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Your weak spots',min:6,topics},{k:'quiz',title:'Targeted practice',min:18,qs:mixedMath(topics,12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='test'){const qs=sess.kind==='verbal'?verbalSet(sess.n,null):sess.kind==='read'?readingTest(sess.n):mathTest(sess.n,sess.kind);cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'test',title:sess.title,min:sess.min,qs,limit:sess.min*60,kind:sess.kind},{k:'wrap',title:'Results',min:5}]}
  else if(sess.type==='read'){const a=sess.pi*2,b=sess.pi*2+1;
@@ -1983,10 +2297,20 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All '+SESSIONS.length+' sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
  <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
  <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/SESSIONS.length*100),56)}<div class="statl">plan done</div></div></div></section>
+ ${chalCard()}
  <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/SESSIONS.length*100)}%"></div><span class="marker" style="left:${Math.round(exp/SESSIONS.length*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
  <div class="card"><div class="cardhead"><h3>This week</h3></div>${nxt?weekList(nxt.week):weekList(12)}</div></section>
+ ${baselineCard()}
  ${(!S.installTipDone&&doneCount()>=1&&/iPad|iPhone|Macintosh/.test(navigator.userAgent||'')&&!window.matchMedia('(display-mode: standalone)').matches)?`<section class="card tipcard"><div class="cardhead"><h3>Keep your progress safe</h3><button class="btn small ghost" data-tipdone>Got it</button></div><p>You have work saved here now. On an iPad or iPhone, tap <b>Share</b> and then <b>Add to Home Screen</b>. That keeps the app working without internet and stops Safari from clearing your progress.</p></section>`:''}
  <section class="card"><div class="cardhead"><h3>Strength by strand</h3><button class="btn small ghost" data-view="progress">Details</button></div><div class="strands">${Object.keys(CATS).map(c=>{const a=catAcc(c);return `<div class="strand"><div class="strandl">${CATS[c]}</div><div class="bar thin ${c==='verbal'?'teal':''}"><div style="width:${a.n?pct(a.r,a.n):0}%"></div></div><div class="strandn">${a.n?pct(a.r,a.n)+'%':'—'}</div></div>`}).join('')}</div></section>`}
+function chalCard(){if(S.chalAll)return '';const fresh=chOpen().filter(id=>!S.chalSeen.includes(id));if(!fresh.length)return '';
+ return `<section class="card chalcard"><div class="cardhead"><h3>New challenge set${fresh.length>1?'s':''} unlocked</h3><span class="pill chal">Challenge</span></div>
+ <p>You have been accurate enough on the groundwork to try harder questions: <b>${fresh.map(id=>esc(chName(id))).join(', ')}</b>. They take two or more steps, and the wrong answers are the ones a rushed student picks. Expect to miss some at first. The explanations show you each trap.</p>
+ <div class="actions"><button class="btn ghost" data-chalseen>Later</button><button class="btn primary" data-chalgo="${fresh[0]}">Try ${esc(chName(fresh[0]))}</button></div></section>`}
+function baselineCard(){if(S.official.length||S.offTipDone)return '';
+ return `<section class="card"><div class="cardhead"><h3>Take the official practice test</h3><button class="btn small ghost" data-offhide>Hide</button></div>
+ <p>ERB, which makes the ISEE, publishes a free guide called <i>What to Expect on the ISEE</i> with a practice test for each level. Take the Lower Level one on paper, timed, in one sitting. ERB writes the real test, so its practice material shows things this app cannot.</p>
+ <p class="muted">Afterwards, log the results under Progress so you can compare later attempts.</p><div class="actions"><button class="btn" data-view="progress">Log results</button></div></section>`}
 function weekList(w){const wk=PLAN[w-1];return `<div class="eyebrow">Week ${w} · ${esc(wk.title)}</div><ul class="slist">${SESSIONS.filter(s=>s.week===w).map(s=>{const d=S.done[s.id];return `<li class="${d?'done':''}"><span class="chk">${d?'✓':''}</span><button class="linkbtn" data-start="${s.id}">${esc(s.title)}</button>${d?`<span class="score">${d.score}%</span>`:''}</li>`}).join('')}</ul>`}
 
 function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Five sessions a week, 30 to 45 minutes each: four on verbal and math, and a fifth on reading (or, every fourth week, a timed essay). Every session starts with new vocabulary and ends with a verbal drill, so words build all the way through. Tap any session to start it or redo it.</p>
@@ -1994,9 +2318,16 @@ function viewPlan(){return `<h2>The 12-week plan</h2><p class="muted">Five sessi
 
 function viewPractice(){return `<h2>Practice anything</h2><p class="muted">Ten questions on any topic, with explanations after each one. Or take a timed section to build stamina.</p>
  <div class="card"><h3>Reading &amp; writing</h3><div class="testbtns"><button class="btn" data-quick="read">Read a passage · 5 questions</button><button class="btn" data-quick="read2">Two passages · 10 questions</button><button class="btn" data-quick="essay">Write an essay · 30 min</button><button class="btn" data-models>Read model essays</button></div></div>
- <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:read:25:25">Reading · 25 Q · 25 min</button><button class="btn" data-quick="test:math:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
- ${Object.keys(CATS).map(c=>`<div class="card"><h3>${CATS[c]}</h3><div class="topicgrid">${Object.keys(T).filter(k=>T[k].cat===c).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;return `<button class="topicbtn" data-quick="topic:${k}"><span>${esc(T[k].t)}</span><span class="tacc ${n?(pct(s.r,n)>=80?'good':pct(s.r,n)>=60?'warn':'bad'):''}">${n?pct(s.r,n)+'%':'new'}</span></button>`}).join('')}</div></div>`).join('')}`}
+ <div class="card"><h3>Timed sections</h3><div class="testbtns"><button class="btn" data-quick="test:verbal:34:20">Verbal Reasoning · 34 Q · 20 min</button><button class="btn" data-quick="test:read:25:25">Reading · 25 Q · 25 min</button><button class="btn" data-quick="test:qr:38:35">Quantitative Reasoning · 38 Q · 35 min</button><button class="btn" data-quick="test:math:30:30">Math Achievement · 30 Q · 30 min</button><button class="btn" data-quick="test:verbal:15:8">Verbal sprint · 15 Q · 8 min</button></div></div>
+ ${chalPracticeCard()}
+ ${Object.keys(CATS).filter(c=>c!=='chal').map(c=>`<div class="card"><h3>${CATS[c]}</h3><div class="topicgrid">${Object.keys(T).filter(k=>T[k].cat===c).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;return `<button class="topicbtn" data-quick="topic:${k}"><span>${esc(T[k].t)}</span><span class="tacc ${n?(pct(s.r,n)>=80?'good':pct(s.r,n)>=60?'warn':'bad'):''}">${n?pct(s.r,n)+'%':'new'}</span></button>`}).join('')}</div></div>`).join('')}`}
 
+function chalPracticeCard(){const tag=(r,n)=>n?(pct(r,n)>=80?'good':pct(r,n)>=60?'warn':'bad'):'';
+ return `<div class="card"><div class="cardhead"><h3>Challenge sets</h3><span class="muted small">${chOpen().length} of ${CH_IDS.length} open</span></div>
+ <p class="muted">Harder, multi-step Quantitative Reasoning, like the toughest questions on the real test. A set opens once you have practiced each of its groundwork topics (✓) and reach 80% on them together. Once open, it stays open. Each set starts with a short strategy lesson, then 8 questions.</p>
+ <div class="topicgrid">${CH_IDS.map(id=>{const s=chStatus(id);const t=S.topics[id];const n=t?t.r+t.w:0;const pre=CH_AREAS[id].pre.map(p=>{const x=S.topics[p];return (x&&x.r+x.w>=CH_MIN_EACH?'✓ ':'')+esc(T[p].t)}).join(', ');
+  if(s.open)return `<button class="topicbtn" data-quick="chal:${id}"><span>${esc(chName(id))}</span><span class="tacc ${tag(t&&t.r,n)}">${n?pct(t.r,n)+'%':'new'}</span></button>`;
+  return `<button class="topicbtn locked" disabled><span>🔒 ${esc(chName(id))}<small>Groundwork: ${pre}</small></span><span class="tacc">${!s.each?'Practice each topic':s.n<CH_MIN_N?`${s.n}/${CH_MIN_N} answered`:`${Math.round(s.acc*100)}%, needs 80%`}</span></button>`}).join('')}</div></div>`}
 function viewWords(){const f=S.wordFilter||'all';const lvl=w=>S.vocab[w]?S.vocab[w].lvl:0;const seen=w=>!!S.vocab[w];
  const list=VOCAB.filter(w=>f==='all'||(f==='new'&&!seen(w[0]))||(f==='learning'&&seen(w[0])&&lvl(w[0])<3)||(f==='mastered'&&lvl(w[0])>=3));
  const counts={all:VOCAB.length,new:VOCAB.filter(w=>!seen(w[0])).length,learning:VOCAB.filter(w=>seen(w[0])&&lvl(w[0])<3).length,mastered:VOCAB.filter(w=>lvl(w[0])>=3).length};
@@ -2020,15 +2351,62 @@ function viewReview(){const e=(S.essays||[])[S.reviewIdx||0];
   <h4>How to give the feedback</h4>${PARENT_HOWTO}</section>
  <section class="card noprint"><div class="cardhead"><h3>A model answer for this kind of prompt</h3></div>
   <p class="muted">Read this together after she has read her own. Compare the shape, not the words.</p>${modelHTML(m)}</section>`}
+// ================= OFFICIAL PRACTICE-TEST SCORES =================
+// Percent correct is all the app computes. ERB does not publish a raw-to-scaled
+// conversion, so scaled scores, percentiles and stanines are only ever typed in.
+const OFF_SECS=[['vr','Verbal Reasoning',34],['qr','Quantitative Reasoning',38],['rc','Reading Comprehension',25],['ma','Mathematics Achievement',30]];
+const OFF_SRCS=['ERB guide: What to Expect on the ISEE','Another official ERB practice test','The real ISEE (score report)','Ivy Global','Test Prep Works','Another book or tutor'];
+const offSorted=()=>S.official.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.id-b.id);
+const shortDate=iso=>new Date(iso+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const offExtra=x=>[x.st!=null?'stanine '+x.st:'',x.pr!=null?ord(x.pr)+' percentile':'',x.ss!=null?'scaled '+x.ss:''].filter(Boolean).join(' · ');
+function spark(pts){const W=200,H=56,px=6,py=6;const X=i=>px+(pts.length>1?i*(W-2*px)/(pts.length-1):0),Y=v=>py+(100-v)*(H-2*py)/100;
+ const line=pts.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
+ return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="Percent correct over ${pts.length} tests: ${pts.map(p=>p.v+'%').join(', ')}"><line x1="${px}" x2="${W-px}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-width="1"/><path d="${line}" fill="none" stroke="var(--bar1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+ ${pts.map((p,i)=>`<g><title>${esc(p.tip)}</title><circle cx="${X(i)}" cy="${Y(p.v)}" r="4" fill="var(--bar1)" stroke="var(--paper)" stroke-width="2"/><circle cx="${X(i)}" cy="${Y(p.v)}" r="12" fill="transparent"/></g>`).join('')}</svg>`}
+function offTile([k,label]){const all=offSorted().filter(o=>o.sec[k]);if(!all.length)return `<div class="otile"><div class="otl">${label}</div><div class="statn muted">—</div><div class="muted small">No results yet</div></div>`;
+ const P=o=>pct(o.sec[k].c,o.sec[k].t);const withC=all.filter(o=>o.sec[k].c!=null);const rep=all.filter(o=>offExtra(o.sec[k])).pop();
+ let body=`<div class="statn muted">—</div><div class="muted small">No number correct logged</div>`,trend='';
+ if(withC.length){const last=withC[withC.length-1],x=last.sec[k];const same=withC.filter(o=>o.src===last.src);
+  body=`<div class="statn">${P(last)}%</div><div class="muted small">${x.c} of ${x.t} correct · ${shortDate(last.date)}<br>${esc(last.src)}</div>`;
+  if(same.length>1){const d=P(last)-P(same[0]);
+   trend=`<div class="odelta">${d>0?`<span class="up">▲</span> ${d}`:d<0?`<span class="down">▼</span> ${-d}`:'No change'}${d?` percentage point${Math.abs(d)===1?'':'s'}`:''} since the first result from this source</div>`+spark(same.map(o=>({v:P(o),tip:`${shortDate(o.date)}: ${o.sec[k].c} of ${o.sec[k].t} (${P(o)}%)`})))}}
+ return `<div class="otile"><div class="otl">${label}</div>${body}${rep?`<div class="small">Reported: ${offExtra(rep.sec[k])} <span class="muted">(${shortDate(rep.date)})</span></div>`:''}${trend}</div>`}
+function viewOfficial(){const rows=offSorted().reverse();const blank=v=>v==null?'':v;
+ return `<section class="card"><div class="cardhead"><h3>Official practice tests</h3>${rows.length?`<span class="muted small">${rows.length} logged</span>`:''}</div>
+ ${rows.length?`<div class="otiles">${OFF_SECS.map(offTile).join('')}</div>
+ <div class="tblwrap"><table class="tbl otbl"><thead><tr><th>Date and source</th>${OFF_SECS.map(s=>`<th>${s[1].split(' ')[0]}</th>`).join('')}<th></th></tr></thead><tbody>
+ ${rows.map(o=>`<tr><td><b>${shortDate(o.date)}</b><br><span class="muted small">${esc(o.src)}</span></td>${OFF_SECS.map(([k])=>{const x=o.sec[k];return `<td>${x?`${x.c!=null?`${x.c}/${x.t}`:''}${offExtra(x)?`${x.c!=null?'<br>':''}<span class="muted small">${offExtra(x)}</span>`:''}`:'<span class="muted">—</span>'}</td>`}).join('')}<td><button class="btn small ghost" data-offdel="${o.id}" aria-label="Delete the ${shortDate(o.date)} result">Delete</button></td></tr>`).join('')}</tbody></table></div>`
+ :`<p class="muted">After you take a practice test, enter the results here. Results from ERB's own practice material are the best guide to where you stand, because ERB writes the real test.</p>`}
+ <details class="oadd" ${rows.length?'':'open'}><summary>Add a result</summary>
+ <div class="setrow"><label>Date taken<input id="o_date" type="date" value="${today()}"></label><label>Source<select id="o_src">${OFF_SRCS.map(s=>`<option>${esc(s)}</option>`).join('')}</select></label></div>
+ <div class="tblwrap"><table class="tbl oform"><thead><tr><th>Section</th><th>Number correct</th><th>Out of</th><th>Scaled score</th><th>Percentile</th><th>Stanine</th></tr></thead><tbody>
+ ${OFF_SECS.map(([k,l,n])=>`<tr><td>${l}</td>${[['c',''],['t',n],['ss',''],['pr',''],['st','']].map(([f,v])=>`<td><input id="o_${k}_${f}" inputmode="numeric" autocomplete="off" value="${blank(v)}" aria-label="${l}: ${({c:'number correct',t:'out of',ss:'scaled score',pr:'percentile',st:'stanine'})[f]}"></td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ <p class="muted small">Leave a section's boxes empty if it was not taken. Fill in scaled score (760 to 940), percentile or stanine only when the test or score report gives them to you; number correct can then be left empty. For a score report, check the "Out of" number against the report.</p>
+ <div class="oerr" id="o_err" role="alert"></div><div class="actions"><button class="btn primary" id="o_add">Save result</button></div></details>
+ <p class="onote">This app only works out percent correct. It never turns a raw score into a scaled score, percentile or stanine: ERB does not publish that conversion, and each test form is scaled separately. A stanine compares you with other students applying for the same grade, so only an ERB score report can give you one. Tests from other publishers can run harder or easier than the real one, so each card's change and trend line only compare results from the same source.</p></section>`}
+function readOfficial(){const g=id=>($('#'+id)?$('#'+id).value:'').trim();const errs=[];const sec={};
+ const date=g('o_date');if(!/^\d{4}-\d{2}-\d{2}$/.test(date))errs.push('Choose the date the test was taken.');
+ const num=(v,lo,hi,what,label)=>{if(v==='')return null;if(!/^\d+$/.test(v)||+v<lo||+v>hi){errs.push(`${label}: ${what} must be a whole number from ${lo} to ${hi}.`);return undefined}return +v};
+ for(const [k,label] of OFF_SECS){const c=g(`o_${k}_c`),others=['ss','pr','st'].map(f=>g(`o_${k}_${f}`));
+  if(c===''&&!others.some(Boolean))continue;
+  const ss=num(others[0],760,940,'Scaled score',label),pr=num(others[1],1,99,'Percentile',label),st=num(others[2],1,9,'Stanine',label);
+  const x={};let ok=ss!==undefined&&pr!==undefined&&st!==undefined;
+  if(c!==''){const t=num(g(`o_${k}_t`),1,100,'"Out of"',label);if(t===null)errs.push(`${label}: enter how many questions there were.`);
+   const cc=num(c,0,t||100,'Number correct',label);if(t==null||cc==null)ok=false;else{x.c=cc;x.t=t}}
+  if(ok){if(ss!=null)x.ss=ss;if(pr!=null)x.pr=pr;if(st!=null)x.st=st;sec[k]=x}}
+ if(!errs.length&&!Object.keys(sec).length)errs.push('Enter a result for at least one section.');
+ return {errs,entry:{id:Date.now(),date,src:g('o_src')||OFF_SRCS[0],sec}}}
 function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<b[1].date?1:-1).slice(0,12);const tv=Object.values(S.vocab);
  const days=[];for(let i=83;i>=0;i--){const d=addDays(today(),-i);days.push([d,S.days[d]||0])}
  return `<h2>Progress</h2>
+ ${viewOfficial()}
  <section class="grid2"><div class="card"><h3>Study days (last 12 weeks)</h3><div class="heat">${days.map(([d,n])=>`<span class="${n?'hit':''}" title="${d}: ${n} activit${n===1?'y':'ies'}"></span>`).join('')}</div><p class="muted">Current streak: <b>${streak()}</b> day${streak()===1?'':'s'}. Sessions done: <b>${doneCount()}</b> of ${SESSIONS.length}.</p></div>
  <div class="card"><h3>Vocabulary</h3><div class="vrow"><span>Mastered</span><b>${tv.filter(v=>v.lvl>=3).length}</b></div><div class="vrow"><span>Still learning</span><b>${tv.filter(v=>v.lvl<3).length}</b></div><div class="vrow"><span>Not yet seen</span><b>${VOCAB.length-tv.length}</b></div><div class="vrow"><span>Synonym/completion accuracy</span><b>${(()=>{let r=0,w=0;tv.forEach(v=>{r+=v.r;w+=v.w});return r+w?pct(r,r+w)+'%':'—'})()}</b></div></div></section>
  <section class="card"><h3>Accuracy by topic</h3><div class="tblwrap"><table class="tbl"><thead><tr><th>Topic</th><th>Strand</th><th>Answered</th><th>Accuracy</th></tr></thead><tbody>${Object.keys(T).map(k=>{const s=S.topics[k];const n=s?s.r+s.w:0;const p=n?pct(s.r,n):null;return `<tr><td>${esc(T[k].t)}</td><td class="muted">${CATS[T[k].cat]}</td><td>${n}</td><td>${p===null?'—':`<span class="pill ${p>=80?'good':p>=60?'warn':'bad'}">${p}%</span>`}</td></tr>`}).join('')}</tbody></table></div></section>
  <section class="card"><h3>Recent sessions</h3>${hist.length?`<ul class="hist">${hist.map(([id,d])=>{const s=SESSIONS.find(x=>x.id===id);return `<li><span>${d.date}</span><b>${esc(s?s.title:'Session '+id)}</b><span>${d.score}% · ${d.mins} min</span></li>`}).join('')}</ul>`:'<p class="muted">No sessions finished yet.</p>'}</section>
  ${(S.essays&&S.essays.length)?`<section class="card"><div class="cardhead"><h3>Essays you have written</h3><button class="btn small" data-rev="0">Review with a grown-up</button></div><div class="essaylist">${S.essays.map((e,i)=>`<details><summary><b>${esc(e.prompt)}</b><span class="muted small"> — ${e.date}, ${e.words} words, ${e.mins<1?'under a minute':e.mins+' min'}</span></summary><div class="essayread">${e.text.split(/\n+/).filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join('')||'<p class="muted">(empty)</p>'}</div><div class="actions"><button class="btn small ghost" data-model="${e.pi||0}">See a model</button><button class="btn small" data-rev="${i}">Review this one</button></div></details>`).join('')}</div></section>`:''}
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
+ <div class="setrow"><label class="inline"><input type="checkbox" id="s_chal" ${S.chalAll?'checked':''}> Open every challenge set now, without waiting for the groundwork (takes effect right away)</label></div>
  <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea><div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
 // ================= SESSION RENDER =================
@@ -2046,7 +2424,7 @@ function renderWarm(st){const w=VOCAB.find(v=>v[0]===st.cards[st.ci]);if(!w)retu
 function renderLesson(st){const t=T[st.topic];return `<div class="card lesson"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-next>Got it. Let's practice</button></div></div>`}
 function renderSheet(st){const tips=st.topics.map(id=>{const t=T[id];const m=t.lesson.match(/<div class="tip"><b>Test tip<\/b>([\s\S]*?)<\/div>/);const s=S.topics[id];const n=s?s.r+s.w:0;return `<div class="sheetrow"><div><b>${esc(t.t)}</b> <span class="muted small">${n?pct(s.r,n)+'% so far':''}</span><div class="muted">${m?m[1]:''}</div></div><button class="btn small ghost" data-relearn="${id}">Re-read lesson</button></div>`}).join('');
  return `<div class="card lesson"><h2>${esc(st.title)}</h2><p class="muted">One key tip from each topic. Re-read any lesson you feel shaky on, then practice.</p>${tips}<div class="actions"><button class="btn primary" data-next>Start practice</button></div></div>`}
-function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=st.picked;const done=picked!=null;const letters='ABCD';const topicName=q.kind==='syn'?'Synonyms':q.kind==='sc'?'Sentence completion':T[q.topic]?T[q.topic].t:'';
+function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=st.picked;const done=picked!=null;const letters='ABCD';const topicName=q.kind==='syn'?'Synonyms':q.kind==='sc'?'Sentence completion':!T[q.topic]?'':isTest&&T[q.topic].cat==='chal'?CATS.qr:T[q.topic].t;
  const dirs=q.kind==='syn'?'<p class="dirs">Select the word whose meaning is closest to the word in capital letters.</p>':q.kind==='sc'?'<p class="dirs">Select the word that best completes the sentence.</p>':q.pas?'<p class="dirs">Read the passage, then answer the question below it.</p>':'';
  const choices=q.ch.map((c,i)=>{let cls='';if(done&&!isTest){if(i===q.a)cls='right';else if(i===picked)cls='wrong'}else if(isTest&&picked===i)cls='sel';return `<button class="choice ${cls}" data-choice="${i}" ${done&&!isTest?'disabled':''}><span class="ltr">${letters[i]}</span><span class="ctext">${c}</span></button>`}).join('');
  const right=st.ans.filter(a=>a.ok).length;
@@ -2085,14 +2463,14 @@ function showModel(m){const d=document.createElement('div');d.className='modal';
  d.innerHTML=`<div class="card lesson modalcard">${modelHTML(m)}<div class="actions"><button class="btn primary" data-close>Close</button></div></div>`;
  document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove();
  d.onclick=e=>{if(e.target===d)d.remove()}}
-function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'||s.k==='test');let r=0,t=0;const missed=[];quizzes.forEach(s=>{s.ans.forEach((a,i)=>{if(!a)return;t++;if(a.ok)r++;else missed.push({q:s.qs[i],pick:a.pick})})});
+function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'||s.k==='test');let r=0,t=0,sr=0,stn=0;const missed=[];quizzes.forEach(s=>{s.ans.forEach((a,i)=>{if(!a)return;if(s.qs[i].stretch){stn++;if(a.ok)sr++}else{t++;if(a.ok)r++}if(!a.ok)missed.push({q:s.qs[i],pick:a.pick})})});
  const warm=c.steps.find(s=>s.k==='warm');const learned=warm?warm.res.filter(x=>x.ok).length:0;const test=c.steps.find(s=>s.k==='test');
  const essayStep=c.steps.find(x=>x.k==='essay');const cardsOnly=!t&&warm&&!essayStep;const seenCards=warm?warm.res.length:0;
  const score=cardsOnly?pct(learned,seenCards):pct(r,t);
  const words=cardsOnly?(score>=80?'Great recall!':'Good practice. The words you missed come back sooner.')
    :score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
- const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':test.kind==='read'?'On the real test, Reading Comprehension is 25 questions in 25 minutes, across five passages.':'On the real test, Quantitative Reasoning is 38 questions in 35 minutes and Math Achievement is 30 in 30.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
- return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>${cardsOnly?'words known':'score'}</span></div>${cardsOnly?'':`<div><div class="statn">${r}/${t}</div><span>correct</span></div>`}<div><div class="statn">${learned}${cardsOnly?'/'+seenCards:''}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${testNote}
+ const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':test.kind==='read'?'On the real test, Reading Comprehension is 25 questions in 25 minutes, across five passages.':test.kind==='qr'?'On the real test, Quantitative Reasoning is 38 questions in 35 minutes. About a third of this practice section came from the challenge sets, because the real one includes hard multi-step questions.':'On the real test, Mathematics Achievement is 30 questions in 30 minutes.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
+ return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>${cardsOnly?'words known':'score'}</span></div>${cardsOnly?'':`<div><div class="statn">${r}/${t}</div><span>correct</span></div>`}<div><div class="statn">${learned}${cardsOnly?'/'+seenCards:''}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${stn?`<p class="muted">Challenge questions: <b>${sr} of ${stn}</b> right. They are extra, so they do not count toward your score.</p>`:''}${testNote}
  ${cardsOnly?'':''}${missed.length?`<h3>Review what you missed</h3><div class="missed">${missed.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill bad">${m.pick==null?'You skipped this one':'You chose: '+m.q.ch[m.pick]}</span> <span class="pill good">Answer: ${m.q.ch[m.q.a]}</span></div><div class="muted">${m.q.exp}</div></div>`).join('')}</div>`:cardsOnly?`<p class="muted">You marked ${learned} of ${seenCards} cards as known. The rest will come back in your next warm-up.</p>`:'<p class="muted">No misses. Perfect round!</p>'}
  <div class="actions"><button class="btn primary big" data-finish>Finish session</button></div></div>`}
 
@@ -2101,7 +2479,9 @@ let timerHandle=null;
 function startSession(sess){if(S.paused&&S.paused.id===sess.id)S.paused=null;S.cur=buildSession(sess);S.view='home';save();render()}
 function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
  if(kind==='topic'){cur={id:'quick',type:'quick',title:T[a].t,step:0,elapsed:0,steps:[{k:'quiz',title:'Practice',min:10,qs:topicQs(a,10),i:0,ans:[],picked:null},{k:'wrap',title:'Results',min:2}]}}
- else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':a==='read'?'Reading Comprehension':'Math',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):a==='read'?readingTest(n):mathTest(n,a),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
+ else if(kind==='test'){const n=+b,min=+c;cur={id:'quick',type:'quick',title:a==='verbal'?'Verbal Reasoning':a==='read'?'Reading Comprehension':a==='qr'?'Quantitative Reasoning':'Mathematics Achievement',step:0,elapsed:0,steps:[{k:'test',title:'Timed section',min,qs:a==='verbal'?verbalSet(n,null):a==='read'?readingTest(n):mathTest(n,a),i:0,ans:[],picked:null,limit:min*60,t:0,kind:a},{k:'wrap',title:'Results',min:3}]}}
+ else if(kind==='chal'){if(!S.chalSeen.includes(a))S.chalSeen.push(a);
+  cur={id:'quick',type:'quick',title:T[a].t,step:0,elapsed:0,steps:[{k:'lesson',title:'Strategy',min:4,topic:a},{k:'quiz',title:'Challenge set',min:14,qs:topicQs(a,8),i:0,ans:[],picked:null},{k:'wrap',title:'Results',min:2}]}}
  else if(kind==='read'||kind==='read2'){const n=kind==='read2'?2:1;const start=R(0,PASSAGES.length-1);
   const steps=[];for(let i=0;i<n;i++)steps.push({k:'quiz',title:`Passage ${i+1}`,min:11,qs:passageSet(start+i),i:0,ans:[],picked:null});
   cur={id:'quick',type:'quick',title:'Reading practice',step:0,elapsed:0,steps:[...steps,{k:'wrap',title:'Results',min:3}]}}
@@ -2125,7 +2505,7 @@ function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
  else{if(document.visibilityState!=='visible')return;c.elapsed++}const el=$('#timer');if(el)el.textContent=st.k==='test'?mm(Math.max(0,st.limit-st.t)):mm(c.elapsed);if(c.elapsed%15===0)save()}
 function nextStep(){const c=S.cur;c.step++;if(c.step>=c.steps.length)c.step=c.steps.length-1;save();render();window.scrollTo(0,0)}
 function submitTest(){const st=S.cur.steps[S.cur.step];st.qs.forEach((q,i)=>{const a=st.ans[i];const p=a?a.pick:null;st.ans[i]={pick:p,ok:p===q.a};if(q.topic)recordTopic(q.topic,p===q.a);if(q.word)recordVocab(q.word,p===q.a)});nextStep()}
-function finishSession(){const c=S.cur;if(S.paused&&S.paused.id===c.id)S.paused=null;if(c.type!=='quick'){let r=0,t=0;c.steps.filter(s=>s.qs).forEach(s=>s.ans.forEach(a=>{if(a){t++;if(a.ok)r++}}));S.done[c.id]={date:today(),score:pct(r,t),mins:Math.round(c.elapsed/60)};markDay()}S.cur=null;save();render()}
+function finishSession(){const c=S.cur;if(S.paused&&S.paused.id===c.id)S.paused=null;if(c.type!=='quick'){let r=0,t=0;c.steps.filter(s=>s.qs).forEach(s=>s.ans.forEach((a,i)=>{if(a&&!s.qs[i].stretch){t++;if(a.ok)r++}}));S.done[c.id]={date:today(),score:pct(r,t),mins:Math.round(c.elapsed/60)};markDay()}S.cur=null;save();render()}
 function wireSession(){const c=S.cur;const st=c.steps[c.step];
  document.querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{
    // Keep the in-progress session so it can be resumed, but leave the session view.
@@ -2165,12 +2545,18 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
    d.querySelector('[data-mpick]').classList.add('on');
    d.querySelector('[data-close]').onclick=()=>d.remove();d.onclick=e=>{if(e.target===d)d.remove()}});
  document.querySelectorAll('[data-tipdone]').forEach(b=>b.onclick=()=>{S.installTipDone=true;save();render()});
+ document.querySelectorAll('[data-chalseen]').forEach(b=>b.onclick=()=>{chOpen().forEach(id=>{if(!S.chalSeen.includes(id))S.chalSeen.push(id)});save();render()});
+ document.querySelectorAll('[data-chalgo]').forEach(b=>b.onclick=()=>quickSession('chal:'+b.dataset.chalgo));
+ document.querySelectorAll('[data-offhide]').forEach(b=>b.onclick=()=>{S.offTipDone=true;save();render()});
+ document.querySelectorAll('[data-offdel]').forEach(b=>b.onclick=()=>{const o=S.official.find(x=>String(x.id)===b.dataset.offdel);if(!o||!confirm(`Delete the result from ${shortDate(o.date)}?`))return;S.official=S.official.filter(x=>x!==o);save();render()});
+ const oa=$('#o_add');if(oa)oa.onclick=()=>{const {errs,entry}=readOfficial();const box=$('#o_err');if(errs.length){box.innerHTML=errs.map(esc).join('<br>');return}S.official.push(entry);save();render()};
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));
  const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim();S.setup=true;S.test=$('#td').value||S.test;S.start=today();save();render()};
  const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
+ const ca=$('#s_chal');if(ca)ca.onchange=()=>{S.chalAll=ca.checked;save()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
- const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=s;S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
+ const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=norm(s);S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
  const rs=$('#bk_reset');if(rs)rs.onclick=()=>{
   if(!confirm('Erase ALL progress, words, sessions and essays? This cannot be undone.'))return;
   const a=R(11,19),b=R(3,9);const ans=prompt(`This is meant for a grown-up.\n\nTo confirm, answer: what is ${a} × ${b}?`);
@@ -2178,7 +2564,7 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
   if(parseInt(ans,10)!==a*b){alert('That is not the answer, so nothing was erased.');return}
   localStorage.removeItem(KEY);S=load();applyTheme();render()}}
 function applyTheme(){const r=document.documentElement;if(S.theme==='dark')r.setAttribute('data-theme','dark');else if(S.theme==='light')r.setAttribute('data-theme','light');else r.removeAttribute('data-theme')}
-applyTheme();render();
+latchChal();applyTheme();render();
 
 </script>
 <script>
