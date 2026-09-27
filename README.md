@@ -22,6 +22,11 @@ The app runs offline with no AI, so it cannot grade an essay. Instead it gives t
 - **Where the questions appear:** as their own sets on the Practice tab (a short strategy lesson, then 8 questions); as two stretch questions at the end of a related math lesson once the matching set is open (reported separately and not counted in the session score); as three of the twelve questions in each review session; and as one third of the timed Quantitative Reasoning section.
 - Expect lower accuracy here than elsewhere in the app. That is the point.
 
+## Pacing and the focus list
+- **Time per question.** Every practice and timed question is timed (only while the app is on screen). The results screen shows the average time against the real test's pace, marks each miss with its time, and lists right answers that were slow. The first question on a reading passage is never called slow, since its time includes reading the passage.
+- **Why was it missed?** Each wrong answer gets a suggested reason: didn't know it, fell for a trap, misread the question, or rushed. The student confirms or changes it with one tap. Progress → *Why you miss questions* shows which reason comes up most in the last 30 days, with advice for it.
+- **Focus list.** Wrong answers go on a focus list (the same word, the same passage question, or a fresh question on the same topic). *Practice 8 from my list* re-asks them; an item leaves the list after two right answers in later sessions. Questions left blank on a timed test are not added.
+
 ## Official practice-test scores
 Progress → *Official practice tests* is a log for results from ERB's official practice test (in the free guide *What to Expect on the ISEE*), other publishers' tests, or a real score report. Enter the number correct for each section, and add a scaled score, percentile or stanine only when the source provides one. The app shows percent correct per section and any reported scores; the change and trend line compare only results from the same source, since publishers' tests differ in difficulty.
 
