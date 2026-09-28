@@ -98,7 +98,7 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .hist{list-style:none;padding:0;margin:0}.hist li{display:grid;grid-template-columns:100px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:.9rem}.hist li:first-child{border:0}.hist li span{color:var(--muted)}
 .settings .setrow{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:8px 0}.settings label{display:flex;flex-direction:column;font-size:.85rem;font-weight:600;gap:4px}
 /* tables */
-.tblwrap{overflow-x:auto;margin:10px 0}.tbl{border-collapse:collapse;width:100%;font-size:.92rem}.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}.tbl th{background:var(--paper);font-weight:700}
+.tblwrap{overflow-x:auto;margin:10px 0;max-width:100%}.card,.lesson,.modalcard{min-width:0}.tbl{border-collapse:collapse;width:100%;font-size:.92rem}.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}.tbl th{background:var(--paper);font-weight:700}
 .tbl td{font-variant-numeric:tabular-nums}
 /* session */
 .top.session{justify-content:flex-start;flex-wrap:nowrap}.stitle{display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0}.stitle b,.stitle span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stitle span{font-size:.8rem}
@@ -157,7 +157,7 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .wrapstats{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin:14px 0}.wrapstats>div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.8rem;color:var(--muted)}
 .ringtxt{font-size:15px;font-weight:800;fill:var(--ink)}
 .missed{text-align:left;display:grid;gap:12px}.miss{border:1px solid var(--line);border-radius:10px;padding:12px}.miss .pill{margin:6px 6px 6px 0}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:start center;padding:30px 12px;overflow:auto;z-index:20}.modalcard{max-width:760px;width:100%}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;grid-template-columns:minmax(0,1fr);place-items:start center;padding:30px 12px;overflow:auto;z-index:20}.modalcard{max-width:760px;width:100%;box-sizing:border-box}.modalcard:focus{outline:none}
 @media (max-width:760px){.hero{grid-template-columns:1fr}.strand{grid-template-columns:1fr 90px 40px}.tabs{width:100%}.tab{padding:.45em .6em;font-size:.9rem}.top{gap:10px}.qhead{flex-direction:column;gap:2px}.qhead span:last-child{text-align:left}}
 @media print{.top,.rail,.actions{display:none}}
 
@@ -166,6 +166,8 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .passage h4{margin:0 0 .5em;font-size:1.05rem}
 .passage p{margin:0 0 .7em;line-height:1.65;max-width:66ch}
 .passage p:last-child{margin-bottom:0}
+@media (max-width:600px){.passage{max-height:none}}
+.rescuenote{background:var(--warnbg);border-radius:10px;padding:10px 14px}
 .passage .pnum{display:inline-block;min-width:1.5em;margin-left:-.2em;color:var(--muted);font-size:.78em;font-weight:700;user-select:none}
 /* ---- essay ---- */
 .prompt{font-size:1.15rem;font-weight:600;background:var(--paper);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:8px 0 14px}
@@ -2713,13 +2715,14 @@ const KEY='isee-launchpad-v1';
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00');d.setDate(d.getDate()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const daysBetween=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
-let S=load();
+let S=load();let planTimer=null;
 // A focus-list key is kept only if its question can still be built.
 function focusValid(k){const [kind,a,b,...rest]=String(k).split(':');if(rest.length)return false;
  if(kind==='w')return (a==='syn'||a==='sc')&&VOCAB.some(v=>v[0]===b);
  if(kind==='r')return /^\d+$/.test(a)&&/^\d+$/.test(b)&&!!PASSAGES[+a]&&!!PASSAGES[+a].q[+b];
  if(kind==='t')return b===undefined&&Object.prototype.hasOwnProperty.call(T,a)&&typeof T[a].gen==='function'&&!['read','write'].includes(T[a].cat);
  return false}
+const rescueCopy=()=>{try{return localStorage.getItem(KEY+'-rescue')}catch(e){return null}};
 function load(){let raw=null,s=null;try{raw=localStorage.getItem(KEY);s=JSON.parse(raw)}catch(e){}
  if(s&&typeof s==='object'&&s.v===1){try{return norm(s)}catch(e){try{console.error(e)}catch(_){}return s}}
  // Saved progress that exists but cannot be read is copied aside before the app
@@ -2731,7 +2734,7 @@ function load(){let raw=null,s=null;try{raw=localStorage.getItem(KEY);s=JSON.par
 // An open or paused session must have the shape the app builds, or it is dropped.
 function okSess(c){return !!c&&typeof c==='object'&&Array.isArray(c.steps)&&c.steps.length>0&&Number.isInteger(c.step)&&c.step>=0&&c.step<c.steps.length&&c.steps.every(st=>!!st&&typeof st==='object'&&typeof st.k==='string'&&(st.qs==null||(Array.isArray(st.qs)&&Array.isArray(st.ans)))&&(st.cards==null||(Array.isArray(st.cards)&&Array.isArray(st.res))))}
 function norm(s){if(s.setup==null)s.setup=!!s.name;for(const k of ['done','topics','vocab','days'])if(!s[k]||typeof s[k]!=='object')s[k]={};
- if(!Array.isArray(s.vtips))s.vtips=[];
+ if(!Array.isArray(s.vtips))s.vtips=[];s.name=typeof s.name==='string'?s.name.slice(0,20):'';
  if(s.cur&&!okSess(s.cur))s.cur=null;if(s.paused&&!okSess(s.paused))s.paused=null;if(!Array.isArray(s.essays))delete s.essays;
  for(const k of ['chalSeen','chalOpen'])s[k]=Array.isArray(s[k])?s[k].filter(id=>CH_AREAS[id]):[];
  const TAGK=['know','trap','misread','rushed','time'];
@@ -2901,11 +2904,27 @@ function catAcc(cat){let r=0,w=0;Object.keys(T).filter(k=>T[k].cat===cat).forEac
 function ring(p,size=64,label){const r=(size-8)/2,c=2*Math.PI*r;return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle" class="ringtxt">${label!=null?label:p+'%'}</text></svg>`}
 
 // ================= VIEWS =================
-function render(){try{draw()}catch(e){try{console.error(e)}catch(_){}const app=$('#app');
+// Every click redraws the screen, which would drop keyboard focus to the page. Remember what
+// was focused and put focus back on it, or on the step's main button when it is gone.
+function focusSel(){const a=document.activeElement;if(!a||a===document.body||!a.matches||!a.closest('#app'))return null;
+ for(const at of ['data-next-q','data-next','data-finish','data-flipcard','data-card','data-view','data-start','data-quick','data-resume','data-exit','data-essay-start','data-essay-done','id']){if(a.hasAttribute(at))return `[${at}="${a.getAttribute(at)}"]`}
+ if(a.classList.contains('choice'))return '.choice#'+[...document.querySelectorAll('.choice')].indexOf(a);return null}
+function refocus(sel){if(!sel||document.querySelector('.modal'))return;let el=null;
+ if(sel.startsWith('.choice#'))el=document.querySelectorAll('.choice')[+sel.slice(8)];else{try{el=document.querySelector(sel)}catch(e){}}
+ if(!el||el.disabled)el=document.querySelector('#app [data-next-q],#app [data-next],#app [data-finish],#app [data-flipcard],#app .choice:not([disabled]),#app [data-essay-start]');
+ if(el)try{el.focus({preventScroll:true})}catch(e){}}
+function render(){const sel=focusSel();try{draw();refocus(sel)}catch(e){try{console.error(e)}catch(_){}const app=$('#app');
  app.innerHTML=`<main class="wrap narrow"><section class="card"><h2>Something went wrong showing this screen</h2><p>Your saved progress has not been changed.</p>
  <div class="actions">${S.cur?'<button class="btn primary" id="rv_leave">Leave the open session</button>':''}${S.paused?'<button class="btn" id="rv_drop">Discard the paused session</button>':''}<button class="btn" id="rv_home">Go to Today</button></div>
  <details class="about"><summary>Backup box</summary><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea></details></section></main>`;
  const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};on('#rv_leave',()=>{S.cur=null;S.view='home';save();render()});on('#rv_drop',()=>{S.paused=null;S.view='home';save();render()});on('#rv_home',()=>{S.cur=null;S.view='home';save();render()})}}
+document.addEventListener('keydown',e=>{const ms=document.querySelectorAll('.modal');const m=ms[ms.length-1];if(!m)return;
+ if(e.key==='Escape'){const c=m.querySelector('[data-close]');if(c)c.click();else m.remove();e.preventDefault();return}
+ if(e.key==='Tab'){const f=[...m.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!f.length)return;const first=f[0],last=f[f.length-1],a=document.activeElement;
+  if(e.shiftKey?(a===first||!m.contains(a)):(a===last||!m.contains(a))){(e.shiftKey?last:first).focus();e.preventDefault()}}});
+// A modal takes focus when it opens and gives it back to the button that opened it when it closes.
+new MutationObserver(rs=>{for(const r of rs){for(const n of r.addedNodes)if(n.nodeType===1&&n.classList.contains('modal')){n.__opener=document.activeElement;const card=n.firstElementChild||n;card.setAttribute('tabindex','-1');try{card.focus({preventScroll:true})}catch(e){}}
+ for(const n of r.removedNodes)if(n.nodeType===1&&n.classList&&n.classList.contains('modal')&&n.__opener&&document.contains(n.__opener))try{n.__opener.focus({preventScroll:true})}catch(e){}}}).observe(document.body,{childList:true});
 function draw(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
  let v=S.view||'home';if(!S.setup)v='home';const navView=v==='review'?'progress':v;app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · all four sections + essay</div></div></div>
  ${S.setup?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${navView===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
@@ -2916,7 +2935,8 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  const name=(S.name||'').trim()?`, ${esc(S.name.trim())}`:'';const greet=new Date().getHours()<12?'Good morning':new Date().getHours()<17?'Good afternoon':'Good evening';
  let pace=behind<=0?`<span class="pill good">On track</span>`:behind<=2?`<span class="pill warn">${behind} session${behind>1?'s':''} behind</span>`:`<span class="pill bad">${behind} sessions behind</span>`;
  if(!S.setup)return `<section class="card setup"><h1>Welcome to ISEE Launchpad</h1>
- <p class="lead">A 12-week path to the ISEE Lower Level, built to be used on your own. Each session takes 30 to 45 minutes.</p>
+ ${rescueCopy()?`<p class="rescuenote"><b>Earlier progress on this device could not be read, so a copy of it was kept.</b> After you set up, it is under Progress → Settings → Backup, where it can be copied and sent for help.</p>`:''}
+ <p class="lead">A 12-week path to the ISEE Lower Level, built to be used on your own. Most sessions take 30 to 45 minutes; the timed essay sessions run a little longer.</p>
  <p>You get all four scored sections: <b>Verbal Reasoning</b>, <b>Quantitative Reasoning</b>, <b>Mathematics Achievement</b> and <b>Reading Comprehension</b>, plus timed <b>essay</b> practice.</p>
  <div class="setrow2"><label>First name <span class="muted small">(optional)</span><input id="nm" placeholder="Leave blank to stay anonymous" maxlength="20"></label>
  <label>Test date <span class="muted small">(change it any time in Settings)</span><input id="td" type="date" value="${S.test}"></label></div>
@@ -2925,7 +2945,7 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  <details class="about"><summary>Keeping your work safe</summary><p>Everything stays on this device. Nothing is uploaded and no account is needed.</p><p><b>On an iPad or phone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>. That installs it, keeps it working with no internet, and stops the browser from clearing your progress.</p><p>Under <b>Progress → Settings</b> there is a backup box for moving your work to another device.</p></details>
  <p class="fineprint">Independent practice material. Not affiliated with, endorsed by, or connected to ERB, the makers of the ISEE. Questions are written for practice and may occasionally contain mistakes.</p></section>`;
  return `${saveWarn()}<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All '+SESSIONS.length+' sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
- <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
+ <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt&&!(S.paused&&S.paused.id===nxt.id)?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
  <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/SESSIONS.length*100),56)}<div class="statl">plan done</div></div></div></section>
  ${chalCard()}
  <section class="grid2"><div class="card"><div class="cardhead"><h3>Pace</h3>${pace}</div><p class="muted">By today you should have finished about <b>${exp}</b> sessions. You have finished <b>${dn}</b>. ${behind>0?'Do two sessions on a free day to catch up. Any order works, but the plan builds in sequence.':behind<0?'You are ahead. Nice work. Keep the streak going with a quick practice on off days.':'Perfect pace. Keep it up.'}</p><div class="bar"><div style="width:${Math.round(dn/SESSIONS.length*100)}%"></div><span class="marker" style="left:${Math.round(exp/SESSIONS.length*100)}%" title="Expected"></span></div><div class="barlbl"><span>Start ${S.start}</span><span>Test ${S.test}</span></div></div>
@@ -3041,7 +3061,7 @@ function viewProgress(){const hist=Object.entries(S.done).sort((a,b)=>a[1].date<
  <section class="card settings"><h3>Settings</h3><div class="setrow"><label>Name<input id="s_name" value="${esc(S.name)}" maxlength="20"></label><label>Start date<input id="s_start" type="date" value="${S.start}"></label><label>Test date<input id="s_test" type="date" value="${S.test}"></label><label>Theme<select id="s_theme"><option value="auto" ${S.theme==='auto'?'selected':''}>System</option><option value="light" ${S.theme==='light'?'selected':''}>Light</option><option value="dark" ${S.theme==='dark'?'selected':''}>Dark</option></select></label><button class="btn" id="s_save">Save</button></div>
  <div class="setrow"><label class="inline"><input type="checkbox" id="s_chal" ${S.chalAll?'checked':''}> Open every challenge set now, without waiting for the groundwork (takes effect right away)</label></div>
  <details><summary>Back up or move progress to another device</summary><p class="muted">Progress is saved in this browser only. Copy the text below to back it up, or paste a backup and import it.</p><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea>
- ${(()=>{try{return localStorage.getItem(KEY+'-rescue')}catch(e){return null}})()?`<p class="small"><b>Some older saved progress could not be read, so it was kept safe instead of being erased.</b> <button class="btn small" id="bk_rescue">Put it in the box above</button> Then copy it and send it to whoever maintains the app.</p>`:''}<div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
+ ${(()=>{try{return localStorage.getItem(KEY+'-rescue')}catch(e){return null}})()?`<p class="small"><b>Some older saved progress could not be read, so it was kept safe instead of being erased.</b> <button class="btn small" id="bk_rescue">Put it in the box above</button> <button class="btn small ghost" id="bk_forget">Forget it</button> Then copy it and send it to whoever maintains the app.</p>`:''}<div class="setrow"><button class="btn small" id="bk_copy">Copy backup</button><button class="btn small" id="bk_import">Import pasted backup</button><button class="btn small danger" id="bk_reset">Reset all progress</button></div></details></section>`}
 
 // ================= SESSION RENDER =================
 function renderSession(){const c=S.cur;const st=c.steps[c.step];const totalMin=c.steps.reduce((a,s)=>a+s.min,0);
@@ -3156,7 +3176,9 @@ function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
  else{if(document.visibilityState!=='visible')return;c.elapsed++;if(st.k==='quiz'&&st.picked==null)st.qt=(st.qt||0)+1}const el=$('#timer');if(el)el.textContent=st.k==='test'?mm(Math.max(0,st.limit-st.t)):mm(c.elapsed);if(c.elapsed%15===0)save()}
 function nextStep(){const c=S.cur;const st=c.steps[c.step];if(st&&st.k==='lesson'&&(st.topic==='v_syn'||st.topic==='v_sc')&&!S.vtips.includes(st.topic))S.vtips.push(st.topic);c.step++;if(c.step>=c.steps.length)c.step=c.steps.length-1;save();render();window.scrollTo(0,0)}
 function submitTest(timedOut){const st=S.cur.steps[S.cur.step];let blank=0;st.qs.forEach((q,i)=>{const a=st.ans[i];const p=a?a.pick:null;if(p==null)blank++;
-  st.ans[i]={pick:p,ok:p===q.a,secs:st.tq?st.tq[i]:undefined};if(q.topic)recordTopic(q.topic,p===q.a);if(q.word)recordVocab(q.word,p===q.a);afterAnswer(q,st.ans[i])});
+  st.ans[i]={pick:p,ok:p===q.a,secs:st.tq?st.tq[i]:undefined};
+  // A blank counts against the section score, like the real test, but not against topic accuracy or word levels: it was never seen.
+  if(p!=null){if(q.topic)recordTopic(q.topic,p===q.a);if(q.word)recordVocab(q.word,p===q.a)}afterAnswer(q,st.ans[i])});
  st.timedOut=!!timedOut;if(timedOut&&blank)logMiss('time','test',Date.now().toString(36)+'-'+(++MISS_SEQ));nextStep()}
 function finishSession(){const c=S.cur;if(S.paused&&S.paused.id===c.id)S.paused=null;if(c.type!=='quick'){let r=0,t=0;c.steps.filter(s=>s.qs).forEach(s=>s.ans.forEach((a,i)=>{if(a&&!s.qs[i].stretch){t++;if(a.ok)r++}}));S.done[c.id]={date:today(),score:pct(r,t),mins:Math.round(c.elapsed/60)};markDay()}S.cur=null;save();render()}
 function wireSession(){const c=S.cur;const st=c.steps[c.step];
@@ -3165,7 +3187,7 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
    // A Practice-tab set is not kept, but an essay draft in progress is saved to Progress.
    if(c.type==='quick'){const es=c.steps.find(s=>s.k==='essay'&&s.phase==='write'&&(s.text||'').trim());
      if(es){S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:es.prompt,pi:es.promptIdx||0,text:es.text,mins:Math.round((es.t||0)/60),words:es.text.trim().split(/\s+/).length,unfinished:true});S.essays=S.essays.slice(0,20);markDay()}
-     S.cur=null}else{S.paused=c;S.cur=null}
+     S.cur=null}else{if(S.paused&&S.paused.id!==c.id&&!confirm(`"${S.paused.title}" is already paused, and only one session can be. Save this one instead and lose that place?`))return;S.paused=c;S.cur=null}
    S.view='home';save();render()});
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
  document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
@@ -3174,6 +3196,7 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
  if(st.k==='warm'){document.querySelectorAll('[data-flipcard]').forEach(b=>b.onclick=()=>{st.flipped=!st.flipped;render()});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const ok=b.dataset.card==='1';const w=st.cards[st.ci];recordVocab(w,ok);st.res.push({w,ok});st.ci++;st.flipped=false;markDay();if(st.ci>=st.cards.length)nextStep();else{save();render()}})}
  if(st.k==='essay'){
   const g=id=>{const e=$('#'+id);return e?e.value:''};
+  ['pl0','pl1','pl2','pl3'].forEach((id,i)=>{const el=$('#'+id);if(el)el.oninput=()=>{st['p'+i]=el.value;clearTimeout(planTimer);planTimer=setTimeout(save,400)}});
   document.querySelectorAll('[data-essay-start]').forEach(b=>b.onclick=()=>{st.p0=g('pl0');st.p1=g('pl1');st.p2=g('pl2');st.p3=g('pl3');st.phase='write';st.t=0;st.t0=Date.now();save();render()});
   const box=$('#essay');if(box){box.oninput=()=>{st.text=box.value;save();const c=document.querySelector('.essaybar .muted');if(c){const n=box.value.trim()?box.value.trim().split(/\s+/).length:0;c.textContent=n+' word'+(n===1?'':'s')}};box.focus()}
   document.querySelectorAll('[data-essay-done]').forEach(b=>b.onclick=()=>{const e=$('#essay');if(e)st.text=e.value;st.phase='check';
@@ -3191,7 +3214,8 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
    c.steps.forEach(s=>(s.ans||[]).forEach(a=>{if(a&&a.mid&&a.mid===mid)a.tag=tag}));save();
    b.parentNode.querySelectorAll('[data-tag]').forEach(x=>x.classList.toggle('on',x===b))});
  if(!timerHandle)timerHandle=setInterval(tick,1000)}
-function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{const s=SESSIONS.find(x=>x.id===b.dataset.start);if(S.done[s.id]&&!confirm('You already finished this session. Do it again with fresh questions?'))return;startSession(s)});
+function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{const s=SESSIONS.find(x=>x.id===b.dataset.start);if(S.done[s.id]&&!confirm('You already finished this session. Do it again with fresh questions?'))return;
+  if(S.paused&&S.paused.id===s.id&&!confirm(`"${S.paused.title}" is paused part-way through. Starting it over throws away that saved place. Continue?`))return;startSession(s)});
  document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>quickSession(b.dataset.quick));
  document.querySelectorAll('[data-resume]').forEach(b=>b.onclick=resumeSession);
  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{S.reviewIdx=+b.dataset.rev;S.view='review';save();render();window.scrollTo(0,0)});
@@ -3213,11 +3237,12 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
  const oa=$('#o_add');if(oa)oa.onclick=()=>{const {errs,entry}=readOfficial();const box=$('#o_err');if(errs.length){box.innerHTML=errs.map(esc).join('<br>');return}S.official.push(entry);save();render()};
  document.querySelectorAll('[data-wf]').forEach(b=>b.onclick=()=>{S.wordFilter=b.dataset.wf;save();render()});
  document.querySelectorAll('[data-flip]').forEach(b=>b.onclick=()=>b.classList.toggle('flipped'));
- const go=$('#go');if(go)go.onclick=()=>{S.name=$('#nm').value.trim();S.setup=true;S.test=$('#td').value||S.test;S.start=today();save();render()};
- const sv=$('#s_save');if(sv)sv.onclick=()=>{S.name=$('#s_name').value.trim();S.start=$('#s_start').value||S.start;S.test=$('#s_test').value||S.test;S.theme=$('#s_theme').value;applyTheme();save();render()};
+ const go=$('#go');if(go)go.onclick=()=>{const t=$('#td').value||S.test;if(t<=today()){alert('Pick a test date after today.');return}S.name=$('#nm').value.trim();S.setup=true;S.test=t;S.start=today();save();render()};
+ const sv=$('#s_save');if(sv)sv.onclick=()=>{const st0=$('#s_start').value||S.start,t=$('#s_test').value||S.test;if(t<=st0){alert('The test date has to be after the start date.');return}S.name=$('#s_name').value.trim();S.start=st0;S.test=t;S.theme=$('#s_theme').value;applyTheme();save();render()};
  const ca=$('#s_chal');if(ca)ca.onchange=()=>{S.chalAll=ca.checked;save()};
  const cp=$('#bk_copy');if(cp)cp.onclick=()=>{const ta=$('#bk');ta.select();try{navigator.clipboard.writeText(ta.value);cp.textContent='Copied!'}catch(e){document.execCommand('copy');cp.textContent='Copied!'}};
  const rb=$('#bk_rescue');if(rb)rb.onclick=()=>{try{$('#bk').value=localStorage.getItem(KEY+'-rescue')||''}catch(e){}};
+ const rf=$('#bk_forget');if(rf)rf.onclick=()=>{if(!confirm('Delete the kept copy of the unreadable progress? This cannot be undone.'))return;try{localStorage.removeItem(KEY+'-rescue')}catch(e){}render()};
  const im=$('#bk_import');if(im)im.onclick=()=>{try{const s=JSON.parse($('#bk').value);if(s&&s.v===1&&confirm('Replace current progress with this backup?')){S=norm(s);S.cur=null;applyTheme();save();render()}else alert('That does not look like a valid backup.')}catch(e){alert('That does not look like a valid backup.')}};
  const rs=$('#bk_reset');if(rs)rs.onclick=()=>{
   if(!confirm('Erase ALL progress, words, sessions and essays? This cannot be undone.'))return;

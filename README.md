@@ -33,7 +33,7 @@ Progress → *Official practice tests* is a log for results from ERB's official 
 The app **never converts raw scores into scaled scores, percentiles or stanines.** ERB does not publish that conversion, each test form is scaled separately, and stanines are normed against other applicants for the same grade, so any conversion the app made up could mislead.
 
 ## How it works
-- **12 weeks × 5 sessions = 60 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss. The synonym and sentence-completion strategy lessons are shown once each, before the first two verbal drills, so the drills are never unexplained.
+- **12 weeks × 5 sessions = 60 sessions**, most 30–45 minutes (the timed essay sessions run a little longer): word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss. The synonym and sentence-completion strategy lessons are shown once each, before the first two verbal drills, so the drills are never unexplained.
 - Four sessions a week cover verbal and math. The fifth is reading — or, every fourth week, a timed essay. Week 11 closes with a full-length timed Reading section.
 - Weeks 10–12 add timed mini-tests, mixed reviews, an automatic weak-spot session, and a test-day game plan.
 - The **Practice** tab gives 10-question drills on any topic, reading passages on demand, a 30-minute essay, model essays, and timed sections matching the real test lengths (Verbal 34 Q / 20 min, Reading 25 Q / 25 min, Quantitative Reasoning 38 Q / 35 min, Math Achievement 30 Q / 30 min). The Quantitative Reasoning section draws a third of its questions from the challenge tier.
