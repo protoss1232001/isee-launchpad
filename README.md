@@ -14,7 +14,7 @@ All four scored sections, plus the essay.
 
 ## Writing feedback
 The app runs offline with no AI, so it cannot grade an essay. Instead it gives two things a person can work from:
-- **Model essays** — five full answers, one for each shape of prompt (a person, a narrative, a place, an opinion, a reflection), each paragraph annotated with why it works. Reachable from the Practice tab, and offered right after she finishes writing.
+- **Model essays** — five full answers that show what the best essays look like, one for each shape of prompt (a person, a narrative, a place, an opinion, a reflection), plus one plain, reachable answer at the level a solid fifth grader writes in 30 minutes. Each paragraph is annotated with why it works. Reachable from the Practice tab, and both kinds are offered right after she finishes writing.
 - **A parent review page** — Progress → *Review with a grown-up* opens one essay beside the five things schools actually notice, three questions to ask her, and guidance on how to give the feedback. It prints cleanly.
 
 ## Challenge tier
@@ -33,7 +33,7 @@ Progress → *Official practice tests* is a log for results from ERB's official 
 The app **never converts raw scores into scaled scores, percentiles or stanines.** ERB does not publish that conversion, each test form is scaled separately, and stanines are normed against other applicants for the same grade, so any conversion the app made up could mislead.
 
 ## How it works
-- **12 weeks × 5 sessions = 60 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss.
+- **12 weeks × 5 sessions = 60 sessions**, each 30–45 minutes: word warm-up → lesson → practice with instant feedback → verbal drill → wrap-up review of every miss. The synonym and sentence-completion strategy lessons are shown once each, before the first two verbal drills, so the drills are never unexplained.
 - Four sessions a week cover verbal and math. The fifth is reading — or, every fourth week, a timed essay. Week 11 closes with a full-length timed Reading section.
 - Weeks 10–12 add timed mini-tests, mixed reviews, an automatic weak-spot session, and a test-day game plan.
 - The **Practice** tab gives 10-question drills on any topic, reading passages on demand, a 30-minute essay, model essays, and timed sections matching the real test lengths (Verbal 34 Q / 20 min, Reading 25 Q / 25 min, Quantitative Reasoning 38 Q / 35 min, Math Achievement 30 Q / 30 min). The Quantitative Reasoning section draws a third of its questions from the challenge tier.

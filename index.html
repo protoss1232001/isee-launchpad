@@ -29,6 +29,7 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .wrap{max-width:1000px;margin:0 auto;padding:16px clamp(12px,3vw,28px) 60px}
 .wrap.narrow{max-width:760px}
 .muted{color:var(--muted)}.small{font-size:.875rem}.center{text-align:center}
+.stretchtag{display:inline-block;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 .5em;vertical-align:middle}
 .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
 /* top bar */
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px clamp(12px,3vw,28px);background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;flex-wrap:wrap}
@@ -165,6 +166,7 @@ textarea{width:100%;font-size:.75rem;font-family:ui-monospace,Menlo,Consolas,mon
 .passage h4{margin:0 0 .5em;font-size:1.05rem}
 .passage p{margin:0 0 .7em;line-height:1.65;max-width:66ch}
 .passage p:last-child{margin-bottom:0}
+.passage .pnum{display:inline-block;min-width:1.5em;margin-left:-.2em;color:var(--muted);font-size:.78em;font-weight:700;user-select:none}
 /* ---- essay ---- */
 .prompt{font-size:1.15rem;font-weight:600;background:var(--paper);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin:8px 0 14px}
 label.plan{display:block;margin:12px 0;font-weight:600}
@@ -870,13 +872,14 @@ gen(){const t=R(1,5);
  if(t===1){const n=R(1000,9999999);const s=String(n);const i=R(0,s.length-1);const d=+s[i];if(d===0)return this.gen();const p=Math.pow(10,s.length-1-i);const v=d*p;
   return mc(`What is the value of the digit <b>${d}</b> in <b>${fmt(n)}</b>?`,fmt(v),[fmt(d*p*10),fmt(d*p/10||d),fmt(d),fmt(p)],`The ${d} is in the ${['ones','tens','hundreds','thousands','ten-thousands','hundred-thousands','millions'][s.length-1-i]} place, so its value is ${d} × ${fmt(p)} = ${fmt(v)}.`)}
  if(t===2){const p=pick([10,100,1000,10000]);let n=R(p*3,p*90)+R(1,p-1);if(n%p===0)n+=1;const r=Math.round(n/p)*p;const name={10:'ten',100:'hundred',1000:'thousand',10000:'ten thousand'}[p];const dgt=Math.floor(n%p/(p/10));
-  return mc(`Round <b>${fmt(n)}</b> to the nearest ${name}.`,fmt(r),[fmt(Math.floor(n/p)*p),fmt(Math.ceil(n/p)*p),fmt(Math.round(n/(p/10))*(p/10)),fmt(Math.round(n/(p*10))*(p*10))],`Look at the digit to the right of the ${name}s place: it is ${dgt}. ${dgt>=5?'It is 5 or more, so round up':'It is less than 5, so keep the digit and change the rest to zeros'}: ${fmt(r)}.`)}
+  return mc(`Round <b>${fmt(n)}</b> to the nearest ${name}.`,fmt(r),[fmt(Math.floor(n/p)*p),fmt(Math.ceil(n/p)*p),fmt(Math.round(n/(p/10))*(p/10)),fmt(Math.round(n/(p*10))*(p*10)),fmt(n)].filter(x=>x!=='0'),`Look at the digit to the right of the ${name}s place: it is ${dgt}. ${dgt>=5?'It is 5 or more, so round up':'It is less than 5, so keep the digit and change the rest to zeros'}: ${fmt(r)}.`)}
  if(t===3){const n=R(1001,999999);const wrong=[];const s=String(n);wrong.push(+(s.slice(0,-2)+s.slice(-1)+s.slice(-2,-1)));wrong.push(n*10);wrong.push(Math.floor(n/10));wrong.push(n+(n%1000<900?90:-90));wrong.push(n+100);wrong.push(n-100);
   return mc(`Which number is <b>${words(n)}</b>?`,fmt(n),wrong.map(fmt),`"${words(n)}" written in standard form is ${fmt(n)}. Each comma-group name (thousand, hundred) tells you where each digit goes.`)}
  if(t===4){const base=R(10000,99999);const set=shuf([base,base+R(1,9)*10,base-R(1,9)*100,base+R(1,9)*1000]);const mx=Math.max(...set);const big=pick([true,false]);const ans=big?mx:Math.min(...set);
   return mc(`Which number is the <b>${big?'greatest':'least'}</b>?<br>${set.map(fmt).join(' &nbsp; ')}`,fmt(ans),set.filter(x=>x!==ans).map(fmt),`Compare the digits from left to right. The first place where the numbers differ tells you which is ${big?'greatest':'least'}: ${fmt(ans)}.`)}
  const n=R(1000,99999);const s=String(n);const parts=[];for(let i=0;i<s.length;i++){const d=+s[i];if(d)parts.push(fmt(d*Math.pow(10,s.length-1-i)))}
- const right=parts.join(' + ');const w1=parts.map((p,i)=>i===0?p:p.replace(/0/g,'')).join(' + ');const w2=s.split('').filter(d=>d!=='0').join(' + ');const w3=parts.map((p,i)=>i===1?fmt(+p.replace(/,/g,'')*10):p).join(' + ');
+ if(parts.length<3)return this.gen();
+ const right=parts.join(' + ');const w1=parts.map((p,i)=>i===0?fmt(+p.replace(/,/g,'')/10):p).join(' + ');const w2=s.split('').filter(d=>d!=='0').join(' + ');const w3=parts.map((p,i)=>i===1?fmt(+p.replace(/,/g,'')*10):p).join(' + ');
  return mc(`Which shows <b>${fmt(n)}</b> in expanded form?`,right,[w1,w2,w3],`Take each digit and give it the value of its place: ${s.split('').map((d,i)=>d+' in the '+['ones','tens','hundreds','thousands','ten-thousands'][s.length-1-i]+' place').filter((_,i)=>+s[i]).join(', ')}. Added together that is ${right}.`)}};
 
 T.n_order={t:'Order of Operations',cat:'num',lesson:`
@@ -892,9 +895,9 @@ gen(){const t=R(1,4);
    {s:`${a*c} ÷ ${a} + ${b}`,v:c+b,w:[a*c+b-a,c*b,a*c-a+b+1],steps:`divide first, ${a*c} ÷ ${a} = ${c}, then add, ${c} + ${b}`},
    {s:`${a} × ${b} + ${c} × 2`,v:a*b+2*c,w:[(a*b+c)*2,a*(b+c)*2,a*b+c],steps:`both multiplications first, ${a} × ${b} = ${a*b} and ${c} × 2 = ${2*c}, then add`},
    {s:`${a+b} − ${b} + ${c}`,v:a+c,w:[a+b-(b+c),a+2*b+c,a+c+b],steps:`left to right, ${a+b} − ${b} = ${a}, then ${a} + ${c}`}];const f=pick(forms);
-  if(f.v<0)return this.gen();
+  if(f.v<0)return this.gen();f.w=f.w.filter(x=>x>=0);
   return mc(`What is the value of <b>${f.s}</b>?`,f.v,f.w,`Work through the steps in order: ${f.steps}. The result is <b>${f.v}</b>.`)}
- if(t===2){const a=R(2,9),b=R(2,9),c=R(2,9),d=R(2,9);const forms=[
+ if(t===2){const a=R(2,9),d=R(2,5),c=d*R(2,4),b=c*R(1,2);const forms=[
    {s:`${a} × ${b} + ${c} ÷ ${d}`,ans:'Multiplication',w:['Addition','Division','Subtraction'],why:'Multiplication and division come before addition, and multiplication is on the left, so it goes first.'},
    {s:`${a} + ${b} × (${c} − ${d})`,ans:'Subtraction',w:['Addition','Multiplication','Division'],why:'Parentheses come first, and inside them is subtraction.'},
    {s:`${a} − ${b} ÷ ${c} + ${d}`,ans:'Division',w:['Subtraction','Addition','Multiplication'],why:'Division comes before addition and subtraction.'},
@@ -904,7 +907,7 @@ gen(){const t=R(1,4);
  if(t===3){const a=R(2,6),b=R(2,6),c=R(2,6);const target=(a+b)*c;
   const vals=[target,a+b*c,a*b+c,a*(b+c)];if(new Set(vals).size!==4)return this.gen();
   return mc(`Which expression equals <b>${target}</b>?`,`(${a} + ${b}) × ${c}`,[`${a} + ${b} × ${c}`,`${a} × ${b} + ${c}`,`${a} × (${b} + ${c})`],`(${a} + ${b}) × ${c} = ${a+b} × ${c} = ${target}. Without the parentheses, ${a} + ${b} × ${c} would equal ${a+b*c}, because multiplication comes first.`)}
- const a=R(3,9),b=R(2,5),e=R(2,3);const v=a+Math.pow(b,e);
+ const a=R(3,9),b=R(2,9),e=2;const v=a+Math.pow(b,e);
  return mc(`What is the value of <b>${a} + ${b}<sup>${e}</sup></b>?`,v,[a+b*e,(a+b)*e,Math.pow(a+b,e)],`Exponents come before addition. ${b}<sup>${e}</sup> = ${Math.pow(b,e)}, then ${a} + ${Math.pow(b,e)} = ${v}.`)}};
 
 T.n_factors={t:'Factors, Multiples & Primes',cat:'num',lesson:`
@@ -948,7 +951,7 @@ gen(){const t=R(1,5);const n=nm();
   {q:`A jar held ${e*4+R(10,30)} beads. ${n} used ${e*2+R(1,9)} of them. How many beads are left?`,ans:null,op:'subtraction'}];
   const f=pick(forms);if(f.ans===null){const nums=f.q.match(/\d+/g).map(Number);f.ans=f.op==='addition'?nums[0]+nums[1]:nums[0]-nums[1];f.w=[f.op==='addition'?Math.abs(nums[0]-nums[1]):nums[0]+nums[1],f.ans+10,f.ans-10]}
   f.w=f.w.filter(x=>Number.isInteger(x)&&x>0&&x!==f.ans);
-  return mc(f.q,f.ans,f.w,`This is a <b>${f.op}</b> problem: ${f.op==='multiplication'?'equal groups repeated':f.op==='division'?'a total split into equal groups':f.op==='addition'?'two amounts combined into a total':'a difference between two amounts'}. The answer is ${fmt(f.ans)}.`)}
+  return mc(f.q,f.ans,f.w,`This is ${f.op==='addition'?'an':'a'} <b>${f.op}</b> problem: ${f.op==='multiplication'?'equal groups repeated':f.op==='division'?'a total split into equal groups':f.op==='addition'?'two amounts combined into a total':'a difference between two amounts'}. The answer is ${fmt(f.ans)}.`)}
  if(t===2){const forms=[
   {q:`A baker made ${R(40,90)} cookies and packed them into boxes of 6. Which operation finds the number of boxes?`,a:'Division',why:'Splitting a total into equal groups of 6 is division.'},
   {q:`Tickets cost $${R(4,9)} each. Which operation finds the cost of ${R(5,12)} tickets?`,a:'Multiplication',why:'Equal groups (the same price repeated) means multiplication.'},
@@ -959,10 +962,10 @@ gen(){const t=R(1,5);const n=nm();
  if(t===3){const a=R(180,890),b=R(120,780);const est=Math.round(a/100)*100+Math.round(b/100)*100;
   return mc(`Which is the <b>best estimate</b> of ${a} + ${b}?`,fmt(est),[fmt(est+100),fmt(est-100),fmt(est+200),fmt(Math.round((a+b)/1000)*1000)],`Round each number to the nearest hundred: ${Math.round(a/100)*100} + ${Math.round(b/100)*100} = ${fmt(est)}. (The exact sum is ${fmt(a+b)}.)`)}
  if(t===4){const a=R(21,89),b=R(11,49);const ea=Math.round(a/10)*10,eb=Math.round(b/10)*10;
-  return mc(`About how much is ${a} × ${b}? Choose the best estimate.`,fmt(ea*eb),[fmt(ea*eb+ea*10),fmt(ea*eb-ea*10),fmt(ea*eb*10),fmt(ea+eb)],`Round to friendly numbers: ${ea} × ${eb} = ${fmt(ea*eb)}. The exact product is ${fmt(a*b)}, so the estimate is close.`)}
+  return mc(`About how much is ${a} × ${b}? Choose the best estimate.`,fmt(ea*eb),[fmt(ea*(eb+10)),fmt(ea*eb*10),fmt(ea+eb),fmt(ea*eb+100)],`Round to friendly numbers: ${ea} × ${eb} = ${fmt(ea*eb)}. The exact product is ${fmt(a*b)}, so the estimate is close.`)}
  const g=R(3,9),tot=g*R(5,14)+R(1,g-1);const q=Math.floor(tot/g),r=tot%g;const kind=pick(['up','down','rem']);
  if(kind==='up')return mc(`${tot} students are going on a trip. Each van holds ${g} students. How many vans are needed?`,q+1,[q,r,tot-g],`${tot} ÷ ${g} = ${q} remainder ${r}. The ${r} extra students still need a van, so round <b>up</b> to ${q+1} vans.`);
- if(kind==='down')return mc(`${n} has ${tot} inches of ribbon. Each bow uses ${g} inches. How many complete bows can ${n} make?`,q,[q+1,r,tot-g],`${tot} ÷ ${g} = ${q} remainder ${r}. Only complete bows count, so the answer is ${q}. The ${r} inches left over are not enough for another bow.`);
+ if(kind==='down')return mc(`${n} has ${tot} inches of ribbon. Each bow uses ${g} inches. How many complete bows can ${n} make?`,q,[q+1,r,tot-g],`${tot} ÷ ${g} = ${q} remainder ${r}. Only complete bows count, so the answer is ${q}. The ${r} inch${r===1?'':'es'} left over ${r===1?'is':'are'} not enough for another bow.`);
  return mc(`${tot} pencils are packed ${g} to a box. How many pencils are <b>left over</b> after filling as many boxes as possible?`,r,[q,q+1,g-r],`${tot} ÷ ${g} = ${q} boxes with ${r} pencils left over. The question asks for the remainder: ${r}.`)}};
 
 // ===== FRACTIONS =====
@@ -981,8 +984,8 @@ gen(){const t=R(1,5);
   const A=a*d,C=c*b;const ans=A>C?fr(a,b):fr(c,d);const L=lcm(b,d);
   return mc(`Which fraction is <b>greater</b>: ${fr(a,b)} or ${fr(c,d)}?`,ans,[A>C?fr(c,d):fr(a,b),'They are equal'],`Use a common denominator of ${L}: ${fr(a,b)} = ${fr(a*L/b,L)} and ${fr(c,d)} = ${fr(c*L/d,L)}. The greater fraction is ${ans}.`,{min:3})}
  if(t===3){const [n,d]=pick([[8,12],[6,9],[10,15],[4,16],[12,18],[9,12],[6,8],[15,20],[14,21],[16,24],[10,25],[18,24]]);const [sn,sd]=simp(n,d);
-  return mc(`Write ${fr(n,d)} in <b>simplest form</b>.`,fr(sn,sd),[fr(sn+1,sd+1),fr(sn,sd+1),fr(n/2,d/2),fr(sd,sn)],`The GCF of ${n} and ${d} is ${gcd(n,d)}. Divide the top and the bottom by ${gcd(n,d)}: ${fr(sn,sd)}.`,{form:true})}
- if(t===4){const tot=pick([8,10,12,15,16,20,24]);const part=R(2,tot-2);const [sn,sd]=simp(part,tot);const item=pick(['marbles','students','apples','crayons','cards']);const desc=pick(['red','blue','green','new']);
+  return mc(`Write ${fr(n,d)} in <b>simplest form</b>.`,fr(sn,sd),[fr(sn+1,sd+1),fr(sn,sd+1),n%2||d%2?fr(sn+1,sd):fr(n/2,d/2),fr(sd-sn,sd),fr(sn,sd+2)],`The GCF of ${n} and ${d} is ${gcd(n,d)}. Divide the top and the bottom by ${gcd(n,d)}: ${fr(sn,sd)}.`,{form:true})}
+ if(t===4){const tot=pick([8,10,12,15,16,20,24]);const part=R(2,tot-2);const [sn,sd]=simp(part,tot);const [item,desc]=pick([['marbles','red'],['marbles','blue'],['students','new'],['students','absent'],['apples','red'],['apples','green'],['crayons','blue'],['crayons','green'],['cards','red'],['cards','new']]);
   return mc(`${part} of the ${tot} ${item} are ${desc}. What fraction of the ${item} are ${desc}, in simplest form?`,fr(sn,sd),[fr(part,tot),fr(tot-part,tot),fr(sd,sn),fr(sn,sd+1)],`${part} out of ${tot} is ${fr(part,tot)}. Simplify by dividing top and bottom by ${gcd(part,tot)}: ${fr(sn,sd)}.`,{form:true})}
  const sets=[[[1,2],[2,3],[3,4]],[[1,4],[3,8],[1,2]],[[2,5],[1,2],[3,5]],[[1,3],[1,2],[2,3]],[[3,8],[1,2],[5,8]],[[1,6],[1,3],[1,2]],[[2,3],[3,4],[5,6]]];const set=pick(sets);const asc=pick([true,false]);
  const ordered=asc?set:set.slice().reverse();const str=a=>a.map(f=>fr(...f)).join(', ');
@@ -1036,14 +1039,15 @@ ${ex('Denver got 3 times as much snow as New York\'s '+mixed(111,4)+' inches. Ho
 <p><b>Adding mixed numbers</b>: add the wholes, add the fractions, then regroup if the fraction part is 1 or more. ${mixed(7,4)} + ${mixed(11,4)} = 3 + ${fr(6,4)} = 3 + ${mixed(6,4)} = ${mixed(18,4)}.</p>
 ${tip('For multiplying or dividing, ALWAYS convert mixed numbers to improper fractions first. For adding or subtracting, you can work with the parts separately.')}`,
 gen(){const t=R(1,4);
- if(t===1){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;
+ if(t===1){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;if(gcd(n,d)!==1)return this.gen();
   return mc(`Write ${mixed(imp,d)} as an improper fraction.`,fr(imp,d),[fr(w+n,d),fr(w*n+d,d),fr(imp,w),fr(w*d,n)],`Multiply the whole by the denominator and add the numerator: ${w} × ${d} + ${n} = ${imp}. Keep the denominator: ${fr(imp,d)}.`)}
- if(t===2){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;
+ if(t===2){const d=pick([3,4,5,6,8]);const w=R(1,6),n=R(1,d-1);const imp=w*d+n;if(gcd(n,d)!==1)return this.gen();
   return mc(`Write ${fr(imp,d)} as a mixed number.`,mixed(imp,d),[mixed(imp+d,d),mixed((w-1)*d+n,d),`${w}${fr(d,n)}`,`${n}${fr(w,d)}`,mixed(imp+1,d)],`${imp} ÷ ${d} = ${w} remainder ${n}, so ${fr(imp,d)} = ${mixed(imp,d)}.`)}
- if(t===3){const d=pick([3,4,5,6,8]);const w1=R(1,5),n1=R(1,d-1),w2=R(1,5),n2=R(1,d-1);const tot=(w1+w2)*d+n1+n2;
+ if(t===3){const d=pick([3,4,5,6,8]);const w1=R(1,5),n1=R(1,d-1),w2=R(1,5),n2=R(1,d-1);const tot=(w1+w2)*d+n1+n2;if(gcd(n1,d)!==1||gcd(n2,d)!==1)return this.gen();
   return mc(`${mixed(w1*d+n1,d)} + ${mixed(w2*d+n2,d)} = ?`,mixed(tot,d),[mixed(tot-d,d),mixed(tot+d,d),mixed(tot+1,d),mixed(tot-1,d),`${w1+w2}${fr(n1+n2,2*d)}`],`Add the wholes: ${w1} + ${w2} = ${w1+w2}. Add the fractions: ${fr(n1+n2,d)}${n1+n2>=d?' = '+mixed(n1+n2,d)+', so regroup':''}. Total: ${mixed(tot,d)}.`)}
- const d=pick([2,3,4]);const w=R(2,9),n=R(1,d-1);const k=R(2,4);const imp=w*d+n;const prod=imp*k;const item=pick(['cups of flour','miles','hours','inches of rain']);
- return mc(`A recipe needs ${mixed(imp,d)} ${item}. How much is needed for ${k} batches?`,mixed(prod,d),[mixed(w*k*d+n,d),mixed(imp+k,d),mixed(prod+d,d),mixed(prod-d,d),mixed(prod+1,d)],`Convert to an improper fraction: ${mixed(imp,d)} = ${fr(imp,d)}. Multiply by ${k}: ${fr(prod,d)} = ${mixed(prod,d)}.`)}};
+ const d=pick([2,3,4]);const w=R(2,9),n=R(1,d-1);const k=R(2,4);const imp=w*d+n;const prod=imp*k;if(gcd(n,d)!==1)return this.gen();
+ const f=pick([{s:'A recipe needs',u:'cups of flour',q:'How much flour is needed for',k:'batches'},{s:'One lap of the trail is',u:'miles',q:'How far is',k:'laps'},{s:'One coat of paint takes',u:'hours',q:'How long do',k:'coats take'},{s:'Each week the garden gets',u:'inches of rain',q:'How much rain is that in',k:'weeks'}]);
+ return mc(`${f.s} ${mixed(imp,d)} ${f.u}. ${f.q} ${k} ${f.k}?`,mixed(prod,d),[mixed(w*k*d+n,d),mixed(imp+k,d),mixed(prod+d,d),mixed(prod-d,d),mixed(prod+1,d)],`Convert to an improper fraction: ${mixed(imp,d)} = ${fr(imp,d)}. Multiply by ${k}: ${fr(prod,d)} = ${mixed(prod,d)}.`)}};
 
 // ===== DECIMALS, PERCENTS, RATIOS =====
 T.d_ops={t:'Decimals: Place Value & Operations',cat:'dec',lesson:`
@@ -1056,7 +1060,7 @@ ${table(['tens','ones','.','tenths','hundredths','thousandths'],[['8','3','.','1
 ${ex('Compare 0.4 and 0.35','Write with the same places: 0.40 vs 0.35. Since 40 &gt; 35, <b>0.4 is greater</b>. Longer does not mean larger!')}
 ${tip('Rounding decimals works like whole numbers: to round 3.752 to the nearest tenth, look at the hundredths digit (5) → round up → 3.8.')}`,
 gen(){const t=R(1,5);
- if(t===1){const w=R(1,99),d1=R(1,9),d2=R(1,9),d3=R(1,9);const s=`${w}.${d1}${d2}${d3}`;const which=pick([[d1,'tenths',fr(d1,10)],[d2,'hundredths',fr(d2,100)],[d3,'thousandths',fr(d3,1000)]]);
+ if(t===1){const w=R(1,99),d1=R(1,9),d2=R(1,9),d3=R(1,9);const s=`${w}.${d1}${d2}${d3}`;const which=pick([[d1,'tenths',fr(d1,10)],[d2,'hundredths',fr(d2,100)],[d3,'thousandths',fr(d3,1000)]]);if(String(w).includes(String(which[0])))return this.gen();
   return mc(`In the number <b>${s}</b>, what is the value of the digit ${which[0]}${[d1,d2,d3].filter(x=>x===which[0]).length>1?' in the '+which[1]+' place':''}?`,which[2],[fr(which[0],10),fr(which[0],100),fr(which[0],1000),which[0]].filter(x=>x!==which[2]),`The digit ${which[0]} is in the ${which[1]} place, so its value is ${which[2]}.`)}
  if(t===2){const a=R(10,999)/100,b=R(10,999)/100;const add=pick([true,false]);const [x,y]=a>b?[a,b]:[b,a];const ans=add?x+y:x-y;
   return mc(`${dec(x)} ${add?'+':'−'} ${dec(y)} = ?`,dec(ans),[dec(ans+0.1),dec(ans-0.1),dec(ans*10),dec(add?x-y:x+y)],`Line up the decimal points: ${dec(x)} ${add?'+':'−'} ${dec(y)} = ${dec(ans)}.`)}
@@ -1076,7 +1080,7 @@ gen(){const t=R(1,5);const pairs=[[1,2,0.5,50],[1,4,0.25,25],[3,4,0.75,75],[1,5,
  const rnd=(x,k)=>String(Math.round(x*Math.pow(10,k))/Math.pow(10,k));
  if(t===1)return mc(`Write ${fr(p[0],p[1])} as a decimal.`,String(p[2]),[rnd(p[2]*10,4),rnd(p[2]/10,5),rnd(p[2]+0.1,4),rnd(p[1]/100,4)],`Divide the numerator by the denominator: ${p[0]} ÷ ${p[1]} = ${p[2]}.`);
  if(t===2)return mc(`Write ${p[2]} as a percent.`,p[3]+'%',[rnd(p[2]*10,4)+'%',rnd(p[3]/10,4)+'%',(p[3]+10)+'%',(100-p[3])+'%'],`Multiply by 100 (move the decimal point two places to the right): ${p[2]} → ${p[3]}%.`);
- if(t===3)return mc(`Write ${p[3]}% as a fraction in simplest form.`,fr(p[0],p[1]),[fr(p[3],10),fr(p[0],p[1]*2),fr(p[1],p[0]),fr(p[3],1000)].filter(x=>x!==fr(p[0],p[1])),`${p[3]}% = ${fr(p[3],100)}. Simplify: ${fr(p[0],p[1])}.`);
+ if(t===3)return mc(`Write ${p[3]}% as a fraction in simplest form.`,fr(p[0],p[1]),[Number.isInteger(p[3])?fr(p[3],10):fr(p[3]*10,100),fr(p[0],p[1]*2),fr(p[1],p[0]),fr(p[3],1000)].filter(x=>x!==fr(p[0],p[1])),`${p[3]}% = ${fr(p[3],100)}. Simplify: ${fr(p[0],p[1])}.`);
  if(t===4){const pct=pick([5,8,12,20,25,40,60,75,90,4,15,35,120,150]);return mc(`Write ${pct}% as a decimal.`,String(pct/100),[rnd(pct/10,4),rnd(pct/1000,5),String(pct),rnd(pct/100+1,4)],`Percent means "per hundred," so divide by 100 (move the decimal point two places left): ${pct}% = ${pct/100}.${pct>100?' A percent greater than 100 gives a number greater than 1.':''}`)}
  const [a,b,c,d]=pick(pairs.filter(x=>x[1]<=10));const items=[[fr(a,b),c],[rnd(c+0.15,2),+rnd(c+0.15,2)],[(d-5)+'%',(d-5)/100]];
  if(new Set(items.map(x=>x[1])).size!==3)return this.gen();
@@ -1112,8 +1116,8 @@ ${tip('Keep the same units on top and bottom in both ratios. If miles are on top
 gen(){const t=R(1,5);const n=nm();
  if(t===1){const k=R(2,6);let a=R(1,6),b=R(1,6);while(gcd(a,b)!==1||a===b){a=R(1,6);b=R(1,6)}
   return mc(`A recipe uses ${a*k} cups of flour and ${b*k} cups of sugar. What is the ratio of flour to sugar in simplest form?`,`${a}:${b}`,[`${b}:${a}`,`${a*k}:${b*k}`,`${a}:${b+1}`,`${a+b}:${b}`],`${a*k}:${b*k} — divide both by ${k} → ${a}:${b}. Order matters: flour is listed first.`)}
- if(t===2){let a=R(2,7),b=R(1,6);while(a===b){b=R(1,6)}const per=R(3,9);const tot=(a+b)*per;const item=pick(['marbles','students','beads','cards']);const g1=pick(['red','blue','green']),g2=pick(['yellow','white','purple']);
-  return mc(`A bag has ${tot} ${item}. For every ${a} ${g1} ${item} there are ${b} ${g2} ones. How many ${item} are ${g1}?`,a*per,[b*per,a+b,tot-a,per],`${a} + ${b} = ${a+b} parts. ${tot} ÷ ${a+b} = ${per} per part. ${g1}: ${a} × ${per} = ${a*per}.`)}
+ if(t===2){let a=R(2,7),b=R(1,6);while(a===b){b=R(1,6)}const per=R(3,9);const tot=(a+b)*per;const item=pick(['marbles','buttons','beads','cards']);const g1=pick(['red','blue','green']),g2=pick(['yellow','white','purple']);
+  return mc(`A bag has ${tot} ${item}. For every ${a} ${g1} ${item} there ${b===1?'is 1 '+g2+' one':'are '+b+' '+g2+' ones'}. How many ${item} are ${g1}?`,a*per,[b*per,a+b,tot-a,per],`${a} + ${b} = ${a+b} parts. ${tot} ÷ ${a+b} = ${per} per part. ${g1}: ${a} × ${per} = ${a*per}.`)}
  if(t===3){const qty=R(2,6);const price=qty*R(2,9)*0.25;const unit=price/qty;const k=R(3,10);const kk=k===qty?k+1:k;
   return mc(`${qty} pounds of apples cost ${money(price)}. At the same rate, how much do ${kk} pounds cost?`,money(unit*kk),[money(price+kk),money(unit*(kk+1)),money(price*kk),money(unit)],`Unit rate: ${money(price)} ÷ ${qty} = ${money(unit)} per pound. ${money(unit)} × ${kk} = ${money(unit*kk)}.`)}
  if(t===4){const a=R(2,5),b=a*R(3,9);const k=R(2,5);
@@ -1153,7 +1157,7 @@ ${ex('"Five times a number added to forty"','5n + 40. Note: "6 less than a numbe
 ${tip('2x means 2 × x. When you substitute, write it as 2(4), not 24!')}`,
 gen(){const t=R(1,5);
  if(t===1){const a=R(2,6),b=R(1,9),x=R(2,8);const op=pick(['+','-']);const v=op==='+'?a*x+b:a*x-b;if(v<0)return this.gen();
-  return mc(`If x = ${x}, what is the value of ${a}x ${op} ${b}?`,v,[+(String(a)+String(x))+(op==='+'?b:-b),a+x+(op==='+'?b:-b),op==='+'?a*x-b:a*x+b,a*(x+(op==='+'?b:-b))],`Substitute ${x} for x: ${a}(${x}) ${op} ${b} = ${a*x} ${op} ${b} = ${v}. Remember, ${a}x means ${a} × x.`)}
+  return mc(`If x = ${x}, what is the value of ${a}x ${op==='+'?'+':'−'} ${b}?`,v,[+(String(a)+String(x))+(op==='+'?b:-b),a+x+(op==='+'?b:-b),op==='+'?a*x-b:a*x+b,a*(x+(op==='+'?b:-b))],`Substitute ${x} for x: ${a}(${x}) ${op==='+'?'+':'−'} ${b} = ${a*x} ${op==='+'?'+':'−'} ${b} = ${v}. Remember, ${a}x means ${a} × x.`)}
  if(t===2){const a=R(2,9);let b=R(2,9);if(a===b)b=b%9+1;const forms=[
   {w:`${a} more than a number`,e:`n + ${a}`,d:[`${a}n`,`n − ${a}`,`${a} − n`]},
   {w:`${a} less than a number`,e:`n − ${a}`,d:[`${a} − n`,`n + ${a}`,`${a}n`]},
@@ -1165,10 +1169,10 @@ gen(){const t=R(1,5);
  if(t===3){const a=R(2,7),b=R(1,6),c=R(1,9);const ans=`${a+b}x + ${c}`;
   return mc(`Simplify: ${a}x + ${c} + ${b}x`,ans,[`${a+b+c}x`,`${a+b}x + ${c}x`,`${a*b}x + ${c}`,`${a+b+c}`],`Combine the like terms ${a}x and ${b}x: ${a+b}x. The ${c} has no variable, so it stays separate: ${ans}.`)}
  if(t===4){const forms=[
-  {s:`A movie ticket costs $${R(6,12)} and popcorn costs $${R(3,7)}. Which expression shows the cost of t tickets and one popcorn?`,fix:(m)=>{const [tk,pc]=m;return {e:`${tk}t + ${pc}`,d:[`${tk} + ${pc}t`,`${tk+pc}t`,`${tk}(t + ${pc})`]}}},
-  {s:`${nm()} had $${R(20,50)} and spent $${R(3,9)} on each of b books. Which expression shows the money left?`,fix:(m)=>{const [h,c]=m;return {e:`${h} − ${c}b`,d:[`${c}b − ${h}`,`${h} − ${c} − b`,`(${h} − ${c})b`]}}},
-  {s:`A rectangle has a width of w and a length that is ${R(2,6)} more than the width. Which expression shows its perimeter?`,fix:(m)=>{const [k]=m;return {e:`4w + ${2*k}`,d:[`2w + ${k}`,`w(w + ${k})`,`4w + ${k}`]}}}];
-  const f=pick(forms);const nums=f.s.match(/\d+/g).map(Number);const r=f.fix(nums);return mc(f.s,r.e,r.d,`Translate each part into symbols: ${r.e}.`)}
+  {s:`A movie ticket costs $${R(6,12)} and popcorn costs $${R(3,7)}. Which expression shows the cost of t tickets and one popcorn?`,fix:(m)=>{const [tk,pc]=m;return {e:`${tk}t + ${pc}`,d:[`${tk} + ${pc}t`,`${tk+pc}t`,`${tk}(t + ${pc})`],why:`Each ticket costs $${tk}, so t tickets cost ${tk}t. The one popcorn adds ${pc}.`}}},
+  {s:`${nm()} had $${R(20,50)} and spent $${R(3,9)} on each of b books. Which expression shows the money left?`,fix:(m)=>{const [h,c]=m;return {e:`${h} − ${c}b`,d:[`${c}b − ${h}`,`${h} − ${c} − b`,`(${h} − ${c})b`],why:`b books at $${c} each cost ${c}b, and that is taken away from the $${h}.`}}},
+  {s:`A rectangle has a width of w and a length that is ${R(2,6)} more than the width. Which expression shows its perimeter?`,fix:(m)=>{const [k]=m;return {e:`4w + ${2*k}`,d:[`2w + ${k}`,`w(w + ${k})`,`4w + ${k}`],why:`The length is w + ${k}. Perimeter adds two widths and two lengths: w + w + (w + ${k}) + (w + ${k}) = 4w + ${2*k}.`}}}];
+  const f=pick(forms);const nums=f.s.match(/\d+/g).map(Number);const r=f.fix(nums);return mc(f.s,r.e,r.d,`${r.why} So the expression is ${r.e}.`)}
  const a=R(2,5),b=R(1,5),x=R(2,6),y=R(1,5);const v=a*x+b*y;
  return mc(`If a = ${x} and b = ${y}, what is ${a}a + ${b}b?`,v,[a*x-b*y,(a+b)*(x+y),a+x+b+y,a*x*b*y],`Substitute: ${a}(${x}) + ${b}(${y}) = ${a*x} + ${b*y} = ${v}.`)}};
 
@@ -1190,7 +1194,8 @@ gen(){const t=R(1,5);
   ()=>{const a=R(3,9),b=R(2,9);return {q:`Tommy has ${a} more toys than Bobby. Tommy has ${a+b} toys. How many toys does Bobby have?`,a:b,w:[a+b+a,a,a+b,b+1],e:`? + ${a} = ${a+b}. Bobby has ${a+b} − ${a} = ${b} toys.`}}];
  const f=pick(forms)();return mc(f.q,f.a,f.w,f.e)}};
 
-T.a_eq2={t:'Two-Step Equations & Inequalities',cat:'alg',lesson:`
+T.a_eq2={t:'Two-Step Equations & Inequalities (stretch)',cat:'alg',lesson:`
+<p class="muted"><b>Stretch topic.</b> Two-step equations and inequalities show up more on the Middle Level ISEE than on the Lower Level, so do not worry if this one feels hard. The "at least / no more than" language and the word problems do appear on the Lower Level.</p>
 <p>For a <b>two-step equation</b>, undo addition or subtraction first, then undo multiplication or division.</p>
 ${ex('Solve 3x − 7 = 11','Add 7: 3x = 18. Divide by 3: <b>x = 6</b>. Check: 3(6) − 7 = 11 ✓')}
 <p>An <b>inequality</b> compares with &lt;, &gt;, ≤, or ≥. Its solution is a whole set of numbers. Solve it just like an equation.</p>
@@ -1199,7 +1204,7 @@ ${svgNumLine(1,true,1)}
 <p>This shows <b>x ≥ 1</b>: the dot on 1 is filled, and the arrow points to the greater numbers.</p>
 ${tip('"At least 5" means ≥ 5. "At most 5" means ≤ 5. "More than 5" means > 5 (5 itself is not included).')}`,
 gen(){const t=R(1,5);
- if(t===1){const a=R(2,6),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;
+ if(t===1){const a=R(2,6),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;if(rhs<=0)return this.gen();
   return mc(`Solve: ${a}x ${op} ${b} = ${rhs}`,x,[x+1,x-1,rhs-b,x+a,x*2].filter(v=>v>0),`First ${op==='+'?'subtract':'add'} ${b}: ${a}x = ${a*x}. Then divide by ${a}: x = ${x}. Check: ${a}(${x}) ${op} ${b} = ${rhs} ✓`)}
  if(t===2){const pt=R(-4,4);const closed=pick([true,false]);const dir=pick([1,-1]);const sym=dir>0?(closed?'≥':'>'):(closed?'≤':'<');const opp=dir>0?(closed?'>':'≥'):(closed?'<':'≤');const rev=dir>0?(closed?'≤':'<'):(closed?'≥':'>');
   return mc(`Which inequality is shown on the number line?${svgNumLine(pt,closed,dir)}`,`x ${sym} ${pt}`,[`x ${opp} ${pt}`,`x ${rev} ${pt}`,`x ${dir>0?(closed?'<':'≤'):(closed?'>':'≥')} ${pt}`],`The dot on ${pt} is ${closed?'filled, so '+pt+' is included (≤ or ≥)':'open, so '+pt+' is not included (< or >)'}. The arrow points ${dir>0?'right toward greater numbers':'left toward lesser numbers'}. So x ${sym} ${pt}.`)}
@@ -1208,11 +1213,11 @@ gen(){const t=R(1,5);
  if(t===4){const forms=[
   {w:'at least',s:'≥'},{w:'at most',s:'≤'},{w:'more than',s:'>'},{w:'fewer than',s:'<'},{w:'no more than',s:'≤'},{w:'no fewer than',s:'≥'}];const f=pick(forms);const n=R(5,30);
   return mc(f.w.includes('than')?`A raft can carry <b>${f.w}</b> ${n} people. Which inequality shows the number of people, x, allowed on the raft?`:`Riders must be <b>${f.w}</b> ${n} years old. Which inequality shows the ages, x, that are allowed?`,`x ${f.s} ${n}`,['<','>','≤','≥'].filter(s=>s!==f.s).map(s=>`x ${s} ${n}`),`"${f.w}" means ${f.s}. ${f.s==='≥'||f.s==='≤'?'The number '+n+' itself is allowed, so the sign includes "or equal to."':'The number '+n+' itself is not included.'}`)}
- if(R(1,2)===1){const a=R(2,5),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;const sym=pick(['>','<','≥','≤']);
+ if(R(1,2)===1){const a=R(2,5),x=R(2,9),b=R(1,9);const op=pick(['+','−']);const rhs=op==='+'?a*x+b:a*x-b;const sym=pick(['>','<','≥','≤']);if(rhs<=0)return this.gen();
   const dir=sym==='>'||sym==='≥';const inc=sym==='≥'||sym==='≤';
-  return mc(`Solve for x: ${a}x ${op} ${b} ${sym} ${rhs}`,`x ${sym} ${x}`,[`x ${dir?(inc?'≤':'<'):(inc?'≥':'>')} ${x}`,`x ${sym} ${x+1}`,`x ${sym} ${rhs-b}`,`x ${sym} ${x*a}`],`Solve it exactly like an equation. ${op==='+'?'Subtract':'Add'} ${b} from both sides: ${a}x ${sym} ${a*x}. Then divide both sides by ${a}: x ${sym} ${x}. Because ${a} is positive, the sign does not flip.`)}
+  return mc(`Solve for x: ${a}x ${op} ${b} ${sym} ${rhs}`,`x ${sym} ${x}`,[`x ${dir?(inc?'≤':'<'):(inc?'≥':'>')} ${x}`,`x ${sym} ${x+1}`,`x ${sym} ${rhs-b}`,`x ${sym} ${x*a}`],`Solve it exactly like an equation. ${op==='+'?'Subtract '+b+' from':'Add '+b+' to'} both sides: ${a}x ${sym} ${a*x}. Then divide both sides by ${a}: x ${sym} ${x}. Because ${a} is positive, the sign does not flip.`)}
  const a=R(2,5),x=R(2,8),b=R(1,6);const cost=a*x+b;const n=nm();
- return mc(`${n} paid $${cost} for ${a} notebooks and a $${b} pen. Each notebook costs the same. What is the price of one notebook?`,'$'+x,['$'+(cost-b),'$'+Math.round((cost)/a*100)/100,'$'+(x+1),'$'+(cost-a)],`${a}n + ${b} = ${cost}. Subtract the pen: ${a}n = ${cost-b}. Divide by ${a}: n = ${x}. Each notebook costs $${x}.`)}};
+ return mc(`${n} paid $${cost} for ${a} notebooks and a $${b} pen. Each notebook costs the same. What is the price of one notebook?`,money(x),[money(cost-b),money(cost/a),money(x+1),money(cost-a)],`${a}n + ${b} = ${cost}. Subtract the pen: ${a}n = ${cost-b}. Divide by ${a}: n = ${x}. Each notebook costs $${x}.`)}};
 
 // ===== GEOMETRY =====
 T.g_angles={t:'Lines & Angles',cat:'geo',lesson:`
@@ -1250,8 +1255,8 @@ ${table(['Shape','Properties'],[['Parallelogram','2 pairs of parallel sides; opp
 ${tip('Circle facts: the radius goes from center to edge; the diameter goes all the way across through the center and is twice the radius.')}`,
 gen(){const t=R(1,5);
  if(t===1){const names={3:'triangle',4:'quadrilateral',5:'pentagon',6:'hexagon',8:'octagon',10:'decagon'};const n=pick([3,4,5,6,8,10]);const rev=pick([true,false]);
-  if(rev)return mc(`How many sides does a <b>${names[n]}</b> have?`,n,Object.keys(names).map(Number).filter(x=>x!==n),`A ${names[n]} has ${n} sides.`);
-  return mc(`What is the name of a polygon with <b>${n}</b> sides?`,names[n],Object.values(names).filter(x=>x!==names[n]),`A polygon with ${n} sides is a ${names[n]}.`)}
+  if(rev)return mc(`How many sides does ${n===8?'an':'a'} <b>${names[n]}</b> have?`,n,Object.keys(names).map(Number).filter(x=>x!==n),`A ${names[n]} has ${n} sides.`);
+  return mc(`What is the name of a polygon with <b>${n}</b> sides?`,names[n],Object.values(names).filter(x=>x!==names[n]),`A polygon with ${n} sides is ${n===8?'an':'a'} ${names[n]}.`)}
  if(t===2){const forms=[
   {q:'A triangle has sides of 5 cm, 5 cm, and 8 cm. What kind of triangle is it?',a:'Isosceles',w:['Equilateral','Scalene','Right'],e:'Exactly two sides are equal, so it is isosceles.'},
   {q:'A triangle has angles of 90°, 45°, and 45°. What kind of triangle is it?',a:'Right isosceles',w:['Equilateral','Obtuse','Scalene'],e:'It has a right angle (90°) and two equal angles, so it is a right isosceles triangle.'},
@@ -1260,7 +1265,7 @@ gen(){const t=R(1,5);
   {q:'A triangle has sides of 4 in, 6 in, and 7 in. What kind of triangle is it?',a:'Scalene',w:['Isosceles','Equilateral','Right'],e:'No sides are equal, so it is scalene.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}
  if(t===3){const forms=[
   {q:'Which quadrilateral has 4 equal sides but does NOT have to have right angles?',a:'Rhombus',w:['Rectangle','Square','Trapezoid'],e:'A rhombus has four equal sides. If it also has right angles, it is a square.'},
-  {q:'Which quadrilateral has exactly one pair of parallel sides?',a:'Trapezoid',w:['Parallelogram','Rectangle','Rhombus'],e:'A trapezoid has exactly one pair of parallel sides. Parallelograms have two pairs.'},
+  {q:'Which quadrilateral has exactly one pair of parallel sides?',a:'Trapezoid',w:['Parallelogram','Rectangle','Rhombus'],e:'A trapezoid has exactly one pair of parallel sides (some books say "at least one"). Parallelograms have two pairs.'},
   {q:'Which statement is <b>always</b> true?',a:'All squares are rectangles.',w:['All rectangles are squares.','All quadrilaterals are parallelograms.','All parallelograms are rhombuses.'],e:'A square has four right angles, so it fits the definition of a rectangle. The reverse is not true: a 3-by-5 rectangle is not a square.'},
   {q:'A parallelogram has four right angles. What is the most specific name for it?',a:'Rectangle',w:['Trapezoid','Rhombus','Pentagon'],e:'A parallelogram with four right angles is a rectangle (it is a square only if the sides are also all equal).'},
   {q:'What is the sum of the angles in any quadrilateral?',a:'360°',w:['180°','270°','90°'],e:'Any quadrilateral can be split into two triangles, each with 180°, for a total of 360°.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}
@@ -1330,7 +1335,7 @@ gen(){const t=R(1,4);const conv=[['feet','inches',12],['yards','feet',3],['pound
  if(t===3){const c=pick(conv.slice(0,7));const k=R(2,6),extra=R(2,c[2]-1);return mc(`${k} ${c[0]} and ${extra} ${c[1]} is the same as how many ${c[1]}?`,k*c[2]+extra,[k*c[2],k+extra,(k+extra)*c[2],k*c[2]+extra+c[2]],`${k} ${c[0]} = ${k} × ${c[2]} = ${k*c[2]} ${c[1]}. Add the extra ${extra}: ${k*c[2]+extra} ${c[1]}.`)}
  const forms=[
   {q:'Which unit is best for measuring the length of a school bus?',a:'meters',w:['millimeters','kilometers','liters'],e:'A bus is about 12 meters long. Millimeters would give a huge number; kilometers a tiny one.'},
-  {q:'Which unit is best for measuring the weight of an apple?',a:'ounces',w:['tons','pounds','miles'],e:'An apple weighs about 5 or 6 ounces.'},
+  {q:'Which unit is best for measuring the weight of an apple?',a:'ounces',w:['tons','miles','gallons'],e:'An apple weighs about 5 or 6 ounces.'},
   {q:'Which unit is best for measuring the amount of water in a swimming pool?',a:'gallons',w:['cups','fluid ounces','inches'],e:'A pool holds thousands of gallons. Cups would give an enormous number.'},
   {q:'Which unit is best for measuring the distance between two cities?',a:'miles',w:['inches','feet','yards'],e:'Distances between cities are measured in miles (or kilometers).'},
   {q:'About how long is a new pencil?',a:'18 centimeters',w:['18 millimeters','18 meters','18 kilometers'],e:'A pencil is about 18 cm, a bit longer than your hand.'},
@@ -1347,7 +1352,7 @@ ${ex('Three notebooks at $2.35 each; you pay with a $10 bill. Change?','3 × $2.
 ${tip('Remember that clocks work in 60s, not 100s. 2:50 + 20 minutes is 3:10, not 2:70.')}`,
 gen(){const t=R(1,5);const n=nm();const dur=m=>m<60?`${m} min`:`${Math.floor(m/60)} hr ${m%60} min`;const fmtT=m=>{m=((m%720)+720)%720;let h=Math.floor(m/60);const mm=m%60;h=h===0?12:h;return `${h}:${String(mm).padStart(2,'0')}`};
  if(t===1){const s=R(7*60,11*60)+pick([0,5,10,15,20,25,30,35,40,45,50,55]);const d=R(1,3)*60+pick([5,10,15,20,25,30,35,40,45,50]);const e=s+d;const ap=e>=12*60?'p.m.':'a.m.';
-  return mc(`${n}'s soccer game starts at ${fmtT(s)} a.m. and lasts ${Math.floor(d/60)} hour${d>=120?'s':''} ${d%60} minutes. What time does it end?`,`${fmtT(e)} ${ap}`,[`${fmtT(e+10)} ${ap}`,`${fmtT(e-15)} ${ap}`,`${fmtT(e+60)} ${e+60>=720?'p.m.':'a.m.'}`,`${fmtT(s+Math.floor(d/60)*100+d%60)} ${ap}`],`Add the hours first: ${fmtT(s)} + ${Math.floor(d/60)} hr = ${fmtT(s+Math.floor(d/60)*60)}. Then add ${d%60} minutes: ${fmtT(e)} ${ap}.`)}
+  return mc(`${n}'s soccer game starts at ${fmtT(s)} a.m. and lasts ${Math.floor(d/60)} hour${d>=120?'s':''} ${d%60} minutes. What time does it end?`,`${fmtT(e)} ${ap}`,[`${fmtT(e+10)} ${ap}`,`${fmtT(e-15)} ${ap}`,`${fmtT(e+60)} ${e+60>=720?'p.m.':'a.m.'}`,`${fmtT(s+Math.floor(d/60)*100+d%60)} ${ap}`],`Add the hours first: ${fmtT(s)} + ${Math.floor(d/60)} hr = ${fmtT(s+Math.floor(d/60)*60)}. Then add ${d%60} minutes: ${fmtT(e)} ${ap}`)}
  if(t===2){const s=R(1*60,5*60)+pick([0,15,30,45,10,20,40,50]);const d=R(0,3)*60+pick([15,20,25,30,35,40,45,50,55]);const e=s+d;
   return mc(`A movie starts at ${fmtT(s)} p.m. and ends at ${fmtT(e)} p.m. How long is the movie?`,dur(d),[dur(d+60),dur(d+10),dur(d+30),dur(Math.max(5,d-15)),dur(d+5)],`Count up from ${fmtT(s)}: to ${fmtT(e)} is ${dur(d)}.`)}
  if(t===3){const price=R(125,899)/100;const q=R(2,4);const tot=Math.round(price*q*100)/100;const paid=Math.ceil(tot/5)*5;const ch=Math.round((paid-tot)*100)/100;if(ch<0.25)return this.gen();
@@ -1363,7 +1368,7 @@ T.m_volume={t:'Volume & Surface Area',cat:'meas',lesson:`
 <p><b>Rectangular prism</b> (a box): V = length × width × height. <b>Cube</b>: V = s × s × s.</p>
 ${ex('A box is 10 cm long, 8 cm wide, and 3 cm tall.','One layer has 10 × 8 = 80 cubes. Three layers: 80 × 3 = <b>240 cm³</b>.')}
 ${ex('A cube has edges of ½ inch. Volume?','½ × ½ × ½ = <b>⅛ in³</b>. Volume is always in cubic units.')}
-<p><b>Surface area</b> is the total area of all the faces (the wrapping paper). A box has 6 faces in 3 matching pairs: SA = 2(lw) + 2(lh) + 2(wh). A cube: 6 × s².</p>
+<p><b>Surface area</b> <span class="stretchtag">stretch</span> is the total area of all the faces (the wrapping paper). A box has 6 faces in 3 matching pairs: SA = 2(lw) + 2(lh) + 2(wh). A cube: 6 × s².</p>
 <p><b>Missing dimension</b>: if V = 60 cm³, l = 5, w = 4, then h = 60 ÷ (5 × 4) = 3 cm.</p>
 ${tip('Which unit? Perimeter: units (cm). Area: square units (cm²). Volume: cubic units (cm³). The little number matches the number of dimensions.')}`,
 gen(){const t=R(1,5);const u=pick(['cm','in','ft']);
@@ -1420,7 +1425,7 @@ gen(){const t=R(1,6);const n=nm();const mkset=(k,lo,hi)=>Array.from({length:k},(
   return mc(`What is the <b>mode</b> of these numbers? <b>${s.join(', ')}</b>`,mode,[Math.max(...s),Math.min(...s),Math.max(...s)-Math.min(...s),s.slice().sort((a,b)=>a-b)[3]],`The mode is the value that appears most often. ${mode} appears ${counts[mode]} times, more than any other number.`)}
  if(t===4){const s=mkset(pick([5,6]),5,60);const rg=Math.max(...s)-Math.min(...s);
   return mc(`What is the <b>range</b> of these numbers? <b>${s.join(', ')}</b>`,rg,[Math.max(...s),Math.max(...s)+Math.min(...s),Math.round(s.reduce((a,b)=>a+b,0)/s.length),rg+5],`Range = greatest − least = ${Math.max(...s)} − ${Math.min(...s)} = ${rg}.`)}
- if(t===5){const k=R(3,5);const target=R(70,95);const s=mkset(k-1,60,100);const sum=s.reduce((a,b)=>a+b,0);const need=target*k-sum;if(need<0||need>100)return this.gen();
+ if(t===5){const k=R(3,5);const target=R(70,95);const s=mkset(k-1,60,100);const sum=s.reduce((a,b)=>a+b,0);const need=target*k-sum;if(need<50||need>100)return this.gen();
   return mc(`${n}'s test scores are ${s.join(', ')}. What score does ${n} need on the next test to have a <b>mean</b> of exactly ${target}?`,need,[target,target*k,Math.round(sum/(k-1)),need+5],`A mean of ${target} on ${k} tests means a total of ${target} × ${k} = ${target*k}. So far: ${sum}. Needed: ${target*k} − ${sum} = ${need}.`)}
  const mean=R(6,15),cnt=R(4,12);return mc(`${n} averaged ${mean} points per game and scored ${mean*cnt} points in all. How many games did ${n} play?`,cnt,[mean*cnt-mean,mean+cnt,cnt+1,mean],`Number of games = total ÷ mean = ${mean*cnt} ÷ ${mean} = ${cnt}.`)}};
 
@@ -1524,7 +1529,7 @@ T.p_compound={t:'Compound Events',cat:'prob',lesson:`
 <p><b>Independent events</b> do not affect each other. To find the probability of both happening, <b>multiply</b>.</p>
 ${ex('P(heads AND rolling a 2)',fr(1,2)+' × '+fr(1,6)+' = <b>'+fr(1,12)+'</b>')}
 <p>You can also list the <b>sample space</b> (all outcomes). Coin + die: H1, H2, H3, H4, H5, H6, T1, T2 … 12 outcomes, and only 1 is "H2."</p>
-<p><b>Dependent events</b> change the probabilities. Picking two marbles <em>without replacing</em> the first: a bag has 5 black and 5 white. P(black first) = ${fr(5,10)}. Now only 9 marbles are left, 4 black: P(black second) = ${fr(4,9)}. P(both black) = ${fr(5,10)} × ${fr(4,9)} = ${fr(20,90)} = <b>${fr(2,9)}</b>.</p>
+<p><b>Dependent events</b> <span class="stretchtag">stretch</span> change the probabilities. Picking two marbles <em>without replacing</em> the first: a bag has 5 black and 5 white. P(black first) = ${fr(5,10)}. Now only 9 marbles are left, 4 black: P(black second) = ${fr(4,9)}. P(both black) = ${fr(5,10)} × ${fr(4,9)} = ${fr(20,90)} = <b>${fr(2,9)}</b>.</p>
 ${tip('"With replacement" → the second pick has the same probability as the first. "Without replacement" → subtract one from the total (and from the group, if the first pick came from that group).')}`,
 gen(){const t=R(1,4);
  if(t===1){const n=pick([4,6,8]);const v=R(1,n);const coin=pick(['heads','tails']);return mc(`${nm()} flips a coin and spins a spinner with ${n} equal sections numbered 1 to ${n}. What is the probability of getting <b>${coin}</b> and a <b>${v}</b>?`,fr(1,2*n),[fr(1,n),fr(1,n+2),fr(2,n),fr(1,2)].filter(x=>x!==fr(1,2*n)),`Independent events: multiply. P(${coin}) = ${fr(1,2)}, P(${v}) = ${fr(1,n)}. ${fr(1,2)} × ${fr(1,n)} = ${fr(1,2*n)}.`)}
@@ -1595,8 +1600,10 @@ gen(){const t=R(1,5);
   {q:'Which property is shown by <b>(2 × 5) × 3 = 2 × (5 × 3)</b>?',a:'Associative',w:['Commutative','Distributive','Identity'],e:'Only the grouping changed, so this is the associative property of multiplication.'},
   {q:'Which property is shown by <b>15 + 0 = 15</b>?',a:'Identity',w:['Commutative','Associative','Distributive'],e:'Adding zero leaves the number unchanged: the identity property of addition.'},
   {q:'Which product is <b>even</b>?',a:'6 × 7',w:['5 × 7','3 × 9','7 × 11'],e:'Any number multiplied by an even number is even. 6 × 7 = 42.'}];const f=pick(forms);return mc(f.q,f.a,f.w,f.e)}
- if(t===2){const a=R(21,49),b=R(11,29);const p=a*b;const opts=[p,p+a*10,p-a*10,p*10];const ea=Math.round(a/10)*10,eb=Math.round(b/10)*10;
-  return mc(`Which is closest to the value of ${a} × ${b}? Use estimation.`,fmt(p),opts.slice(1).map(fmt),`Estimate: ${ea} × ${eb} = ${fmt(ea*eb)}. The only choice near that is ${fmt(p)}.`)}
+ if(t===2){const a=R(21,49),b=R(11,29);const p=a*b;const ea=Math.round(a/10)*10,eb=Math.round(b/10)*10;const est=ea*eb;
+  // Wrong choices sit a whole place value away, so the taught estimate always lands nearest the key.
+  const opts=[p*10,Math.round(p/10),p*100];if(Math.abs(p-est)>=0.5*Math.min(...opts.map(o=>Math.abs(o-est))))return this.gen();
+  return mc(`Which is closest to the value of ${a} × ${b}? Use estimation.`,fmt(p),opts.map(fmt),`Round each number to the nearest ten: ${a} ≈ ${ea} and ${b} ≈ ${eb}. Estimate: ${ea} × ${eb} = ${fmt(est)}. Of the choices, only ${fmt(p)} is anywhere near ${fmt(est)}; the others are about ten or a hundred times too big or too small.`)}
  if(t===3){const tot=R(20,40),right=R(10,tot-2);const pct=Math.round(right/tot*100);const forms=[
   {q:`${nm()} got ${right} out of ${tot} questions right and calculated a score of ${Math.round(tot/right*100)}%. Is this reasonable?`,a:`No. A score cannot be over 100%. The correct score is about ${pct}%.`,w:['Yes, the calculation is correct.','No, the score should be exactly 50%.','Yes, because the test had many questions.'],e:`Getting every question right would be 100%, so ${Math.round(tot/right*100)}% is impossible. ${right} ÷ ${tot} ≈ ${pct}%.`}];const f=forms[0];return mc(f.q,f.a,f.w,f.e)}
  if(t===4){const cap=pick([4000,3000,5000]);const lim=cap*R(4,9)+R(500,cap-500);const q=Math.floor(lim/cap);
@@ -1660,7 +1667,7 @@ gen(){const t=R(1,5);const n=nm();
 
 // ===== VERBAL =====
 const PREFIXES=[['un-','not, reverse','unable, unhappy'],['re-','again, back','reload, return'],['pre-','before','preview, predict'],['dis-','not, away, opposite','disagree, disappear'],['mis-','bad, wrong','misplace, misspell'],['non-','not','nonstop, nonsense'],['in-','not (or into)','invisible, incorrect'],['sub-','under, below','submarine, subway'],['inter-','between, among','international, interrupt'],['trans-','across, beyond','transport, transform'],['bi-','two','bicycle, bilingual'],['tri-','three','triangle, tricycle'],['uni-','one','unicycle, uniform'],['semi-','half, partly','semicircle, semifinal'],['anti-','against','antisocial, antifreeze'],['super-','above, extra','superhero, superior'],['ex-','out','exit, exhale'],['co-, com-','with, together','cooperate, combine'],['bene-','good, well','benefit, beneficial'],['mal-','bad, poorly','malfunction, malnourished'],['post-','after','postpone, postgame'],['fore-','before, in front','forecast, foresee'],['circum-','around','circumference, circumnavigate'],['omni-','all','omnivore, omnipresent'],['hyper-','over, too much','hyperactive, hyperextend'],['auto-','self','automatic, autobiography'],['tele-','far','telephone, telescope'],['de-','down, away from','descend, decrease'],['poly-','many','polygon, polyglot'],['mono-','one, single','monotone, monopoly']];
-const SUFFIXES=[['-able, -ible','capable of being (adjective)','teachable, flexible'],['-ful','full of, marked by (adjective)','helpful, joyful'],['-less','without, lacking (adjective)','fearless, careless'],['-ous','full of, having (adjective)','generous, joyous'],['-ish','like, somewhat (adjective)','childish, reddish'],['-er, -or','one who does (noun)','teacher, actor'],['-ist','one who does or believes (noun)','artist, scientist'],['-ness','state or quality (noun)','kindness, darkness'],['-ment','result or action (noun)','movement, agreement'],['-tion, -sion','action or state (noun)','celebration, decision'],['-hood','state or condition (noun)','childhood, neighborhood'],['-ship','position or state (noun)','friendship, leadership'],['-ity','quality or state (noun)','curiosity, ability'],['-ize','to make or cause (verb)','realize, organize'],['-fy','to make (verb)','simplify, beautify'],['-en','to make or become (verb)','soften, shorten'],['-ly','in a certain way (adverb)','quickly, softly'],['-esque','in the style of, like','statuesque, picturesque'],['-ard','one who does (often badly)','sluggard, drunkard'],['-tude','quality or state','attitude, gratitude']];
+const SUFFIXES=[['-able, -ible','capable of being (adjective)','teachable, flexible'],['-ful','full of, marked by (adjective)','helpful, joyful'],['-less','without, lacking (adjective)','fearless, careless'],['-ous','full of, having (adjective)','generous, joyous'],['-ish','like, somewhat (adjective)','childish, reddish'],['-er, -or','one who does (noun)','teacher, actor'],['-ist','one who does or believes (noun)','artist, scientist'],['-ness','state or quality (noun)','kindness, darkness'],['-ment','result or action (noun)','movement, agreement'],['-tion, -sion','action or state (noun)','celebration, decision'],['-hood','state or condition (noun)','childhood, neighborhood'],['-ship','position or state (noun)','friendship, leadership'],['-ity','quality or state (noun)','curiosity, ability'],['-ize','to make or cause (verb)','realize, organize'],['-fy','to make (verb)','simplify, beautify'],['-en','to make or become (verb)','soften, shorten'],['-ly','in a certain way (adverb)','quickly, softly'],['-ic','relating to, like (adjective)','heroic, poetic'],['-ward','in the direction of','backward, forward'],['-tude','quality or state','attitude, gratitude']];
 const ROOTS=[['port','carry','transport, portable, import'],['dict','say, speak','predict, dictionary, verdict'],['spect','look, see','inspect, spectator, spectacles'],['aud','hear','audience, audible, audio'],['vis, vid','see','visible, video, vision'],['scrib, script','write','describe, manuscript, scribble'],['graph','write, draw','autograph, photograph, graphic'],['bio','life','biology, biography'],['geo','earth','geography, geology'],['chron','time','chronological, synchronize'],['phon','sound','telephone, symphony, phonics'],['ject','throw','eject, reject, project'],['rupt','break','erupt, interrupt, rupture'],['tract','pull','tractor, attract, subtract'],['struct','build','construct, structure, instruct'],['mit, miss','send','transmit, mission, dismiss'],['ped','foot','pedal, pedestrian, centipede'],['aqua','water','aquarium, aquatic'],['terr','land','territory, terrain'],['cred','believe','credit, incredible'],['form','shape','transform, uniform, formation'],['mem','remember','memory, memorial, remember'],['loc','place','location, local'],['vac','empty','vacant, vacuum, vacation'],['min','small','minimum, miniature'],['magn','great, large','magnify, magnificent'],['duc, duct','lead','conduct, educate, aqueduct'],['fract, frag','break','fraction, fragment, fragile'],['man','hand','manual, manufacture'],['cycl','circle','bicycle, cyclone, recycle']];
 const wordsByPos=pos=>VOCAB.filter(w=>w[1]===pos);
 // Everything a word "means": itself plus its synonyms. Two entries whose meaning
@@ -1733,7 +1740,7 @@ T.v_syn={t:'Synonym Strategies',cat:'verbal',lesson:`
 <p><b>Strategy 3: Match the part of speech.</b> Synonyms share a part of speech. <em>Shy</em> and <em>timid</em> are both adjectives; <em>loner</em> is a noun, so it cannot be the synonym.</p>
 <p><b>Strategy 4: Put it in a sentence.</b> "He will <em>adore</em> you forever" works; "He will <em>sweet</em> you forever" does not.</p>
 <p><b>Strategy 5: Watch for the opposite.</b> One wrong choice is often the exact opposite of the word in capitals. A rushed reader sees a word about the same idea and grabs it. For ABUNDANT, <em>scarce</em> is the trap; <em>plentiful</em> is the answer.</p>
-<p><b>Strategy 5: Word parts.</b> Do not know <em>benevolent</em>? bene- means good → look for a kind, good choice.</p>
+<p><b>Strategy 6: Word parts.</b> Do not know <em>benevolent</em>? bene- means good → look for a kind, good choice.</p>
 ${ex('VAST: (a) rapid (b) expansive (c) small (d) ocean','"Vast" means huge. An ocean can <em>be</em> vast, but the word does not mean ocean. <b>(b) expansive</b>.')}
 ${tip('Never leave a synonym blank. There is no penalty for guessing on the ISEE. Eliminate what you can and choose.')}`,
 gen(){return synQ(pick(VOCAB))}};
@@ -1742,7 +1749,7 @@ T.v_sc={t:'Sentence Completion Strategies',cat:'verbal',lesson:`
 <p>A sentence completion has one blank (sometimes a blank phrase). Every sentence contains <b>clues</b> that point to exactly one answer.</p>
 <p><b>Step 1: Read the whole sentence</b> and cover the choices. <b>Step 2: Predict</b> a word for the blank. <b>Step 3: Match</b> your prediction to a choice. <b>Step 4: Reread</b> with your choice in place.</p>
 <p><b>Types of clues</b>:</p>
-${table(['Clue type','Signal words','Example'],[['Contrast','but, although, however, yet, unlike, on the other hand','<em>Although</em> Mark seemed ___, he paced nervously. → calm'],['Cause and effect','because, since, so, therefore, as a result','<em>Since</em> she didn\'t cite sources, she lost points for ___. → copying'],['Description / example','such as, like, including, for example','Golden Retrievers and Pugs are the top ___ at the show. → breeds'],['Restatement','in other words, that is, which means',"He was <em>exhausted</em>, so ___ that he fell asleep standing. → tired"],['Tone / charge','positive or negative feeling words','Grandma\'s <em>normally rosy</em> cheeks looked ___ and <em>ghostlike</em>. → pale']])}
+${table(['Clue type','Signal words','Example'],[['Contrast','but, although, however, yet, unlike, on the other hand','<em>Although</em> Mark seemed ___, he paced nervously. → calm'],['Cause and effect','because, since, so, therefore, as a result','<em>Since</em> she didn\'t cite sources, she lost points for ___. → copying'],['Description / example','such as, like, including, for example','Golden Retrievers and Pugs are the top ___ at the show. → breeds'],['Restatement','in other words, that is, which means',"He was <em>exhausted</em>, in other words so ___ that he fell asleep standing. → tired"],['Tone / charge','positive or negative feeling words','Grandma\'s <em>normally rosy</em> cheeks looked ___ and <em>ghostlike</em>. → pale']])}
 ${ex('After Kira wrote her first book, she ___ her fans the sequel would be just as exciting.','Fans, sequel, exciting: a positive promise. <b>promised</b>. "Denied" is the opposite; "germinated" means to sprout.')}
 ${tip('Watch for reversal words. "But," "although," and "however" mean the blank is the OPPOSITE of the clue. "Because" and "so" mean it matches the clue. In a contrast sentence, one wrong choice is usually the opposite of the answer: the word that fits only if you miss the signal.')}`,
 gen(){return scQ(pick(VOCAB))}};
@@ -1751,7 +1758,7 @@ gen(){return scQ(pick(VOCAB))}};
 const TEST_INFO=`
 <p>The <b>ISEE Lower Level</b> is for students in grades 4 and 5 applying to grades 5 and 6. It has five parts, always in this order:</p>
 ${table(['Section','Questions','Time','What it covers'],[['Verbal Reasoning','34','20 min','synonyms + sentence completions'],['Quantitative Reasoning','38','35 min','math thinking: estimation, patterns, logic, word problems'],['Reading Comprehension','25','25 min','5 passages with questions'],['Mathematics Achievement','30','30 min','math skills: computation, geometry, measurement, data'],['Essay','1 prompt','30 min','not scored; sent to schools']])}
-<p>There is <b>no penalty for wrong answers</b>, so answer every question. Scores are reported as stanines (1–9) compared with other students in the same grade.</p>
+<p>There is <b>no penalty for wrong answers</b>, so answer every question. Each section gets a scaled score (760–940), a percentile rank and a stanine (1–9), all compared with other students in the same grade.</p>
 <p><b>This app covers all five parts.</b> Verbal Reasoning, Quantitative Reasoning and Mathematics Achievement each have their own lessons and endless practice questions. Reading Comprehension has passages in science, history, biography, fiction and opinion writing, with every kind of question the real section asks, and four strategy lessons. The essay has a timed 30-minute workspace, model essays to compare against, and a review page for a grown-up to read it with her.</p>
 <p>The 12-week plan runs five sessions a week: four on verbal and math, and a fifth on reading — or, every fourth week, a timed essay. Week 11 closes with a full-length timed Reading section.</p>`;
 
@@ -1971,14 +1978,15 @@ q:[{q:'Which sentence best states the main idea?',a:'A dog\'s nose is built diff
 );
 
 // ---- reading questions: the passage travels with the question ----
-const passageHTML=p=>`<div class="passage"><h4>${p.t}</h4>${p.p.map(x=>`<p>${x}</p>`).join('')}</div>`;
+// Paragraphs are numbered because questions say "in paragraph 3" (the printed test numbers lines).
+const passageHTML=p=>`<div class="passage"><h4>${p.t}</h4>${p.p.map((x,i)=>`<p><span class="pnum">${i+1}</span>${x}</p>`).join('')}</div>`;
 // pi/qi record where a question came from, so a missed one can be asked again.
 // New passages and questions are only ever appended, so these stay valid.
 function passageQ(pi,qi){const p=PASSAGES[pi],item=p&&p.q[qi];if(!item)return null;const q=mc(item.q,item.a,item.d,item.e);if(!q)return null;
   q.pas=passageHTML(p);q.topic='rd_'+item.k.replace(/[^a-z]/g,'');q.rkind=item.k;q.pi=pi;q.qi=qi;return q}
 function passageSet(pi){pi=pi%PASSAGES.length;return shuf(PASSAGES[pi].q.map((_,qi)=>qi)).map(qi=>passageQ(pi,qi)).filter(Boolean)}
 // A single mixed question, for the Practice tab and for drills.
-function readingQ(){for(let i=0;i<50;i++){const pi=R(0,PASSAGES.length-1);const set=passageSet(pi);if(set.length)return pick(set)}return null}
+function readingQ(kinds){for(let i=0;i<50;i++){const pi=R(0,PASSAGES.length-1);let set=passageSet(pi);if(kinds)set=set.filter(q=>kinds.includes(q.rkind));if(set.length)return pick(set)}return null}
 
 const RD_SKILLS={main:'Main Idea & Supporting Details',infer:'Inference & Author\'s Purpose',vocab:'Vocabulary in Context',tone:'Tone, Style & Organization'};
 T.rd_main={t:'Main Idea & Supporting Details',cat:'read',lesson:`
@@ -1989,7 +1997,7 @@ ${ex('Finding the main idea','Read the first and last sentences of the passage, 
 <ul><li><b>Too narrow</b> — true, but it only describes one detail.</li><li><b>Too broad</b> — bigger than the passage; the passage never proves it.</li><li><b>Not stated</b> — sounds sensible, but the passage never says it.</li></ul>
 <p>For a detail question, go back and <b>find the line</b>. Never answer from memory. The right answer is almost always a restatement of one sentence in the passage.</p>
 ${tip('Cover the answers, say the main idea in your own words, and then look for the choice closest to what you said. This stops a tempting wrong answer from pulling you off course.')}`,
-gen(){return readingQ()}};
+gen(){return readingQ(['main idea','detail'])}};
 
 T.rd_infer={t:'Inference & Author\'s Purpose',cat:'read',lesson:`
 <p>An <b>inference</b> is a conclusion you reach using clues in the text plus what you already know. It is not stated outright, but it must be <em>supported</em> by the passage. Being a good detective, not a good guesser.</p>
@@ -1998,7 +2006,7 @@ ${ex('"She trapped it against her ribs with both hands and sat down hard."','You
 ${table(['Purpose','Signs of it'],[['To inform','facts, dates, explanations, neutral language'],['To persuade','opinions, reasons, words like <em>should</em> or <em>best</em>'],['To entertain','story, characters, humor, description']])}
 <p>You will also be asked why the author included <b>one particular detail</b>. The answer is almost always: to support the point being made in that paragraph.</p>
 ${tip('For any inference question, put your finger on the line in the passage that proves your answer. If you cannot find one, it is the wrong answer, no matter how reasonable it sounds.')}`,
-gen(){return readingQ()}};
+gen(){return readingQ(['inference','purpose'])}};
 
 T.rd_vocab={t:'Vocabulary in Context',cat:'read',lesson:`
 <p>These questions ask what a word means <b>in this passage</b>, which is not always its most common meaning. A word like <em>fair</em> can mean just, light-colored, or a carnival.</p>
@@ -2007,7 +2015,7 @@ T.rd_vocab={t:'Vocabulary in Context',cat:'read',lesson:`
 ${ex('"The sea lay flat and <em>innocent</em>."','Cover <em>innocent</em>. The sea has just finished a violent storm and is now calm. Your word might be "harmless." That points to "calm, as if it had done nothing wrong," not "young" or "beautiful."')}
 <p><b>Clue types</b> to look for: a <b>contrast</b> (but, although, however), a <b>restatement</b> (that is, in other words), an <b>example</b> (such as, like), or the general <b>tone</b> of the sentence.</p>
 ${tip('The most common meaning of the word is often a trap answer. Trust the sentence, not your memory of the word.')}`,
-gen(){return readingQ()}};
+gen(){return readingQ(['vocabulary','figurative'])}};
 
 T.rd_tone={t:'Tone, Style & Organization',cat:'read',lesson:`
 <p><b>Tone</b> is the author's attitude toward the subject. You find it in word choice. Compare "my grandfather is a robust, elderly man" with "my grandfather is a chubby, old man": the same facts, a different feeling.</p>
@@ -2016,7 +2024,7 @@ ${table(['Tone word','What it feels like'],[['Amused / playful','enjoys the subj
 ${table(['Structure','Signal words'],[['Sequence / process','first, next, then, finally'],['Cause and effect','because, so, as a result, therefore'],['Compare and contrast','however, unlike, both, on the other hand'],['Problem and solution','problem, answer, solved, instead'],['Description','for example, such as, another']])}
 <p><b>Figurative language</b>: a <b>simile</b> compares using <em>like</em> or <em>as</em> ("spiky, like a star made of broken glass"); a <b>metaphor</b> compares without them; <b>personification</b> gives human qualities to a thing ("the sea lay innocent").</p>
 ${tip('Tone answers are rarely extreme. On a passage about a science discovery, "angry" and "heartbroken" are almost never right; "curious" or "amused" usually is.')}`,
-gen(){return readingQ()}};
+gen(){return readingQ(['tone','organization'])}};
 
 // ===== THE ESSAY =====
 const ESSAY_PROMPTS=[
@@ -2040,14 +2048,14 @@ const ESSAY_PROMPTS=[
  'Describe the best day you can remember. What made it good?'];
 
 T.wr_essay={t:'Writing the Essay',cat:'write',lesson:`
-<p>The ISEE ends with one essay, written by hand in <b>30 minutes</b>. It is <b>not scored</b>, but a copy is sent to every school you apply to, so a real person will read it. Schools use it to hear your voice and to see that you can organize an idea.</p>
+<p>The ISEE ends with one essay, written in <b>30 minutes</b>: by hand on the paper test, typed on the online test. It is <b>not scored</b>, but a copy is sent to every school you apply to, so a real person will read it. Schools use it to hear your voice and to see that you can organize an idea.</p>
 <h4>The plan: 5 minutes, 20 minutes, 5 minutes</h4>
 <ol><li><b>Plan (5 min).</b> Pick your position and jot three reasons or three moments. Do not write sentences yet, just words.</li><li><b>Write (20 min).</b> Four or five paragraphs.</li><li><b>Check (5 min).</b> Reread for missing words, capital letters and periods.</li></ol>
 <h4>The shape</h4>
 ${table(['Paragraph','What goes in it'],[['Opening','Answer the question directly in one sentence, then say what you will show.'],['Body 1','Your first reason, with a specific example.'],['Body 2','Your second reason, with a specific example.'],['Body 3 (optional)','A third reason, or a moment that shows the point.'],['Closing','Say what it all adds up to. Do not introduce anything new.']])}
 ${ex('Opening a "someone you look up to" essay','Weak: "There are many people I look up to in this world." (Says nothing.)<br>Strong: "I look up to my grandmother, because she taught me that being patient is a kind of bravery."')}
 <h4>Five rules that matter most</h4>
-<ul><li><b>Answer the actual question.</b> A beautiful essay about the wrong prompt does not help you.</li><li><b>Be specific.</b> One real moment beats three general statements. Not "she is kind," but "she waited with me at the bus stop in the rain for forty minutes."</li><li><b>Use your own words.</b> Do not reach for big vocabulary you are unsure of. The right word beats the fanciest word.</li><li><b>Write neatly.</b> A reader who cannot read your handwriting cannot be impressed by it.</li><li><b>Leave time to reread.</b> Almost everyone finds one missing word.</li></ul>
+<ul><li><b>Answer the actual question.</b> A beautiful essay about the wrong prompt does not help you.</li><li><b>Be specific.</b> One real moment beats three general statements. Not "she is kind," but "she waited with me at the bus stop in the rain for forty minutes."</li><li><b>Use your own words.</b> Do not reach for big vocabulary you are unsure of. The right word beats the fanciest word.</li><li><b>Write neatly.</b> On paper, a reader who cannot read your handwriting cannot be impressed by it. Online, reread for typos.</li><li><b>Leave time to reread.</b> Almost everyone finds one missing word.</li></ul>
 ${tip('You cannot fail this section, so do not freeze. Pick a position in the first minute, even if it is not your deepest opinion, and spend your energy on examples rather than on choosing.')}`,
 gen(){const forms=[
  {q:'How long do you have to write the ISEE essay?',a:'30 minutes',w:['15 minutes','45 minutes','60 minutes'],e:'The essay section is 30 minutes long, which is why the 5-20-5 plan works well.'},
@@ -2365,7 +2373,22 @@ const MODELS=[
   n:['The explanation comes after the evidence, not before, so the reader discovers it at the same time she did.','"I had decided he was rude" takes responsibility instead of blaming the misunderstanding on him.']},
  {t:'Now Dev sits at our table and he still does not talk very much, and I have stopped thinking that means anything. What I actually changed my mind about was not really Dev. It was the idea that quiet people are telling you something by being quiet.',
   n:['The closing widens from one person to a lesson, which is what a reflection essay is for.','It does not overclaim. She has not become a perfect person; she has changed one belief.']}]}
+,
+{kind:'everyday',plain:true,prompt:'If you could add one new subject to your school, what would it be and why?',
+ why:'This is what a solid, reachable answer looks like in 30 minutes: a clear position, three plain reasons with one example each, and an ending that simply wraps up. It would not win a prize, and it does not need to.',
+ paras:[
+ {t:'If I could add one new subject to my school, it would be cooking. I think cooking should be a class because it is useful, it uses math, and it is fun to do with other people.',
+  n:['Answers the question in the first sentence and lists the three reasons in the second. The reader knows the whole plan.']},
+ {t:'First, cooking is useful. Everyone has to eat, and not everyone knows how to make food. My brother is in high school and he can only make cereal and toast. If he had learned to cook in fifth grade, he could make dinner when my parents work late.',
+  n:['One reason, one real example (the brother). That is enough for a paragraph.']},
+ {t:'Second, cooking uses math. When my grandmother makes rice, she measures two cups of rice and four cups of water. If we want to make half as much, we have to divide. Last week I had to figure out how many tablespoons are in a quarter cup, which is 4. That is fractions, and it is more interesting than a worksheet.',
+  n:['A number and a name make it specific. "More interesting than a worksheet" is a real opinion in the writer\'s own words.']},
+ {t:'Third, cooking is fun to do with other people. In art class we work alone, but in cooking you have to share the stove and take turns. At the end, everyone gets to eat what the class made together.',
+  n:['The third reason is shorter, and that is fine. Three reasons do not have to be the same size.']},
+ {t:'Those are the reasons I would add cooking as a subject. It is useful, it uses math, and it brings people together. I think most kids in my school would sign up for it.',
+  n:['The closing repeats the three reasons and stops. Nothing new, no big lesson about life. This is a perfectly good ending.']}]}
 ];
+const PLAIN_MODEL=MODELS.find(m=>m.plain);
 // Every prompt maps to the model whose shape it shares.
 const PROMPT_KIND=['person','place','person','narrative','person','opinion','place','reflection','opinion','person','opinion','narrative','reflection','reflection','place','narrative','opinion','narrative'];
 const modelFor=i=>MODELS.find(m=>m.kind===PROMPT_KIND[i%PROMPT_KIND.length])||MODELS[0];
@@ -2376,15 +2399,15 @@ const RUBRIC=[
  {h:'Is it organized?',s:'An opening that states the answer, two or three middle paragraphs that each do one job, and a closing that adds nothing new.',w:'One long block, or paragraphs that could be shuffled without anyone noticing.'},
  {h:'Is it specific?',s:'At least one moment you can picture: a name, a place, a number, something somebody said. This is the single biggest difference between essays.',w:'Adjectives doing all the work. "She is very kind and generous and always helps everyone."'},
  {h:'Does it sound like her?',s:'Words she would actually use. A plain sentence in her own voice beats a fancy one she borrowed.',w:'Vocabulary that does not fit the rest of the writing, or a stiff, formal tone she never uses out loud.'},
- {h:'Is it clean enough?',s:'Capital letters, end punctuation, no missing words. Handwriting a stranger can read.',w:'Errors so frequent that the reader is decoding instead of reading. A few spelling slips in 30 minutes are normal and fine.'}];
+ {h:'Is it clean enough?',s:'Capital letters, end punctuation, no missing words. On paper, handwriting a stranger can read.',w:'Errors so frequent that the reader is decoding instead of reading. A few spelling slips in 30 minutes are normal and fine.'}];
 const PARENT_QS=[
- 'Read me your favourite sentence. Why that one?',
+ 'Read me your favorite sentence. Why that one?',
  'Which of your reasons felt strongest, and which one felt thin?',
  'If you had five more minutes, what would you have added?'];
 const PARENT_HOWTO=`
 <p><b>Praise something specific first.</b> Not "this is good," but "the part where the door just opened one morning — that was the best sentence." She will write more of whatever you name.</p>
 <p><b>Pick one thing to work on.</b> Only one, even if you see five. The next essay is for the next thing.</p>
-<p><b>Do not correct spelling out loud line by line.</b> The essay is unscored and schools know it was handwritten in 30 minutes under pressure. Organization and specific detail matter far more than a misspelled word.</p>
+<p><b>Do not correct spelling out loud line by line.</b> The essay is unscored and schools know it was written in 30 minutes under pressure. Organization and specific detail matter far more than a misspelled word.</p>
 <p><b>Ask before you tell.</b> The three questions above usually get her to find the weak paragraph herself, which sticks better than being told.</p>`;
 
 // ===== CHALLENGE TIER (harder Quantitative Reasoning) =====
@@ -2573,7 +2596,7 @@ gen(){const t=R(1,6);const u=pick(['cm','ft','m','in']);
   const lab={top:`${W-w} ${u}`,left:`${H} ${u}`,bottom:`${W} ${u}`,right:`${H-h} ${u}`};const fig=svgLShape(W,H,w,h,lab);
   if(t===1){const ans=2*(W+H);const labeled=(W-w)+H+W+(H-h);
    return mc(`What is the perimeter of this figure? All corners are right angles.${fig}`,`${ans} ${u}`,[`${labeled} ${u}`,`${labeled+h} ${u}`,`${labeled+w} ${u}`,`${W*H-w*h} ${u}`],
-    `Two sides have no labels. The missing horizontal side is ${W} − ${W-w} = ${w} ${u}, and the missing vertical side is ${H} − ${H-h} = ${h} ${u}. Add all six: ${W-w} + ${h} + ${w} + ${H-h} + ${W} + ${H} = <b>${ans} ${u}</b>.${watch(`adding only the four labeled sides gives ${labeled}, and adding just one of the missing sides gives ${labeled+h} or ${labeled+w}.`)}`,{chk:{t:'Lper',p:{W,H,w,h},a:ans}})}
+    `Two sides have no labels. The missing horizontal side is ${W} − ${W-w} = ${w} ${u}, and the missing vertical side is ${H} − ${H-h} = ${h} ${u}. Add all six: ${W-w} + ${h} + ${w} + ${H-h} + ${W} + ${H} = <b>${ans} ${u}</b>.${watch(`adding only the four labeled sides gives ${labeled}, and adding just one of the missing sides gives ${h===w?labeled+h:labeled+h+' or '+(labeled+w)}.`)}`,{chk:{t:'Lper',p:{W,H,w,h},a:ans}})}
   const ans=W*H-w*h;
   return mc(`What is the area of this figure? All corners are right angles.${fig}`,`${ans} ${u}²`,[`${W*H} ${u}²`,`${(W-w)*H} ${u}²`,`${2*(W+H)} ${u}²`,`${W*H+w*h} ${u}²`],
    `Split it into two rectangles. Left part: ${W-w} × ${H} = ${(W-w)*H}. Lower-right part: ${w} × ${H-h} = ${w*(H-h)}. Total: <b>${ans} ${u}²</b>. (Or take the big ${W} × ${H} rectangle, ${W*H}, and subtract the missing ${w} × ${h} corner.)${watch(`${W} × ${H} = ${W*H} counts the empty corner.`)}`,{chk:{t:'Larea',p:{W,H,w,h},a:ans}})}
@@ -2680,7 +2703,7 @@ const SESSIONS=[];PLAN.forEach(wk=>wk.s.forEach((s,i)=>{const o=Array.isArray(s)
 const ALLMATH=Object.keys(T).filter(k=>['num','frac','dec','alg','geo','meas','data','prob','qr'].includes(T[k].cat));
 const FINAL_TIPS=`
 <p>You have done the work. Here is how to make it count on test day.</p>
-<h4>The night before</h4><ul><li>Pack: admission ticket or confirmation, two #2 pencils, an eraser, a water bottle, and a snack for the break. No calculator is allowed, so do not bring one.</li><li>Lights out at your normal time. A rested brain is faster than a crammed one.</li></ul>
+<h4>The night before</h4><ul><li>Pack: admission ticket or confirmation, two #2 pencils, an eraser, a water bottle, and a snack for the two short breaks (one after Quantitative Reasoning, one after Mathematics Achievement). No calculator is allowed, so do not bring one.</li><li>Lights out at your normal time. A rested brain is faster than a crammed one.</li></ul>
 <h4>The morning of</h4><ul><li>Eat a real breakfast with some protein. Arrive early so you are not rushing.</li><li>Do 5 warm-up questions in this app on the way (Practice tab) to wake up your brain.</li></ul>
 <h4>During the test</h4><ul><li><b>Answer every question.</b> There is no penalty for guessing. If time is running out, fill in your best guess for the rest.</li><li><b>Easy first.</b> Skip a hard one, circle it, and come back. Every question is worth the same point.</li><li><b>Cross out wrong answers.</b> Even eliminating one choice improves your odds.</li><li><b>Read the question twice</b> before looking at choices. Underline what it asks for: "how many <em>more</em>," "in <em>simplest</em> form," "<em>NOT</em> a factor."</li><li><b>Check the units and the reasonableness</b> of math answers. Estimate first when you can.</li><li>For synonyms, <b>define the word in your own words first</b>. For sentence completions, <b>predict</b> the blank before reading choices.</li><li>If you feel stuck or nervous, take one slow breath, roll your shoulders, and move on. One hard question does not decide anything.</li></ul>
 <h4>Remember</h4><p>This test is one snapshot on one morning. You have practiced for weeks, learned hundreds of words, and solved thousands of problems. Walk in confident. You are ready.</p>`;
@@ -2697,14 +2720,19 @@ function focusValid(k){const [kind,a,b,...rest]=String(k).split(':');if(rest.len
  if(kind==='r')return /^\d+$/.test(a)&&/^\d+$/.test(b)&&!!PASSAGES[+a]&&!!PASSAGES[+a].q[+b];
  if(kind==='t')return b===undefined&&Object.prototype.hasOwnProperty.call(T,a)&&typeof T[a].gen==='function'&&!['read','write'].includes(T[a].cat);
  return false}
-function load(){let raw=null;try{raw=localStorage.getItem(KEY);const s=JSON.parse(raw);if(s&&s.v===1)return norm(s)}catch(e){}
+function load(){let raw=null,s=null;try{raw=localStorage.getItem(KEY);s=JSON.parse(raw)}catch(e){}
+ if(s&&typeof s==='object'&&s.v===1){try{return norm(s)}catch(e){try{console.error(e)}catch(_){}return s}}
  // Saved progress that exists but cannot be read is copied aside before the app
  // starts fresh, so the next save cannot destroy it. Settings shows it for recovery.
  if(raw){try{if(!localStorage.getItem(KEY+'-rescue'))localStorage.setItem(KEY+'-rescue',raw)}catch(e){}}
- return norm({v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto'})}
+ return norm({v:1,setup:false,name:'',start:today(),test:addDays(today(),90),done:{},topics:{},vocab:{},cur:null,days:{},view:'home',theme:'auto',vtips:[]})}
 // Saved progress from an older version lacks the newer fields; add them empty
 // rather than changing anything that is already there.
+// An open or paused session must have the shape the app builds, or it is dropped.
+function okSess(c){return !!c&&typeof c==='object'&&Array.isArray(c.steps)&&c.steps.length>0&&Number.isInteger(c.step)&&c.step>=0&&c.step<c.steps.length&&c.steps.every(st=>!!st&&typeof st==='object'&&typeof st.k==='string'&&(st.qs==null||(Array.isArray(st.qs)&&Array.isArray(st.ans)))&&(st.cards==null||(Array.isArray(st.cards)&&Array.isArray(st.res))))}
 function norm(s){if(s.setup==null)s.setup=!!s.name;for(const k of ['done','topics','vocab','days'])if(!s[k]||typeof s[k]!=='object')s[k]={};
+ if(!Array.isArray(s.vtips))s.vtips=[];
+ if(s.cur&&!okSess(s.cur))s.cur=null;if(s.paused&&!okSess(s.paused))s.paused=null;if(!Array.isArray(s.essays))delete s.essays;
  for(const k of ['chalSeen','chalOpen'])s[k]=Array.isArray(s[k])?s[k].filter(id=>CH_AREAS[id]):[];
  const TAGK=['know','trap','misread','rushed','time'];
  s.focus=(Array.isArray(s.focus)?s.focus:[]).filter(f=>f&&typeof f.k==='string'&&TAGK.includes(f.tag)&&focusValid(f.k)).slice(0,80);
@@ -2718,7 +2746,9 @@ function norm(s){if(s.setup==null)s.setup=!!s.name;for(const k of ['done','topic
    if(Object.keys(y).length)sec[k]=y}
   return {id:int(o.id)||i+1,date:o.date,src:String(o.src||''),sec}}).filter(o=>Object.keys(o.sec).length);
  return s}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let SAVE_FAIL=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));if(SAVE_FAIL){SAVE_FAIL=false;setTimeout(render,0)}}catch(e){if(!SAVE_FAIL){SAVE_FAIL=true;setTimeout(render,0)}}}
+const saveWarn=()=>SAVE_FAIL?`<section class="card tipcard"><h3>Progress is not being saved</h3><p>The browser refused to store it (its storage may be full). Copy a backup from Progress → Settings now, then free some space or try another browser.</p></section>`:'';
 const tstat=id=>S.topics[id]||(S.topics[id]={r:0,w:0});
 const vstat=w=>S.vocab[w]||(S.vocab[w]={lvl:0,seen:0,r:0,w:0});
 function recordTopic(id,ok){const s=tstat(id);ok?s.r++:s.w++;markDay();latchChal()}
@@ -2823,7 +2853,9 @@ const QR_TOPICS=['q_sense','q_logic','q_multi','q_inverse','a_pattern','s_center
 const MA_TOPICS=ALLMATH.filter(id=>!['q_sense','q_logic','q_inverse'].includes(id));
 // 25 questions from five different passages, five per passage like the real
 // section: always the main-idea question, plus four of the others.
-function readingTest(n){const idx=shuf(PASSAGES.map((_,i)=>i));const out=[];
+// The real section's passages run about 300 words; the longer passages come first.
+const LONG_PASSAGE=250;
+function readingTest(n){const all=PASSAGES.map((_,i)=>i),wc=i=>PASSAGES[i].p.join(' ').split(/\s+/).length;const idx=[...shuf(all.filter(i=>wc(i)>=LONG_PASSAGE)),...shuf(all.filter(i=>wc(i)<LONG_PASSAGE))];const out=[];
  for(const i of idx){if(out.length>=n)break;const set=passageSet(i);const mi=set.filter(q=>q.rkind==='main idea').slice(0,1);
   out.push(...shuf([...mi,...set.filter(q=>!mi.includes(q)).slice(0,5-mi.length)]))}
  return out.slice(0,n)}
@@ -2840,7 +2872,10 @@ function buildSession(sess){const idx=sess.idx;const cur={id:sess.id,type:sess.t
  const review=seenPool.sort((a,b)=>vstat(a).lvl-vstat(b).lvl).slice(0,3);
  const cards=[...newW,...review];
  if(sess.type==='lesson'){const isV=T[sess.topic].cat==='verbal';
-  cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Learn',min:8,topic:sess.topic},{k:'quiz',title:'Practice',min:15,qs:isV?topicQs(sess.topic,10):[...topicQs(sess.topic,10),...stretchQs([sess.topic],2)]},{k:'quiz',title:isV?'Math mix':'Verbal drill',min:8,qs:isV?mixedMath(shuf(ALLMATH.filter(id=>SESSIONS.findIndex(s=>s.topic===id)<idx)).slice(0,5)||ALLMATH,8):verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
+  cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'lesson',title:'Learn',min:8,topic:sess.topic},{k:'quiz',title:'Practice',min:15,qs:isV?topicQs(sess.topic,10):[...topicQs(sess.topic,10),...stretchQs([sess.topic],2)]},{k:'quiz',title:isV?'Math mix':'Verbal drill',min:8,qs:isV?mixedMath(shuf(ALLMATH.filter(id=>SESSIONS.findIndex(s=>s.topic===id)<idx)).slice(0,5)||ALLMATH,8):verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}];
+  // The synonym and sentence-completion strategy lessons live in Week 10, but every
+  // session drills verbal questions, so each is shown once, early, before a drill.
+  if(!isV){const vt=['v_syn','v_sc'].find(id=>!S.vtips.includes(id));if(vt)cur.steps.splice(3,0,{k:'lesson',title:'Verbal strategy',min:5,topic:vt})}}
  else if(sess.type==='review'){const cx=stretchQs(sess.topics,3);cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Cheat sheet',min:6,topics:sess.topics},{k:'quiz',title:'Mixed practice',min:18,qs:shuf([...mixedMath(shuf(sess.topics),12-cx.length),...cx])},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='weak'){const weak=weakTopics(3);const topics=weak.length?weak:shuf(ALLMATH).slice(0,3);cur.data.weak=topics;cur.steps=[{k:'warm',title:'Word warm-up',min:5,cards},{k:'sheet',title:'Your weak spots',min:6,topics},{k:'quiz',title:'Targeted practice',min:18,qs:mixedMath(topics,12)},{k:'quiz',title:'Verbal drill',min:7,qs:verbalSet(8,idx)},{k:'wrap',title:'Wrap-up',min:4}]}
  else if(sess.type==='test'){const qs=sess.kind==='verbal'?verbalSet(sess.n,null):sess.kind==='read'?readingTest(sess.n):mathTest(sess.n,sess.kind);cur.steps=[{k:'warm',title:'Word warm-up',min:4,cards},{k:'test',title:sess.title,min:sess.min,qs,limit:sess.min*60,kind:sess.kind,tq:[]},{k:'wrap',title:'Results',min:5}]}
@@ -2866,7 +2901,12 @@ function catAcc(cat){let r=0,w=0;Object.keys(T).filter(k=>T[k].cat===cat).forEac
 function ring(p,size=64,label){const r=(size-8)/2,c=2*Math.PI*r;return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle" class="ringtxt">${label!=null?label:p+'%'}</text></svg>`}
 
 // ================= VIEWS =================
-function render(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
+function render(){try{draw()}catch(e){try{console.error(e)}catch(_){}const app=$('#app');
+ app.innerHTML=`<main class="wrap narrow"><section class="card"><h2>Something went wrong showing this screen</h2><p>Your saved progress has not been changed.</p>
+ <div class="actions">${S.cur?'<button class="btn primary" id="rv_leave">Leave the open session</button>':''}${S.paused?'<button class="btn" id="rv_drop">Discard the paused session</button>':''}<button class="btn" id="rv_home">Go to Today</button></div>
+ <details class="about"><summary>Backup box</summary><textarea id="bk" rows="4">${esc(JSON.stringify(S))}</textarea></details></section></main>`;
+ const on=(id,f)=>{const b=$(id);if(b)b.onclick=f};on('#rv_leave',()=>{S.cur=null;S.view='home';save();render()});on('#rv_drop',()=>{S.paused=null;S.view='home';save();render()});on('#rv_home',()=>{S.cur=null;S.view='home';save();render()})}}
+function draw(){const app=$('#app');if(S.cur){app.innerHTML=renderSession();wireSession();return}
  let v=S.view||'home';if(!S.setup)v='home';const navView=v==='review'?'progress':v;app.innerHTML=`<header class="top"><div class="brand"><span class="logo">▲</span><div><div class="brandname">ISEE Launchpad</div><div class="brandsub">Lower Level · all four sections + essay</div></div></div>
  ${S.setup?`<nav class="tabs">${[['home','Today'],['plan','Plan'],['practice','Practice'],['words','Words'],['progress','Progress']].map(([k,l])=>`<button class="tab ${navView===k?'on':''}" data-view="${k}">${l}</button>`).join('')}</nav>`:''}</header>
  <main class="wrap">${v==='home'?viewHome():v==='plan'?viewPlan():v==='practice'?viewPractice():v==='words'?viewWords():v==='review'?viewReview():viewProgress()}</main>`;
@@ -2884,7 +2924,7 @@ function viewHome(){const nxt=nextSession();const dl=daysBetween(today(),S.test)
  <details class="about"><summary>About this test</summary>${TEST_INFO}</details>
  <details class="about"><summary>Keeping your work safe</summary><p>Everything stays on this device. Nothing is uploaded and no account is needed.</p><p><b>On an iPad or phone:</b> open this page in Safari, tap Share, then <b>Add to Home Screen</b>. That installs it, keeps it working with no internet, and stops the browser from clearing your progress.</p><p>Under <b>Progress → Settings</b> there is a backup box for moving your work to another device.</p></details>
  <p class="fineprint">Independent practice material. Not affiliated with, endorsed by, or connected to ERB, the makers of the ISEE. Questions are written for practice and may occasionally contain mistakes.</p></section>`;
- return `<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All '+SESSIONS.length+' sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
+ return `${saveWarn()}<section class="hero"><div><div class="eyebrow">${greet}${name}</div><h1>${nxt?`Session ${dn+1} of ${SESSIONS.length}`:'All '+SESSIONS.length+' sessions complete!'}</h1>${nxt?`<p class="lead">Week ${nxt.week}: ${esc(PLAN[nxt.week-1].title)} · <b>${esc(nxt.title)}</b></p>`:`<p class="lead">Keep sharp with the Practice tab until test day.</p>`}
  <div class="herobtns">${S.paused?`<button class="btn primary big" data-resume>Resume "${esc(S.paused.title)}"</button>`:''}${nxt?`<button class="btn ${S.paused?'':'primary '}big" data-start="${nxt.id}">${S.paused?'Start the next session instead':"Start today's session"}</button>`:''}<button class="btn ghost" data-view="practice">Quick practice</button></div></div>
  <div class="stats"><div class="stat"><div class="statn">${dl>=0?dl:0}</div><div class="statl">days to test</div></div><div class="stat"><div class="statn">${st}</div><div class="statl">day streak</div></div><div class="stat"><div class="statn">${Object.values(S.vocab).filter(v=>v.lvl>=3).length}</div><div class="statl">words mastered</div></div><div class="stat">${ring(Math.round(dn/SESSIONS.length*100),56)}<div class="statl">plan done</div></div></div></section>
  ${chalCard()}
@@ -3018,7 +3058,7 @@ function renderWarm(st){const w=VOCAB.find(v=>v[0]===st.cards[st.ci]);if(!w)retu
 function renderLesson(st){const t=T[st.topic];return `<div class="card lesson"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-next>Got it. Let's practice</button></div></div>`}
 function renderSheet(st){const tips=st.topics.map(id=>{const t=T[id];const m=t.lesson.match(/<div class="tip"><b>Test tip<\/b>([\s\S]*?)<\/div>/);const s=S.topics[id];const n=s?s.r+s.w:0;return `<div class="sheetrow"><div><b>${esc(t.t)}</b> <span class="muted small">${n?pct(s.r,n)+'% so far':''}</span><div class="muted">${m?m[1]:''}</div></div><button class="btn small ghost" data-relearn="${id}">Re-read lesson</button></div>`}).join('');
  return `<div class="card lesson"><h2>${esc(st.title)}</h2><p class="muted">One key tip from each topic. Re-read any lesson you feel shaky on, then practice.</p>${tips}<div class="actions"><button class="btn primary" data-next>Start practice</button></div></div>`}
-function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=st.picked;const done=picked!=null;const letters='ABCD';const topicName=q.kind==='syn'?'Synonyms':q.kind==='sc'?'Sentence completion':!T[q.topic]?'':isTest&&T[q.topic].cat==='chal'?CATS.qr:T[q.topic].t;
+function renderQuiz(st,isTest){const q=st.qs[st.i];if(!q)return '';const picked=st.picked;const done=picked!=null;const letters='ABCD';const topicName=isTest?'':q.kind==='syn'?'Synonyms':q.kind==='sc'?'Sentence completion':!T[q.topic]?'':T[q.topic].t;
  const dirs=q.kind==='syn'?'<p class="dirs">Select the word whose meaning is closest to the word in capital letters.</p>':q.kind==='sc'?'<p class="dirs">Select the word that best completes the sentence.</p>':q.pas?'<p class="dirs">Read the passage, then answer the question below it.</p>':'';
  const choices=q.ch.map((c,i)=>{let cls='';if(done&&!isTest){if(i===q.a)cls='right';else if(i===picked)cls='wrong'}else if(isTest&&picked===i)cls='sel';return `<button class="choice ${cls}" data-choice="${i}" ${done&&!isTest?'disabled':''}><span class="ltr">${letters[i]}</span><span class="ctext">${c}</span></button>`}).join('');
  const right=st.ans.filter(a=>a.ok).length;
@@ -3047,9 +3087,9 @@ function renderEssay(st){
   <p class="muted small">${words} words in ${mm(st.t||0)}. Your draft is saved on this device under Progress.</p>
   <h4>Check yourself honestly</h4>
   <div class="checks">${checks.map((c,i)=>`<label><input type="checkbox" data-chk="${i}" ${st.chk&&st.chk[i]?'checked':''}> ${c}</label>`).join('')}</div>
-  <div class="actions"><button class="btn ghost" data-model="${st.promptIdx==null?0:st.promptIdx}">Compare with a model essay</button><button class="btn primary" data-next>Finish this step</button></div></div>`}
+  <div class="actions"><button class="btn ghost" data-model="${st.promptIdx==null?0:st.promptIdx}">Compare with a model essay</button><button class="btn ghost" data-plainmodel>See a solid everyday answer</button><button class="btn primary" data-next>Finish this step</button></div></div>`}
 function modelHTML(m){
- return `<div class="modelessay"><div class="eyebrow">Model essay</div><p class="prompt">${esc(m.prompt)}</p>
+ return `<div class="modelessay"><div class="eyebrow">${m.plain?'Model essay · a solid, reachable answer':'Model essay · what the best answers look like'}</div><p class="prompt">${esc(m.prompt)}</p>
   <p class="muted">${esc(m.why)}</p>
   ${m.paras.map((pa,i)=>`<div class="mpara"><p>${esc(pa.t)}</p><ul class="mnotes">${pa.n.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></div>`).join('')}
   <p class="muted small">This is one strong answer, not the only one. Copying its sentences will not help; copying how it uses one real moment per reason will.</p></div>`}
@@ -3072,7 +3112,7 @@ function renderWrap(){const c=S.cur;const quizzes=c.steps.filter(s=>s.k==='quiz'
  const score=cardsOnly?pct(learned,seenCards):pct(r,t);
  const words=cardsOnly?(score>=80?'Great recall!':'Good practice. The words you missed come back sooner.')
    :score>=90?'Outstanding!':score>=75?'Strong work!':score>=60?'Good effort. Review the misses below.':'Tough one. The review below is where the learning happens.';
- const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':test.kind==='read'?'On the real test, Reading Comprehension is 25 questions in 25 minutes, across five passages.':test.kind==='qr'?'On the real test, Quantitative Reasoning is 38 questions in 35 minutes. About a third of this practice section came from the challenge sets, because the real one includes hard multi-step questions.':'On the real test, Mathematics Achievement is 30 questions in 30 minutes.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}</p>`:'';
+ const testNote=test?`<p class="muted">${test.kind==='verbal'?'On the real test you would have 20 minutes for 34 questions.':test.kind==='read'?'On the real test, Reading Comprehension is 25 questions in 25 minutes, across five passages.':test.kind==='qr'?'On the real test, Quantitative Reasoning is 38 questions in 35 minutes. About a third of this practice section came from the challenge sets, because the real one includes hard multi-step questions.':'On the real test, Mathematics Achievement is 30 questions in 30 minutes.'} You used ${mm(test.t||0)}. ${(test.t||0)>test.limit-10?'You ran out of time: practice moving on from hard questions faster.':'Good pacing.'}${test.slept?' (The clock was paused while the device was asleep.)':''}</p>`:'';
  return `<div class="card wrap-card"><div class="celebrate">${score>=75?'🎉':'💪'}</div><h2>${words}</h2><div class="wrapstats"><div>${ring(score,88)}<span>${cardsOnly?'words known':'score'}</span></div>${cardsOnly?'':`<div><div class="statn">${r}/${t}</div><span>correct</span></div>`}<div><div class="statn">${learned}${cardsOnly?'/'+seenCards:''}</div><span>words "got it"</span></div><div><div class="statn">${Math.round(c.elapsed/60)}</div><span>minutes</span></div></div>${stn?`<p class="muted">Challenge questions: <b>${sr} of ${stn}</b> right. They are extra, so they do not count toward your score.</p>`:''}${testNote}
  ${cardsOnly?'':''}${pacing}${missed.length?`<h3>Review what you missed</h3>${missed.some(m=>m.a&&m.a.mid)?'<p class="muted small">Wrong answers go on your focus list. The app guessed why you missed each one; tap a different reason if it guessed wrong.</p>':''}<div class="missed">${missed.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill bad">${m.pick==null?'You skipped this one':'You chose: '+m.q.ch[m.pick]}</span> <span class="pill good">Answer: ${m.q.ch[m.q.a]}</span> ${tpill(m.q,m.a)}</div><div class="muted">${m.q.exp}</div>${why(m)}</div>`).join('')}</div>`:cardsOnly?`<p class="muted">You marked ${learned} of ${seenCards} cards as known. The rest will come back in your next warm-up.</p>`:'<p class="muted">No misses. Perfect round!</p>'}
  ${slowRight.length?`<details class="slowright"><summary>${slowRight.length} right answer${slowRight.length===1?' was':'s were'} slow</summary><div class="missed">${slowRight.map(m=>`<div class="miss"><div class="qtext small">${m.q.q}</div><div><span class="pill good">Answer: ${m.q.ch[m.q.a]}</span> ${tpill(m.q,m.a)}</div><div class="muted">${m.q.exp}</div></div>`).join('')}</div></details>`:''}
@@ -3095,22 +3135,26 @@ function quickSession(spec){const [kind,a,b,c]=spec.split(':');let cur;
    {k:'essay',title:'Write your essay',min:30,prompt:ESSAY_PROMPTS[epi],promptIdx:epi,limit:30*60,phase:'plan'},{k:'wrap',title:'Done',min:2}]}}
  else if(kind==='flash'){const seen=VOCAB.filter(w=>S.vocab[w[0]]).map(w=>w[0]).sort((x,y)=>vstat(x).lvl-vstat(y).lvl);const cards=[...seen.slice(0,12),...shuf(VOCAB.filter(w=>!S.vocab[w[0]]).map(w=>w[0])).slice(0,20-Math.min(12,seen.length))];cur={id:'quick',type:'quick',title:'Flashcard drill',step:0,elapsed:0,steps:[{k:'warm',title:'Flashcards',min:8,cards,ci:0,flipped:false,res:[]},{k:'wrap',title:'Done',min:1}]}}
  S.cur=cur;save();render()}
+// The essay and timed sections run on the wall clock, so switching apps does not stop them.
+// A gap of more than two minutes between ticks means the device was asleep or the app was closed;
+// that gap is not charged, and the results say so.
+function clockT(st){const now=Date.now();if(st.t0==null)st.t0=now-(st.t||0)*1000;
+ else if(st.lastTick&&now-st.lastTick>120000){st.t0+=now-st.lastTick;st.slept=true}
+ st.lastTick=now;st.t=Math.floor((now-st.t0)/1000)}
 function tick(){if(!S.cur)return;const c=S.cur;const st=c.steps[c.step];
  if(st.k==='essay'&&st.phase==='write'){ // the essay is timed like the real thing
-   if(st.t0==null)st.t0=Date.now()-(st.t||0)*1000;
-   st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
+   clockT(st);c.elapsed++;
    const el=document.querySelector('.timer.big');if(el){el.textContent=mm(Math.max(0,st.limit-st.t));if(st.limit-st.t<300)el.classList.add('low')}
    if(st.t>=st.limit){const e=$('#essay');if(e)st.text=e.value;st.phase='check';
      S.essays=S.essays||[];S.essays.unshift({date:today(),prompt:st.prompt,pi:st.promptIdx||0,text:st.text||'',mins:Math.round(st.t/60),words:(st.text||'').trim()?st.text.trim().split(/\s+/).length:0});S.essays=S.essays.slice(0,20);
      markDay();save();render();return}
    return}
  if(st.k==='test'){ // a timed section runs on the clock, even if the app is in the background
-   if(st.t0==null)st.t0=Date.now()-(st.t||0)*1000;
-   st.t=Math.floor((Date.now()-st.t0)/1000);c.elapsed++;
+   clockT(st);c.elapsed++;
    if(st.tq&&document.visibilityState==='visible')st.tq[st.i]=(st.tq[st.i]||0)+1;
    if(st.t>=st.limit){submitTest(true);return}}
  else{if(document.visibilityState!=='visible')return;c.elapsed++;if(st.k==='quiz'&&st.picked==null)st.qt=(st.qt||0)+1}const el=$('#timer');if(el)el.textContent=st.k==='test'?mm(Math.max(0,st.limit-st.t)):mm(c.elapsed);if(c.elapsed%15===0)save()}
-function nextStep(){const c=S.cur;c.step++;if(c.step>=c.steps.length)c.step=c.steps.length-1;save();render();window.scrollTo(0,0)}
+function nextStep(){const c=S.cur;const st=c.steps[c.step];if(st&&st.k==='lesson'&&(st.topic==='v_syn'||st.topic==='v_sc')&&!S.vtips.includes(st.topic))S.vtips.push(st.topic);c.step++;if(c.step>=c.steps.length)c.step=c.steps.length-1;save();render();window.scrollTo(0,0)}
 function submitTest(timedOut){const st=S.cur.steps[S.cur.step];let blank=0;st.qs.forEach((q,i)=>{const a=st.ans[i];const p=a?a.pick:null;if(p==null)blank++;
   st.ans[i]={pick:p,ok:p===q.a,secs:st.tq?st.tq[i]:undefined};if(q.topic)recordTopic(q.topic,p===q.a);if(q.word)recordVocab(q.word,p===q.a);afterAnswer(q,st.ans[i])});
  st.timedOut=!!timedOut;if(timedOut&&blank)logMiss('time','test',Date.now().toString(36)+'-'+(++MISS_SEQ));nextStep()}
@@ -3125,6 +3169,7 @@ function wireSession(){const c=S.cur;const st=c.steps[c.step];
    S.view='home';save();render()});
  document.querySelectorAll('[data-next]').forEach(b=>b.onclick=nextStep);
  document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
+ document.querySelectorAll('[data-plainmodel]').forEach(b=>b.onclick=()=>showModel(PLAIN_MODEL));
  document.querySelectorAll('[data-relearn]').forEach(b=>b.onclick=()=>{const t=T[b.dataset.relearn];const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="card lesson modalcard"><div class="eyebrow">${CATS[t.cat]}</div><h2>${esc(t.t)}</h2>${t.lesson}<div class="actions"><button class="btn primary" data-close>Back to cheat sheet</button></div></div>`;document.body.appendChild(d);d.querySelector('[data-close]').onclick=()=>d.remove()});
  if(st.k==='warm'){document.querySelectorAll('[data-flipcard]').forEach(b=>b.onclick=()=>{st.flipped=!st.flipped;render()});document.querySelectorAll('[data-card]').forEach(b=>b.onclick=()=>{const ok=b.dataset.card==='1';const w=st.cards[st.ci];recordVocab(w,ok);st.res.push({w,ok});st.ci++;st.flipped=false;markDay();if(st.ci>=st.cards.length)nextStep();else{save();render()}})}
  if(st.k==='essay'){
@@ -3151,8 +3196,9 @@ function wireCommon(){document.querySelectorAll('[data-start]').forEach(b=>b.onc
  document.querySelectorAll('[data-resume]').forEach(b=>b.onclick=resumeSession);
  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>{S.reviewIdx=+b.dataset.rev;S.view='review';save();render();window.scrollTo(0,0)});
  document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>showModel(modelFor(+b.dataset.model)));
+ document.querySelectorAll('[data-plainmodel]').forEach(b=>b.onclick=()=>showModel(PLAIN_MODEL));
  document.querySelectorAll('[data-models]').forEach(b=>b.onclick=()=>{const d=document.createElement('div');d.className='modal';
-   d.innerHTML=`<div class="card lesson modalcard"><h2>Model essays</h2><p class="muted">One strong answer for each shape of prompt, with notes on why each paragraph works.</p>
+   d.innerHTML=`<div class="card lesson modalcard"><h2>Model essays</h2><p class="muted">Five answers that show what the best essays look like, one for each shape of prompt, plus one plain, reachable answer ("everyday"). Notes explain why each paragraph works.</p>
    <div class="chips">${MODELS.map((m,i)=>`<button class="chip" data-mpick="${i}">${m.kind}</button>`).join('')}</div><div id="mbody">${modelHTML(MODELS[0])}</div>
    <div class="actions"><button class="btn primary" data-close>Close</button></div></div>`;
    document.body.appendChild(d);
